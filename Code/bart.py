@@ -7,6 +7,50 @@ from datetime import timedelta, date
 import calendar
 import psycopg2
 
+k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
+gen_lic = 'MW9S-E7SL-26DU-VV8V'
+url = 'http://api.bart.gov/api/route.aspx?'
+
+def GetBARTLines():
+    try:
+        routeLinesReturn = []
+        url = 'http://api.bart.gov/api/route.aspx?'
+        urlRoute = 'https://api.bart.gov/api/route.aspx?'
+        params = dict(
+            cmd='routes',
+            key=gen_lic,
+            json='y'
+        )
+        paramsRoute = dict(
+            cmd='routeinfo',
+            route = '1',
+            key=gen_lic,
+            json='y'
+        )
+        lines = requests.get(url=url, params=params)
+        statusCode =  lines.status_code
+        if statusCode == 200:
+            lineDetails = lines.json()['root']['routes']['route']
+            for line in lineDetails:
+                paramsRoute['route'] = line['number']
+                route = requests.get(url=urlRoute, params=paramsRoute)
+                statusCode = route.status_code
+                if statusCode == 200:
+                    rj = route.json()
+                    routeDetails = route.json()['root']['routes']['route']['config']['station']
+                    for r in routeDetails:
+                        if routeDetails[0] != r:
+                            rline = [ line['abbr'], line['number'], routeDetails[0], r]
+                            routeLinesReturn.append( rline )
+    except (Exception) as e:
+        print("Error in running the query: {}".format(str(e)))
+    finally:
+        return routeLinesReturn
+
+
+def DeleteFile(f):
+    if os.path.exists(f):
+        os.remove(f)
 
 def PGBart(query):
     try:
