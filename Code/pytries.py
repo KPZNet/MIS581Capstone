@@ -4,55 +4,50 @@ import statistics
 import csv
 import os
 from datetime import timedelta, date
+import datetime as dt
 import calendar
 
 
-
-route_file_name = "route_trip_times.csv"
+lines_file_name = "bart_lines.csv"
 k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
 gen_lic = 'MW9S-E7SL-26DU-VV8V'
-url = 'http://api.bart.gov/api/sched.aspx'
-stationsURL = "https://api.bart.gov/api/stn.aspx"
+url = 'http://api.bart.gov/api/route.aspx?'
+urlRoute = 'https://api.bart.gov/api/route.aspx?'
 
-class routeTime:
-    origin = 'XXX'
-    destination = 'XXX'
-    tripTime = 0
-    tripTimeString = '0'
-    hour = 0
-    origTimeMin = ''
-    destTimeMin = ''
-    origTimeDate = ''
-    destTimeDate = ''
-    fare = 0.0
+params = dict(
+    cmd='routes',
+    key=gen_lic,
+    json='y'
+)
+paramsRoute = dict(
+    cmd='routeinfo',
+    route = '1',
+    key=gen_lic,
+    json='y'
+)
 
-routeTimeList = []
+if os.path.exists(lines_file_name):
+    os.remove(lines_file_name)
 
-weekDays = {0:"Monday",1:"Tuesday",2:"Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"}
-isoweekDays = {1:"Monday",2:"Tuesday",3:"Wednesday",4:"Thursday",5:"Friday",6:"Saturday",7:"Sunday"}
+try:
 
-weekDaysTest = {0:"Monday"}
+    with open(lines_file_name, mode='w', newline='') as routetimes_file:
+        route_writer = csv.writer(routetimes_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        route_writer.writerow(['name', 'number', 'orig', 'dest'])
 
+        lines = requests.get(url=url, params=params)
+        statusCode =  lines.status_code
+        if statusCode == 200:
+            lineDetails = lines.json()['root']['routes']['route']
+            for line in lineDetails:
+                paramsRoute['route'] = line['number']
+                route = requests.get(url=urlRoute, params=paramsRoute)
+                statusCode = route.status_code
+                if statusCode == 200:
+                    routeDetails = route.json()['root']['routes']['route']['config']['station']
+                    for r in routeDetails:
+                        if routeDetails[0] != r:
+                            route_writer.writerow( [ line['abbr'], line['number'], routeDetails[0], r] )
 
-def daterange(date1, date2):
-    for n in range(int ((date2 - date1).days)+1):
-        yield date1 + timedelta(n)
-
-def daterange2(date1, date2):
-    r = []
-    for n in range(int ((date2 - date1).days)+1):
-        r.append( date1 + timedelta(n) )
-    return r
-
-start_dt = date(2021, 3, 29)
-end_dt = date(2021, 4, 4)
-drange = daterange2(start_dt, end_dt)
-
-for dd in drange:
-    print(  calendar.day_name[dd.weekday()] )
-    print ( dd.weekday() )
-    print(dd.strftime("%m/%d/%y"))
-    
-for dt in daterange(start_dt, end_dt):
-    print(dt.strftime("%Y-%m-%d"))
-	
+except (Exception) as e:
+    print(e)

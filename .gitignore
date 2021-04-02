@@ -2,8 +2,9 @@
 /ExtraData
 /.idea
 .idea
-.gitignore
 *.csv
+workspace.code-workspace
+
 
 
 
