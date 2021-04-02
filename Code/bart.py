@@ -12,17 +12,33 @@ gen_lic = 'MW9S-E7SL-26DU-VV8V'
 url = 'http://api.bart.gov/api/route.aspx?'
 
 
+def checkkey(dic, key):
+    r = False
+    try:
+        if type(key is list):
+            checkDict = dic
+            for k in key:
+                if k in checkDict:
+                    r = True
+                    checkDict = checkDict[k]
+                else:
+                    r = False
+    except(Exception) as e:
+        r = False
+    finally:
+        return r
+
+
 def GetBARTLine(bartLine):
     try:
         lineReturn = []
         urlRoute = 'https://api.bart.gov/api/route.aspx?'
         paramsRoute = dict(
             cmd='routeinfo',
-            route = '1',
+            route=bartLine,
             key=k_lic,
             json='y'
         )
-        paramsRoute['route'] = bartLine
         route = requests.get(url=urlRoute, params=paramsRoute)
         statusCode = route.status_code
         if statusCode == 200:
@@ -30,17 +46,18 @@ def GetBARTLine(bartLine):
             routeSummary = route.json()['root']['routes']['route']
             routeDetails = route.json()['root']['routes']['route']['config']['station']
             for r in routeDetails:
-                if routeDetails[0] != r:
-                    rline = [ routeSummary['abbr'], routeSummary['number'], routeDetails[0], r]
-                    lineReturn.append( rline )
+                rline = {'number': routeSummary['number'], 'station': r}
+                lineReturn.append(rline)
     except (Exception) as e:
-        print("Error in running the query: {}".format(str(e)))
+        print("Error getting line: {}".format(str(e)))
     finally:
         return lineReturn
+
 
 def GetBARTLines():
     try:
         routeLinesReturn = []
+        routeFailures = []
         url = 'http://api.bart.gov/api/route.aspx?'
         urlRoute = 'https://api.bart.gov/api/route.aspx?'
         params = dict(
@@ -50,12 +67,12 @@ def GetBARTLines():
         )
         paramsRoute = dict(
             cmd='routeinfo',
-            route = '1',
+            route='1',
             key=k_lic,
             json='y'
         )
         lines = requests.get(url=url, params=params)
-        statusCode =  lines.status_code
+        statusCode = lines.status_code
         if statusCode == 200:
             lineDetails = lines.json()['root']['routes']['route']
             for line in lineDetails:
@@ -64,25 +81,34 @@ def GetBARTLines():
                 statusCode = route.status_code
                 if statusCode == 200:
                     rj = route.json()
-                    routeDetails = route.json()['root']['routes']['route']['config']['station']
-                    for r in routeDetails:
-                        if routeDetails[0] != r:
-                            rline = [ line['abbr'], line['number'], routeDetails[0], r]
-                            routeLinesReturn.append( rline )
+                    if checkkey(rj, ['root', 'routes', 'route', 'config', 'station']):
+                        routeSummary = route.json()['root']['routes']['route']
+                        routeDetails = route.json()['root']['routes']['route']['config']['station']
+                        for r in routeDetails:
+                            rline = { 'abbr': routeSummary['abbr'], 'routeID':routeSummary['routeID'],
+                                      'origin':routeSummary['origin'], 'dest':routeSummary['destination'],
+                                      'number':routeSummary['number'], 'station': r }
+                            routeLinesReturn.append(rline)
+                    else:
+                        routeFailures.append(line)
+                else:
+                    routeFailures.append(line)
     except (Exception) as e:
-        print("Error in running the query: {}".format(str(e)))
+        print("Error geting all lines: {}".format(str(e)))
     finally:
-        return routeLinesReturn
+        return routeLinesReturn, routeFailures
 
 
 def DeleteFile(f):
     if os.path.exists(f):
         os.remove(f)
 
+
 def PGBart(query):
     try:
         query_results = []
-        conn = psycopg2.connect(host="10.0.0.206", port = 5432, database="bartridership", user="postgres", password="minden12k")
+        conn = psycopg2.connect(host="10.0.0.206", port=5432, database="bartridership", user="postgres",
+                                password="minden12k")
         cur = conn.cursor()
         cur.execute(query)
         query_results = cur.fetchall()
