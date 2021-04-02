@@ -10,7 +10,7 @@ import psycopg2
 
 try:
 	# connect to the database
-    conn = psycopg2.connect(host="localhost", port = 5432, database="bartridership", user="postgres", password="minden12k")
+    conn = psycopg2.connect(host="10.0.0.206", port = 5432, database="bartridership", user="postgres", password="minden12k")
 
     cur = conn.cursor()
 
