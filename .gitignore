@@ -1,4 +1,7 @@
 /Data
 /ExtraData
+.gitignore
+*.csv
+
 
 
