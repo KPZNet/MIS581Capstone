@@ -21,7 +21,7 @@ try:
         routeLines = bart.GetBARTLine('1')
         for r in routeLines:
             if routeLines[0] != r:
-                route_writer.writerow(  r  )
+                route_writer.writerow(r)
 except (Exception) as e:
     print(e)
 finally:

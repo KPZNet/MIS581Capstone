@@ -11,6 +11,33 @@ k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
 gen_lic = 'MW9S-E7SL-26DU-VV8V'
 url = 'http://api.bart.gov/api/route.aspx?'
 
+
+def GetBARTLine(bartLine):
+    try:
+        lineReturn = []
+        urlRoute = 'https://api.bart.gov/api/route.aspx?'
+        paramsRoute = dict(
+            cmd='routeinfo',
+            route = '1',
+            key=k_lic,
+            json='y'
+        )
+        paramsRoute['route'] = bartLine
+        route = requests.get(url=urlRoute, params=paramsRoute)
+        statusCode = route.status_code
+        if statusCode == 200:
+            rj = route.json()
+            routeSummary = route.json()['root']['routes']['route']
+            routeDetails = route.json()['root']['routes']['route']['config']['station']
+            for r in routeDetails:
+                if routeDetails[0] != r:
+                    rline = [ routeSummary['abbr'], routeSummary['number'], routeDetails[0], r]
+                    lineReturn.append( rline )
+    except (Exception) as e:
+        print("Error in running the query: {}".format(str(e)))
+    finally:
+        return lineReturn
+
 def GetBARTLines():
     try:
         routeLinesReturn = []
@@ -18,13 +45,13 @@ def GetBARTLines():
         urlRoute = 'https://api.bart.gov/api/route.aspx?'
         params = dict(
             cmd='routes',
-            key=gen_lic,
+            key=k_lic,
             json='y'
         )
         paramsRoute = dict(
             cmd='routeinfo',
             route = '1',
-            key=gen_lic,
+            key=k_lic,
             json='y'
         )
         lines = requests.get(url=url, params=params)
