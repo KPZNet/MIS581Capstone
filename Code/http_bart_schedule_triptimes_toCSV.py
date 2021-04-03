@@ -1,3 +1,5 @@
+from typing import List, Any
+
 import requests
 import numpy as np
 import statistics
@@ -6,6 +8,7 @@ import os
 from datetime import timedelta, date
 import datetime as dt
 import calendar
+import bart
 
 
 route_file_name = "route_trip_times.csv"
@@ -70,22 +73,16 @@ def GetTime(t):
     return time
       
 
-def GetStationList(stations):
-    stationList = []
-    for s in stations:
-        stationList.append(s['abbr'])
-    return stationList
-
 paramsStation = dict(
     cmd='stns',
     key=gen_lic,
     json='y'
 )
 
-stt = requests.get(url=stationsURL, params=paramsStation).json()['root']['stations']['station']
-stList = GetStationList(stt)
-stList_orig = ['PITT']
-stList_dest = stList
+bartStationList = requests.get(url=stationsURL, params=paramsStation).json()['root']['stations']['station']
+
+stList_dest = list(map(lambda x: x['abbr'], bartStationList ) )
+stList_orig = list(map(lambda x: x['station'], bart.GetBARTLine('1') ) )
 
 if os.path.exists(route_file_name):
     os.remove(route_file_name)

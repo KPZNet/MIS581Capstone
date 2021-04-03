@@ -9,19 +9,10 @@ import calendar
 import bart
 
 
-lines_file_name = "bart_line_1.csv"
-
-if os.path.exists(lines_file_name):
-    os.remove(lines_file_name)
 
 try:
-    with open(lines_file_name, mode='w', newline='') as routetimes_file:
-        route_writer = csv.writer(routetimes_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        route_writer.writerow(['name', 'number', 'orig', 'dest'])
-        routeLines = bart.GetBARTLine('1')
-        for r in routeLines:
-            if routeLines[0] != r:
-                route_writer.writerow(  r  )
+    r = bart.GetBARTLine("1")
+    result = map(lambda x: x['station'], r)
 except (Exception) as e:
     print(e)
 finally:
