@@ -16,7 +16,7 @@ bart.DeleteFile(lines_file_name)
 try:
     with open(lines_file_name, mode='w', newline='') as routetimes_file:
         route_writer = csv.writer(routetimes_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        route_writer.writerow(['name', 'number', 'orig', 'dest'])
+        route_writer.writerow(['number', 'station'])
         routeLines, routeFailures = bart.GetBARTLines()
         for r in routeLines:
             lineRow = [r['number'], r['station']]

@@ -68,12 +68,6 @@ def GetBARTLines():
             key=k_lic,
             json='y'
         )
-        paramsRoute = dict(
-            cmd='routeinfo',
-            route='1',
-            key=k_lic,
-            json='y'
-        )
         lines = requests.get(url=url, params=params)
         statusCode = lines.status_code
         if statusCode == 200:
@@ -81,11 +75,7 @@ def GetBARTLines():
             for line in lineDetails:
                 routeSummary = GetBARTLine(line['number'])
                 if len(routeSummary) > 0:
-                    for r in routeSummary:
-                        rline = { 'abbr': r['abbr'], 'routeID':r['routeID'],
-                                  'origin':r['origin'], 'dest':r['dest'],
-                                  'number':r['number'], 'station': r['station'] }
-                        routeLinesReturn.append(rline)
+                    routeLinesReturn.extend(routeSummary)
                 else:
                     routeFailures.append(line)
             else:
