@@ -5,7 +5,6 @@ import numpy as np
 import statistics
 import csv
 import os
-from datetime import datetime
 from datetime import timedelta, date
 import datetime as dt
 import calendar
@@ -32,19 +31,14 @@ class routeTime:
 
 routeTimeList = []
 
-def PrintTime():
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-
 def DateRangeList(date1, date2):
     r = []
     for n in range(int ((date2 - date1).days)+1):
         r.append( date1 + timedelta(n) )
     return r
 
-start_dt = date(2021, 3, 28)
-end_dt = start_dt + timedelta(1) # date(2021, 4, 4)
+start_dt = date(2021, 3, 30)
+end_dt = start_dt + timedelta(6) # date(2021, 4, 4)
 weekDayList = DateRangeList(start_dt, end_dt)
 
 hours = {i : dt.time(i).strftime('%I:00 %p') for i in range(24)}
@@ -90,12 +84,8 @@ bartStationList = requests.get(url=stationsURL, params=paramsStation).json()['ro
 stList_dest = list(map(lambda x: x['abbr'], bartStationList ) )
 stList_orig = list(map(lambda x: x['station'], bart.GetBARTLine('1') ) )
 
-#stList_orig = ['PITT']
-
 if os.path.exists(route_file_name):
     os.remove(route_file_name)
-
-PrintTime()
 
 with open(route_file_name, mode='w', newline='') as routetimes_file:
     route_writer = csv.writer(routetimes_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -134,5 +124,5 @@ with open(route_file_name, mode='w', newline='') as routetimes_file:
                                 hour, rc.origTimeMin, rc.origTimeDate, rc.destTimeMin, rc.destTimeDate, 
                                 dow, dayString,rc.fare])
 
-PrintTime()
+
 
