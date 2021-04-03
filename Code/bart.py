@@ -43,11 +43,14 @@ def GetBARTLine(bartLine):
         statusCode = route.status_code
         if statusCode == 200:
             rj = route.json()
-            routeSummary = route.json()['root']['routes']['route']
-            routeDetails = route.json()['root']['routes']['route']['config']['station']
-            for r in routeDetails:
-                rline = {'number': routeSummary['number'], 'station': r}
-                lineReturn.append(rline)
+            if checkkey(rj, ['root','routes','route','config','station']) == True:
+                routeSummary = route.json()['root']['routes']['route']
+                routeDetails = route.json()['root']['routes']['route']['config']['station']
+                for r in routeDetails:
+                    rline = { 'abbr': routeSummary['abbr'], 'routeID':routeSummary['routeID'],
+                              'origin':routeSummary['origin'], 'dest':routeSummary['destination'],
+                              'number':routeSummary['number'], 'station': r }
+                    lineReturn.append(rline)
     except (Exception) as e:
         print("Error getting line: {}".format(str(e)))
     finally:
@@ -76,23 +79,17 @@ def GetBARTLines():
         if statusCode == 200:
             lineDetails = lines.json()['root']['routes']['route']
             for line in lineDetails:
-                paramsRoute['route'] = line['number']
-                route = requests.get(url=urlRoute, params=paramsRoute)
-                statusCode = route.status_code
-                if statusCode == 200:
-                    rj = route.json()
-                    if checkkey(rj, ['root', 'routes', 'route', 'config', 'station']):
-                        routeSummary = route.json()['root']['routes']['route']
-                        routeDetails = route.json()['root']['routes']['route']['config']['station']
-                        for r in routeDetails:
-                            rline = { 'abbr': routeSummary['abbr'], 'routeID':routeSummary['routeID'],
-                                      'origin':routeSummary['origin'], 'dest':routeSummary['destination'],
-                                      'number':routeSummary['number'], 'station': r }
-                            routeLinesReturn.append(rline)
-                    else:
-                        routeFailures.append(line)
+                routeSummary = GetBARTLine(line['number'])
+                if len(routeSummary) > 0:
+                    for r in routeSummary:
+                        rline = { 'abbr': r['abbr'], 'routeID':r['routeID'],
+                                  'origin':r['origin'], 'dest':r['dest'],
+                                  'number':r['number'], 'station': r['station'] }
+                        routeLinesReturn.append(rline)
                 else:
                     routeFailures.append(line)
+            else:
+                routeFailures.append(line)
     except (Exception) as e:
         print("Error geting all lines: {}".format(str(e)))
     finally:
