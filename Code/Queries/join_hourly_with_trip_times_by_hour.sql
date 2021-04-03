@@ -1,19 +1,32 @@
+
+INSERT INTO public.hourlyriderstriptimes(date, hour, source, dest, riders, triptime, depart_date, depart_hour)
+
 with trips as
-(select hour, (origin),
-       (dest ),
-       (origin || ' - ' || dest)  as name,
-       AVG(triptime), min(triptime), max(triptime),
-       (origin || dest)  as id
-        from triptimes group by dest, origin, hour)
-select *, to_char(hourlyriders.date, 'Day') AS "DayName"
+(select origin,
+        dest,
+        AVG(triptime) as triptime
+from triptimes group by dest, origin)
+
+select hourlyriders.date, hourlyriders.hour, hourlyriders.source, hourlyriders.dest, hourlyriders.riders,
+       trips.triptime,
+
+       CASE
+           WHEN trips.triptime >= 60 AND hourlyriders.hour = 0
+               THEN  cast(hourlyriders.date - interval '1' DAY as Date)
+          ELSE
+               cast(hourlyriders.date as Date)
+
+           END depart_date,
+
+CASE
+           WHEN trips.triptime >= 60 AND hourlyriders.hour = 0
+                THEN  23
+           WHEN trips.triptime >= 60 AND hourlyriders.hour >0
+                THEN hourlyriders.hour - 1
+           ELSE hourlyriders.hour
+
+END depart_hour
+
 from hourlyriders, trips where
-EXTRACT(YEAR from hourlyriders.date) = 2018
-and
-hourlyriders.dest = 'EMBR'
-and
-EXTRACT(DOW from hourlyriders.date) = 1
-and
-hourlyriders.hour = 8
-and hourlyriders.hour = trips.hour
-and hourlyriders.source = trips.origin
-AND hourlyriders.dest = trips.dest
+(trips.origin = hourlyriders.source AND trips.dest = hourlyriders.dest)
+
