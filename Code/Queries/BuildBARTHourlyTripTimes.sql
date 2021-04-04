@@ -1,8 +1,8 @@
--- Table: public.hourlyriderstriptimes
+-- Table: public.hourlystationqueue
 
--- DROP TABLE public.hourlyriderstriptimes;
+-- DROP TABLE public.hourlystationqueue;
 
-CREATE TABLE public.hourlyriderstriptimes
+CREATE TABLE public.hourlystationqueue
 (
     date date,
     hour integer,
@@ -16,7 +16,7 @@ CREATE TABLE public.hourlyriderstriptimes
 
     TABLESPACE pg_default;
 
-ALTER TABLE public.hourlyriderstriptimes
+ALTER TABLE public.hourlystationqueue
     OWNER to postgres;
 
 

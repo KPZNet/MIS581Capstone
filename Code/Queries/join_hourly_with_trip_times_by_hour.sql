@@ -1,5 +1,7 @@
+TRUNCATE hourlystationqueue;
 
-INSERT INTO public.hourlyriderstriptimes(date, hour, source, dest, riders, triptime, depart_date, depart_hour)
+INSERT INTO public.hourlystationqueue(date, hour, source, dest, riders,
+                                         triptime, depart_date, depart_hour)
 
 with trips as
 (select origin,
