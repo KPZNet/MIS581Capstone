@@ -27,6 +27,7 @@ CASE
 
 END depart_hour
 
-from hourlyriders, trips where
-(trips.origin = hourlyriders.source AND trips.dest = hourlyriders.dest)
+from hourlyriders
+INNER JOIN trips ON
+(hourlyriders.source = trips.origin AND hourlyriders.dest = trips.dest)
 
