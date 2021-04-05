@@ -92,6 +92,17 @@ def DeleteFile(f):
         os.remove(f)
 
 
+def GetStationList():
+    stationsURL = "https://api.bart.gov/api/stn.aspx"
+    paramsStation = dict(
+        cmd='stns',
+        key=bart_lic,
+        json='y'
+    )
+    bartStationList = requests.get(url=stationsURL, params=paramsStation).json()['root']['stations']['station']
+    return bartStationList
+
+
 def PGBart(query):
     try:
         query_results = []
