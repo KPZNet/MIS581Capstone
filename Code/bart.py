@@ -9,6 +9,7 @@ import psycopg2
 
 k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
 gen_lic = 'MW9S-E7SL-26DU-VV8V'
+bart_lic = k_lic
 url = 'http://api.bart.gov/api/route.aspx?'
 
 
@@ -36,7 +37,7 @@ def GetBARTLine(bartLine):
         paramsRoute = dict(
             cmd='routeinfo',
             route=bartLine,
-            key=k_lic,
+            key=bart_lic,
             json='y'
         )
         route = requests.get(url=urlRoute, params=paramsRoute)
@@ -65,7 +66,7 @@ def GetBARTLines():
         urlRoute = 'https://api.bart.gov/api/route.aspx?'
         params = dict(
             cmd='routes',
-            key=k_lic,
+            key=bart_lic,
             json='y'
         )
         lines = requests.get(url=url, params=params)

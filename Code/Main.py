@@ -9,7 +9,7 @@ import psycopg2
 import bart
 
 try:
-    query_results = bart.PGBart("""SELECT * FROM hourlyriders where hour = 8 LIMIT 100""")
+    query_results = bart.PGBart("""SELECT * FROM hourlystationqueue where hour = 8 LIMIT 100""")
     print(type(query_results))
     for q in query_results:
         print(q)
