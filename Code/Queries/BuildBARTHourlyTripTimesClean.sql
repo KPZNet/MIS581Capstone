@@ -19,4 +19,7 @@ CREATE TABLE public.hourlystationqueue_clean
 ALTER TABLE public.hourlystationqueue_clean
     OWNER to postgres;
 
+INSERT INTO hourlystationqueue_clean(date, hour, source, dest, riders,
+                                     triptime, depart_date, depart_hour)
+select * from hourlystationqueue where extract(YEAR from date) = 2015
 
