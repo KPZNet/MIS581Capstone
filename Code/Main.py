@@ -44,7 +44,9 @@ def Smooth_1StandardDeviation(dataSet):
     return returnData
 
 
-
+def SumSquares(ft):
+  r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
+  return r
 
 
 try:
@@ -69,13 +71,6 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
         plotdata = list(map(lambda x: x[0], dat ) )
         smoothData = Smooth_1StandardDeviation(plotdata)
-        #smoothDataTr = smoothTriangle(plotdata, 10)
-        #
-        #    smoothDataT = signal.savgol_filter(plotdata,
-        #                                   53, # window size used for filtering
-        #                                   3), # order of fitted polynomial
-        #
-        smoothData = smoothData[50:100]
         datasize = len(smoothData)
         x = list( range( datasize ) )
         fig, ax1 = plt.subplots(figsize = (20,5))
@@ -88,19 +83,25 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
         mn = statistics.mean(plotdata)
         Maxthreshold = mn + (2.0 * sdv)
         Minthreshold = mn - (2.0 * sdv)
-        #plt.hlines(Maxthreshold,0,datasize,colors="red")
-        #plt.hlines(Minthreshold,0,datasize,colors="red")
+        plt.hlines(Maxthreshold,0,datasize,colors="red")
+        plt.hlines(Minthreshold,0,datasize,colors="red")
 
         plt.show()
 
-        fdata = list(map(lambda x: x-mn, smoothData ) )
-        smoothFFTdata = fdata[:128]
-        ft = np.fft.fft(smoothFFTdata)
+        smoothData = smoothData[:256]
+        smoothData = list(map(lambda x: x-statistics.mean(smoothData), smoothData ) )
+        print(statistics.mean(smoothData))
+
+        ft = np.fft.fft(smoothData)
         rt = []
-        for d in range(0, len(ft)):
-            rt.append( np.sqrt(  np.square(ft[d].real) + np.square(ft[d].imag)  ) )
-        #plt.plot(rt)
-        #plt.show()
+
+        rt = list(map(lambda x: SumSquares(x) , ft ) )
+        le = len(rt)
+        scal = 1/(2*(np.sqrt(le)))
+        rt = list(map(lambda x: scal * x , rt ) )
+
+        plt.plot(rt[:128])
+        plt.show()
 
 except(Exception) as e:
         print(e)
