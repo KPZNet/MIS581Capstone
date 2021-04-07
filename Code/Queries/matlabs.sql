@@ -35,16 +35,15 @@ where
   and extract(YEAR from depart_date) = 2014
 group by depart_hour
 
-
-select sum(riders), source, dest, extract(WEEK from depart_date) as week
+select sum(riders), dest, extract(DOW from depart_date) as dow,extract(WEEK from depart_date) as week
 from hourlystationqueue
 where
         extract(ISODOW from depart_date) in (1,2,3,4,5)
   AND
-        source = 'PITT'
+        dest = 'EMBR'
   and
         depart_hour = 7
+
   and
-        extract(YEAR from depart_date) in (2015)
-group by source, dest, week
-order by week ASC
+        extract(YEAR from depart_date) in (2015, 2016, 2017)
+group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
