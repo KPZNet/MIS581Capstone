@@ -59,7 +59,7 @@ try:
                         depart_hour = 7
                   and   depart_date < '11-01-2015'
                   and
-                        extract(YEAR from depart_date) in (2015)
+                        extract(YEAR from depart_date) in (2015, 2016, 2017)
                 group by dest, depart_date
                 
         """
@@ -80,7 +80,7 @@ try:
         fig, ax1 = plt.subplots(figsize = (20,5))
         p1, =ax1.plot(x, plotdata,
               color='blue',
-              linewidth= 2
+              linewidth= 1
               )
         ax2 = ax1.twinx()
         #add data to the new Y axis
@@ -98,8 +98,18 @@ try:
         plt.hlines(Maxthreshold,0,datasize,colors="red")
         plt.hlines(Minthreshold,0,datasize,colors="red")
 
-
         plt.show()
+
+
+        fdata = list(map(lambda x: x-mn, smoothData ) )
+        smoothFFTdata = fdata[:128]
+        ft = np.fft.fft(smoothFFTdata)
+        rt = []
+        for d in range(0, len(ft)):
+            rt.append( np.sqrt(  np.square(ft[d].real) + np.square(ft[d].imag)  ) )
+        plt.plot(rt)
+        plt.show()
+
 except(Exception) as e:
         print(e)
 finally:
