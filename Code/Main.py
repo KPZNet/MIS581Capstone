@@ -10,6 +10,8 @@ import pandas as pd
 import scipy
 from scipy import signal
 import matplotlib.pyplot as plt
+from statsmodels.graphics import tsaplots
+
 import bart
 import pandas as pd
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -52,6 +54,16 @@ def Decomposition(data, per):
     fig = decomposition.plot()
     plt.show()
 
+def ACF(data):
+    # Display the autocorrelation plot of your time series
+    fig = tsaplots.plot_acf(data, lags=24)
+    plt.show()
+    # Display the partial autocorrelation plot of your time series
+    fig = tsaplots.plot_pacf(data, lags=24)
+    plt.show()
+
+
+
 def SumSquares(ft):
   r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
   return r
@@ -80,6 +92,7 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
     smoothData = Smooth_1StandardDeviation(plotdata)
 
     Decomposition(smoothData, 5)
+    ACF(smoothData)
 
     datasize = len(smoothData)
     x = list(range(datasize))
