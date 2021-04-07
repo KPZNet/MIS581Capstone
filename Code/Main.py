@@ -11,6 +11,9 @@ import scipy
 from scipy import signal
 import matplotlib.pyplot as plt
 import bart
+import pandas as pd
+from statsmodels.tsa.seasonal import seasonal_decompose
+
 
 
 def smoothTriangle(data, degree):
@@ -43,6 +46,11 @@ def Smooth_1StandardDeviation(dataSet):
             returnData.append(dataSet[d])
     return returnData
 
+def Decomposition(data, per):
+
+    decomposition = seasonal_decompose(data, model="additive", period=per)
+    fig = decomposition.plot()
+    plt.show()
 
 def SumSquares(ft):
   r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
@@ -70,6 +78,9 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
     dat = bart.PGBart(query)
     plotdata = list(map(lambda x: x[0], dat))
     smoothData = Smooth_1StandardDeviation(plotdata)
+
+    Decomposition(smoothData, 5)
+
     datasize = len(smoothData)
     x = list(range(datasize))
     fig, ax1 = plt.subplots(figsize=(20, 5))
@@ -118,10 +129,19 @@ def CosFFT():
     plt.plot(rt[:128])
     plt.show()
 
+def TryDecomp():
+    N = 256
+    T = 1/N
+    x = np.linspace(0.0, N*T, N, endpoint=False)
+    y = 10*np.sin(5 * 2.0*np.pi*x) + 0.5*np.sin(10 * 2.0*np.pi*x)
+    y = list(map(lambda x: x - statistics.mean(y), y))
+    Decomposition(y,51)
 
 try:
     BARRunFFT()
     #CosFFT()
+
+    #TryDecomp()
 
 except(Exception) as e:
         print(e)
