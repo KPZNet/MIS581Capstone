@@ -96,8 +96,8 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
     datasize = len(smoothData)
     x = list(range(datasize))
-    fig, ax1 = plt.subplots(figsize=(20, 5))
-    p1, = ax1.plot(x, smoothData,
+    
+    plt.plot(x, smoothData,
                    color='blue',
                    linewidth=1
                    )
@@ -126,8 +126,7 @@ def CosFFT():
     x = np.linspace(0.0, N*T, N, endpoint=False)
     y = 10*np.sin(5 * 2.0*np.pi*x) + 0.5*np.sin(10 * 2.0*np.pi*x)
     y = list(map(lambda x: x - statistics.mean(y), y))
-    fig, ax1 = plt.subplots(figsize=(20, 5))
-    p1, = ax1.plot(x, y,
+    plt.plot(x, y,
                    color='blue',
                    linewidth=1
                    )
