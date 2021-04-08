@@ -122,9 +122,9 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
 def CosFFT():
     N = 256
-    T = 2/N
+    T = 1/N
     x = np.linspace(0.0, N*T, N, endpoint=False)
-    y = 10*np.sin(5 * 2.0*np.pi*x) + 0.5*np.sin(10 * 2.0*np.pi*x)
+    y = 10*np.sin(5 * 2.0*np.pi*x) + 5*np.sin(10 * 2.0*np.pi*x)
     y = list(map(lambda x: x - statistics.mean(y), y))
     plt.plot(x, y,
                    color='blue',
@@ -151,7 +151,7 @@ def TryDecomp():
 
 try:
     BARRunFFT()
-    #CosFFT()
+    CosFFT()
 
     #TryDecomp()
 
