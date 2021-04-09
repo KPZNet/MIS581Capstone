@@ -5,11 +5,12 @@ DROP TABLE IF EXISTS public."routelines" CASCADE;
 
 CREATE TABLE public.routelines
 (
-    name character varying COLLATE pg_catalog."default",
-    number integer,
+    abbr character varying COLLATE pg_catalog."default",
+    routeID character varying COLLATE pg_catalog."default",
     origin character(4)[] COLLATE pg_catalog."default",
     dest character(4)[] COLLATE pg_catalog."default",
-    id serial primary key
+    number integer,
+    station character varying COLLATE pg_catalog."default"
 );
 
 TRUNCATE routelines RESTART IDENTITY;
