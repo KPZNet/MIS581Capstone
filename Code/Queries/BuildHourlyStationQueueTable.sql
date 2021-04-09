@@ -1,6 +1,6 @@
 -- Table: public.hourlystationqueue
 
--- DROP TABLE public.hourlystationqueue;
+DROP TABLE IF EXISTS public.hourlystationqueue CASCADE;
 
 CREATE TABLE public.hourlystationqueue
 (
