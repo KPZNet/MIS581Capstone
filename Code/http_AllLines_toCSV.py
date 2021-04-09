@@ -24,4 +24,6 @@ try:
 except (Exception) as e:
     print(e)
 finally:
+    print("Total Failures  ", len(routeFailures))
+    print(routeFailures)
     print("Completed")

@@ -79,8 +79,6 @@ def GetBARTLines():
                     routeLinesReturn.extend(routeSummary)
                 else:
                     routeFailures.append(line)
-            else:
-                routeFailures.append(line)
     except (Exception) as e:
         print("Error geting all lines: {}".format(str(e)))
     finally:

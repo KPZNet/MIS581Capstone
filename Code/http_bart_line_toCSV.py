@@ -26,4 +26,5 @@ try:
 except (Exception) as e:
     print(e)
 finally:
+    print(routeLines)
     print("Completed")
