@@ -13,8 +13,6 @@ CREATE TABLE public."hourlyriders" (
 
 TRUNCATE hourlyriders RESTART IDENTITY;
 
-
-
 COPY public.hourlyriders(date, hour, source, dest, riders)
 FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/date-hour-soo-dest-2021.csv'
 DELIMITER ',' ;
