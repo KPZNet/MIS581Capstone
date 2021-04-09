@@ -25,7 +25,7 @@ TRUNCATE triptimes RESTART IDENTITY;
 
 COPY public.triptimes(origin, dest, triptime, hour, 
 origtimemin, origtimedate, desttimemin, desttimedate, dow, day, fare)
-FROM 'K:\OneDrive\CSUGlobal\MIS581\PortfolioProject\route_trip_times.csv'
+FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/route_trip_times 3-38 to 3-29 Line 1 .csv'
 DELIMITER ',' 
 CSV HEADER;
 
