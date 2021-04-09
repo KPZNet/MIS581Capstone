@@ -9,7 +9,7 @@ CREATE TABLE public.bartstations
     gtfslat character varying COLLATE pg_catalog."default",
     gtfslong character varying COLLATE pg_catalog."default",
     city character varying COLLATE pg_catalog."default",
-    id integer
+    gen_id integer
 )
 
     TABLESPACE pg_default;
@@ -19,7 +19,7 @@ ALTER TABLE public.bartstations
 
 TRUNCATE bartstations RESTART IDENTITY;
 
-COPY public.bartstations(name, abbr, gtfslat, gtfslong, city, id)
+COPY public.bartstations(name, abbr, gtfslat, gtfslong, city, gen_id)
     FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv'
     DELIMITER ','
 CSV HEADER;

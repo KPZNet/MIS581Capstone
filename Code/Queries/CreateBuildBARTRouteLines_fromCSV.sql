@@ -1,7 +1,7 @@
 
 -- Remove all tables to start with clean slate
 
-DROP TABLE IF EXISTS public."routelines" CASCADE;
+DROP TABLE IF EXISTS public.routelines CASCADE;
 
 CREATE TABLE public.routelines
 (
