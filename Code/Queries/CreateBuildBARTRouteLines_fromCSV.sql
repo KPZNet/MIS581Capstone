@@ -16,8 +16,8 @@ TRUNCATE routelines RESTART IDENTITY;
 
 
 COPY public.routelines(name, number, origin, dest)
-FROM '/Users/KenCeglia/Documents/MIS581Capstone/Code/Queries/bart_lines.csv'
-DELIMITER ',' ;
+FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_bart_lines.csv'
+DELIMITER ','
 CSV HEADER;
 
 -- Row Output per Table
