@@ -7,8 +7,8 @@ CREATE TABLE public.routelines
 (
     abbr character varying COLLATE pg_catalog."default",
     routeID character varying COLLATE pg_catalog."default",
-    origin character(4)[] COLLATE pg_catalog."default",
-    dest character(4)[] COLLATE pg_catalog."default",
+    origin character varying COLLATE pg_catalog."default",
+    dest character varying COLLATE pg_catalog."default",
     number integer,
     station character varying COLLATE pg_catalog."default"
 );
@@ -16,7 +16,7 @@ CREATE TABLE public.routelines
 TRUNCATE routelines RESTART IDENTITY;
 
 
-COPY public.routelines(name, number, origin, dest)
+COPY public.routelines(abbr, routeID, origin, dest, number, station)
 FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_bart_lines.csv'
 DELIMITER ','
 CSV HEADER;
