@@ -9,12 +9,12 @@ import calendar
 import bart
 
 
-file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv"
+all_stations_file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv"
 
-bart.DeleteFile(file_name)
+bart.DeleteFile(all_stations_file_name)
 
 try:
-    with open(file_name, mode='w', newline='') as routetimes_file:
+    with open(all_stations_file_name, mode='w', newline='') as routetimes_file:
         route_writer = csv.writer(routetimes_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         route_writer.writerow(['name', 'abbr', 'gtfslat', 'gtfslong', 'city', 'id'])
         stations = bart.GetStationList()
