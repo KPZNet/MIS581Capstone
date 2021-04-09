@@ -9,7 +9,7 @@ import calendar
 import bart
 
 
-lines_file_name = "all_bart_lines.csv"
+lines_file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_bart_lines.csv"
 
 bart.DeleteFile(lines_file_name)
 
@@ -24,6 +24,7 @@ try:
 except (Exception) as e:
     print(e)
 finally:
+    print("Total Lines  ", len(routeLines))
     print("Total Failures  ", len(routeFailures))
     print(routeFailures)
     print("Completed")

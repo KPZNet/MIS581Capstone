@@ -9,7 +9,7 @@ import calendar
 import bart
 
 
-file_name = "all_stations.csv"
+file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv"
 
 bart.DeleteFile(file_name)
 
@@ -26,4 +26,5 @@ try:
 except (Exception) as e:
     print(e)
 finally:
+    print("Number of Stations: ", len(stations))
     print("Completed")
