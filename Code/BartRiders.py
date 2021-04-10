@@ -55,8 +55,8 @@ def ACF(data):
 
 
 def SumSquares(ft):
-  r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
-  return r
+    r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
+    return r
 
 
 def BARRunFFT():
@@ -77,7 +77,7 @@ where
 group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
                 
         """
-    dat = bart.PGBart(query)
+    dat = bart.PGBartLocal(query)
     plotdata = list(map(lambda x: x[0], dat))
     smoothData = Smooth_1StandardDeviation(plotdata)
 
@@ -86,11 +86,11 @@ group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
     datasize = len(smoothData)
     x = list(range(datasize))
-    
+
     plt.plot(x, smoothData,
-                   color='blue',
-                   linewidth=1
-                   )
+             color='blue',
+             linewidth=1
+             )
     sdv = statistics.stdev(plotdata)
     mn = statistics.mean(plotdata)
     Maxthreshold = mn + (2.0 * sdv)
@@ -117,9 +117,9 @@ def CosFFT():
     y = 10*np.sin(5 * 2.0*np.pi*x) + 5*np.sin(10 * 2.0*np.pi*x)
     y = list(map(lambda x: x - statistics.mean(y), y))
     plt.plot(x, y,
-                   color='blue',
-                   linewidth=1
-                   )
+             color='blue',
+             linewidth=1
+             )
     plt.show()
 
     ft = np.fft.fft(y)
@@ -146,8 +146,8 @@ try:
     #TryDecomp()
 
 except(Exception) as e:
-        print(e)
+    print(e)
 finally:
-        print("Completed")
+    print("Completed")
 
 
