@@ -63,20 +63,20 @@ def BARRunFFT():
     global smoothData, scal
     query = """
                 
-select sum(riders), dest, extract(DOW from depart_date) as dow,extract(WEEK from depart_date) as week
-from hourlystationqueue
-where
-        extract(ISODOW from depart_date) in (1,2,3,4,5)
-  AND
-        dest = 'EMBR'
-  and
-        depart_hour = 7
-
-  and
-        extract(YEAR from depart_date) in (2014,2015, 2016, 2017, 2018)
-group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
+        select sum(riders), dest, extract(DOW from depart_date) as dow,extract(WEEK from depart_date) as week
+        from hourlystationqueue
+        where
+                extract(ISODOW from depart_date) in (1,2,3,4,5)
+          AND
+                dest = 'EMBR'
+          and
+                depart_hour = 7
+        
+          and
+                extract(YEAR from depart_date) in (2014,2015, 2016, 2017, 2018)
+        group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
                 
-        """
+    """
     dat = bart.PGBartLocal(query)
     plotdata = list(map(lambda x: x[0], dat))
     smoothData = Smooth_1StandardDeviation(plotdata)
