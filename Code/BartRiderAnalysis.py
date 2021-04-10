@@ -114,7 +114,7 @@ def CosFFT():
     N = 256
     T = 1/N
     x = np.linspace(0.0, N*T, N, endpoint=False)
-    y = 10*np.sin(5 * 2.0*np.pi*x) + 5*np.sin(10 * 2.0*np.pi*x)
+    y = 10*np.sin(20 * 2.0*np.pi*x) #+ 5*np.sin(10 * 2.0*np.pi*x)
     y = list(map(lambda x: x - statistics.mean(y), y))
     plt.plot(x, y,
              color='blue',
@@ -131,6 +131,10 @@ def CosFFT():
     plt.plot(rt[:128])
     plt.show()
 
+    Decomposition(y, 51)
+    ACF(y)
+
+
 def TryDecomp():
     N = 256
     T = 1/N
@@ -140,7 +144,7 @@ def TryDecomp():
     Decomposition(y,51)
 
 try:
-    BARRunFFT()
+    #BARRunFFT()
     CosFFT()
 
     #TryDecomp()
