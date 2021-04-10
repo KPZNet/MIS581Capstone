@@ -117,3 +117,21 @@ def PGBart(query):
         print("Error in running the query: {}".format(str(e)))
     finally:
         return query_results
+
+def PGBartLocal(query):
+    try:
+        query_results = []
+        conn = psycopg2.connect(host="localhost", port=5432, database="bartridership", user="postgres",
+                                password="minden12k")
+        cur = conn.cursor()
+        cur.execute(query)
+        query_results = cur.fetchall()
+        # Close the cursor and connection to so the server can allocate
+        # bandwidth to other requests
+        cur.close()
+        conn.close()
+    except (Exception, psycopg2.Error) as e:
+        print("Error in running the query: {}".format(str(e)))
+    finally:
+        return query_results
+
