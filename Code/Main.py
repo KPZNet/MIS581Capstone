@@ -3,8 +3,8 @@ import statistics
 import matplotlib.pyplot as plt
 from statsmodels.graphics import tsaplots
 
-from Code.DataBase import bart
 from statsmodels.tsa.seasonal import seasonal_decompose
+import BartLibs
 
 
 
@@ -77,7 +77,7 @@ where
 group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
                 
         """
-    dat = bart.PGBart(query)
+    dat = BartLibs.PGBartLocal(query)
     plotdata = list(map(lambda x: x[0], dat))
     smoothData = Smooth_1StandardDeviation(plotdata)
 
