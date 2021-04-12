@@ -61,10 +61,14 @@ def BARRunFFT():
     plt.show()
 
 def CosFFT():
-    N = 256
+    N = 400
     T = 1/N
-    x = np.linspace(0.0, N*T, N, endpoint=False)
-    y = 10*np.sin(25.6 * 2.0*np.pi*x) #+ 5*np.sin(10 * 2.0*np.pi*x)
+    F = int(10)
+    P = int(np.round(N/F))
+    print("Frequency: ", F)
+    print("Period: ",P)
+    x = np.linspace(0.0, N, N, endpoint=False)
+    y = 10*np.sin(F * 2.0*np.pi*(x/N)) #+ 5*np.sin(10 * 2.0*np.pi*x)
     y = list(map(lambda x: x - statistics.mean(y), y))
     plt.plot(x, y,
              color='blue',
@@ -81,8 +85,8 @@ def CosFFT():
     plt.plot(rt[:128])
     plt.show()
 
-    BartLibs.Decomposition(y, 10)
-    BartLibs.ACF(y, 10)
+    BartLibs.Decomposition(y, P)
+    BartLibs.ACF(y, int(P*2) )
 
 
 def TryDecomp():
