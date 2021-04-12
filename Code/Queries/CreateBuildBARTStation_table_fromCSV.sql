@@ -20,7 +20,7 @@ ALTER TABLE public.bartstations
 TRUNCATE bartstations RESTART IDENTITY;
 
 COPY public.bartstations(name, abbr, gtfslat, gtfslong, city, gen_id)
-    FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv'
+    FROM 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_stations.csv'
     DELIMITER ','
 CSV HEADER;
 

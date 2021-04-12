@@ -9,7 +9,7 @@ import calendar
 import bart
 
 
-lines_file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/bart_line_1.csv"
+lines_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\bart_line_1.csv"
 line_number = '1'
 
 if os.path.exists(lines_file_name):

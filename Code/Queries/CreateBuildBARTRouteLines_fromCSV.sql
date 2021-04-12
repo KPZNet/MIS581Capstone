@@ -17,14 +17,14 @@ TRUNCATE routelines RESTART IDENTITY;
 
 
 COPY public.routelines(abbr, routeID, origin, dest, number, station)
-FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_bart_lines.csv'
+FROM 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_bart_lines.csv'
 DELIMITER ','
 CSV HEADER;
 
 -- Row Output per Table
 
 SELECT *
-FROM public."routelines"
+FROM public.routelines
 LIMIT 10;
 
 

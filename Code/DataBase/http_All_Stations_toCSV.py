@@ -9,7 +9,7 @@ import calendar
 import bart
 
 
-all_stations_file_name = "/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/all_stations.csv"
+all_stations_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_stations.csv"
 
 bart.DeleteFile(all_stations_file_name)
 
