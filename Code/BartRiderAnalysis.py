@@ -10,6 +10,40 @@ import BartLibs
 
 
 def BARRunFFT():
+    plotdata = GetBARTData_A()
+    rawLen = len(plotdata)
+    smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
+
+    BartLibs.Decomposition(smoothData, 5)
+    BartLibs.ACF(smoothData, 5)
+
+    smoothLen = len(smoothData)
+    x = list(range(smoothLen))
+
+    plt.plot(x, smoothData,
+             color='blue',
+             linewidth=1
+             )
+    sdv = statistics.stdev(plotdata)
+    mn = statistics.mean(plotdata)
+    Maxthreshold = mn + (2.0 * sdv)
+    Minthreshold = mn - (2.0 * sdv)
+    plt.hlines(Maxthreshold, 0, smoothLen, colors="red")
+    plt.hlines(Minthreshold, 0, smoothLen, colors="red")
+    plt.show()
+    #smoothData = smoothData[:256]
+    smoothData = list(map(lambda x: x - statistics.mean(smoothData), smoothData))
+    print("Smoothed Mean: ",statistics.mean(smoothData))
+    ft = np.fft.fft(smoothData)
+    rt = list(map(lambda x: BartLibs.SumSquares(x), ft))
+    le = len(rt)
+    scal = 2 / le
+    rt = list(map(lambda x: scal * x, rt))
+    plt.plot(rt[:128])
+    plt.show()
+
+
+def GetBARTData_A():
     global smoothData, scal
     query = """
                 
@@ -29,41 +63,13 @@ def BARRunFFT():
     """
     dat = bart.PGBartLocal(query)
     plotdata = list(map(lambda x: x[0], dat))
-    smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
+    return plotdata
 
-    BartLibs.Decomposition(smoothData, 5)
-    BartLibs.ACF(smoothData)
-
-    datasize = len(smoothData)
-    x = list(range(datasize))
-
-    plt.plot(x, smoothData,
-             color='blue',
-             linewidth=1
-             )
-    sdv = statistics.stdev(plotdata)
-    mn = statistics.mean(plotdata)
-    Maxthreshold = mn + (2.0 * sdv)
-    Minthreshold = mn - (2.0 * sdv)
-    plt.hlines(Maxthreshold, 0, datasize, colors="red")
-    plt.hlines(Minthreshold, 0, datasize, colors="red")
-    plt.show()
-    smoothData = smoothData[:256]
-    smoothData = list(map(lambda x: x - statistics.mean(smoothData), smoothData))
-    print(statistics.mean(smoothData))
-    ft = np.fft.fft(smoothData)
-    rt = []
-    rt = list(map(lambda x: BartLibs.SumSquares(x), ft))
-    le = len(rt)
-    scal = 2 / le
-    rt = list(map(lambda x: scal * x, rt))
-    plt.plot(rt[:128])
-    plt.show()
 
 def CosFFT():
     N = 400
     T = 1/N
-    F = int(10)
+    F = int(30)
     P = int(np.round(N/F))
     print("Frequency: ", F)
     print("Period: ",P)
@@ -82,7 +88,7 @@ def CosFFT():
     le = len(rt)
     scal = 2 / le
     rt = list(map(lambda x: scal * x, rt))
-    plt.plot(rt[:128])
+    plt.plot(rt[:int(N/2)])
     plt.show()
 
     BartLibs.Decomposition(y, P)
@@ -98,7 +104,7 @@ def TryDecomp():
     BartLibs.Decomposition(y,51)
 
 try:
-    #BARRunFFT()
+    BARRunFFT()
     CosFFT()
 
     #TryDecomp()
