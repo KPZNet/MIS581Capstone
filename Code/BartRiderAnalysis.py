@@ -11,7 +11,7 @@ import BARTQueries
 
 
 def BARRunFFT():
-    plotdata = GetBARTData_A()
+    plotdata = BARTQueries.GetWeeklyRidersToEMBRAtHour()
     rawLen = len(plotdata)
     print("Lenght of BART data :", rawLen)
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
@@ -43,32 +43,6 @@ def BARRunFFT():
     rt = list(map(lambda x: scal * x, rt))
     plt.plot(rt[:int(le/2)])
     plt.show()
-
-
-def GetBARTData_A():
-    global smoothData, scal
-    query = """
-                
-        select avg(cast(riders as double precision)), dest, 
-            extract(DOW from depart_date) as dow,
-            extract(WEEK from depart_date) as week
-        from hourlystationqueue
-        where
-                extract(ISODOW from depart_date) in (1,2,3,4,5)
-          AND
-                dest = 'EMBR'
-          and
-                depart_hour = 7
-        
-          and
-                extract(YEAR from depart_date) in (2013,2014,2015,2017,2018)
-        group by dest,  extract(WEEK from depart_date), 
-                        extract(DOW from depart_date)
-                
-    """
-    dat = bart.PGBartLocal(query)
-    plotdata = list(map(lambda x: x[0], dat))
-    return plotdata
 
 
 def CosFFT():
@@ -108,8 +82,57 @@ def TryDecomp():
     y = list(map(lambda x: x - statistics.mean(y), y))
     BartLibs.Decomposition(y,51)
 
+
+def GetPITTDistro2014():
+    plotData = BARTQueries.GetYearlyRiderDistFromPITT2014()
+
+    #set total samples
+    total_samples_bar_chart = len(plotData)
+    #create category names from integers
+    cat_names = list(map(lambda x: x[2], plotData))
+    #create random data bars
+    barValues = list(map(lambda x: x[0], plotData))
+    #add data to bar chart
+    plt.bar(cat_names, barValues)
+    plt.suptitle('Pittsburg 2014')
+    plt.xlabel('Category')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=90)
+    plt.show()
+
+def GetPITTDistro2015():
+    plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
+    plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
+
+    pData14 = list(map(lambda x: x[0], plotData14))
+    pData15 = list(map(lambda x: x[0], plotData15))
+    #set total samples
+    total_samples_bar_chart = len(plotData14)
+    #create category names from integers
+    cat_names = list(map(lambda x: x[2], plotData14))
+    #create random data bars
+    barValues = list(map(lambda x: x[0], plotData14))
+    #add data to bar chart
+    prop14 = BartLibs.CalcProp(pData14)
+    prop15 = BartLibs.CalcProp(pData15)
+    le = len(pData14)
+    X = np.arange(le)
+    plt.bar(X + 0.00, prop14, color = 'b', width = 0.50)
+    plt.bar(X + 0.60, prop15, color = 'r', width = 0.50)
+
+
+    plt.show()
+
+    #plt.suptitle('Pittsburg 2015')
+    #plt.xlabel('Category')
+    #plt.ylabel('Riders')
+    #plt.xticks(rotation=90)
+    #plt.show()
+
 try:
     BARRunFFT()
+    GetPITTDistro2014()
+    GetPITTDistro2015()
     #CosFFT()
 
     #TryDecomp()

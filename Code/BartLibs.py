@@ -66,5 +66,9 @@ def Smooth_1StandardDeviation(dataSet):
     return returnData
 
 
-
-
+def CalcProp(dataArray):
+    tot = 0
+    for d in dataArray:
+        tot = tot+d
+    propList = list(map(lambda x: (x/tot)*100.0, dataArray))
+    return propList
