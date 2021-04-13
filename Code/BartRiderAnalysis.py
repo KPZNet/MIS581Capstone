@@ -27,14 +27,14 @@ def RunBARTTimeSeries():
 
 
 def PlotTimeSeriesFFT(smoothData):
-    smoothLen = len(smoothData)
-    smoothDataZeroed = list(map(lambda x: x - statistics.mean(smoothData), smoothData))
+    smoothMean = statistics.mean(smoothData)
+    smoothDataZeroed = list(map(lambda x: x - smoothMean, smoothData))
     ft = np.fft.fft(smoothDataZeroed)
     realAmplitudes = list(map(lambda x: BartLibs.SumSquares(x), ft))
     realAmpsLen = len(realAmplitudes)
-    fftScale = 2 / realAmpsLen
+    fftScale = 2.0 / (realAmpsLen)
     realAmplitudesScaled = list(map(lambda x: fftScale * x, realAmplitudes))
-    plt.plot(realAmplitudesScaled[:int(realAmpsLen / 2)])
+    plt.plot(realAmplitudesScaled[:int(realAmpsLen / 2.0)])
     plt.show()
 
 
@@ -165,81 +165,26 @@ def GetPITTDistroCompare():
     rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
     print("Reject HO: ", rejectHO, " p-value :", pVal)
 
-    #plt.suptitle('Pittsburg 2015')
-    #plt.xlabel('Category')
-    #plt.ylabel('Riders')
-    #plt.xticks(rotation=90)
-    #plt.show()
+def ShowAverageDailyDestFrom():
+    plotData = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
 
-def GetPITTDistro2014():
-    plotData = BARTQueries.GetYearlyRiderDistFromPITT2014()
-
-    #set total samples
-    total_samples_bar_chart = len(plotData)
     #create category names from integers
     cat_names = list(map(lambda x: x[2], plotData))
     #create random data bars
     barValues = list(map(lambda x: x[0], plotData))
     #add data to bar chart
     plt.bar(cat_names, barValues)
-    plt.suptitle('Pittsburg 2014')
+    plt.suptitle('Rider Distro')
     plt.xlabel('Category')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
     plt.show()
 
-def GetPITTDistro2015():
-    plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
-    plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
-
-    pData14 = list(map(lambda x: x[0], plotData14))
-    pData15 = list(map(lambda x: x[0], plotData15))
-    #set total samples
-    total_samples_bar_chart = len(plotData14)
-    #create category names from integers
-    cat_names = list(map(lambda x: x[2], plotData14))
-    #create random data bars
-    barValues = list(map(lambda x: x[0], plotData14))
-    #add data to bar chart
-    prop14 = BartLibs.CalcProp(pData14)
-    prop15 = BartLibs.CalcProp(pData15)
-    le = len(pData14)
-    X = np.arange(le)
-    fig, ax = plt.subplots()
-    ax.bar(X + 0.00, prop14, color = 'b', width = 0.50)
-    ax.bar(X + 0.60, prop15, color = 'r', width = 0.50)
-
-    ax.set_xticklabels( cat_names )
-    plt.xticks(rotation=90)
-    plt.show()
-
-    #plt.suptitle('Pittsburg 2015')
-    #plt.xlabel('Category')
-    #plt.ylabel('Riders')
-    #plt.xticks(rotation=90)
-    #plt.show()
-
-def CompareRidProp():
-    plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
-    plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
-
-    pData14 = list(map(lambda x: x[0], plotData14))
-    pData15 = list(map(lambda x: x[0], plotData15))
-
-    print("Riders Totals")
-    rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    prop14 = BartLibs.CalcProp(pData14)
-    prop15 = BartLibs.CalcProp(pData15)
-
-    print("Rider Proportions")
-    rejectHO, pVal = BartLibs.ChiSqTest(prop14, prop15)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
 try:
     RunBARTTimeSeries()
     GetPITTDistroCompare()
+
+    ShowAverageDailyDestFrom()
 
 except(Exception) as e:
     print(e)
