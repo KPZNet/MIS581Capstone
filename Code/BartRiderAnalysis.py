@@ -1,3 +1,4 @@
+import decimal
 import numpy as np
 import statistics
 import matplotlib.pyplot as plt
@@ -192,19 +193,9 @@ def CompareRidProp():
     print("Reject HO: ", rejectHO, " p-value :", pVal)
 
 try:
-    #BARRunFFT()
-    #GetPITTDistro2014()
-    #GetPITTDistro2015()
-
-
+    BARRunFFT()
     GetPITTDistroCompare()
 
-    #BartLibs.ChiSqTestExp()
-    #CompareRidProp()
-
-    #CosFFT()
-
-    #TryDecomp()
 
 except(Exception) as e:
     print(e)
