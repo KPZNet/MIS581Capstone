@@ -7,6 +7,7 @@ from Code.DataBase import bart
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 import BartLibs
+import BARTQueries
 
 
 def BARRunFFT():
