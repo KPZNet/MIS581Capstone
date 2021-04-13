@@ -28,9 +28,12 @@ def ACF(data, lags):
     plt.show()
 
 def SumSquares(ft):
-    r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
-    return r
+    try:
+        r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
+    except(Exception) as e:
+        print("Exception: ", e)
 
+    return r
 
 def smoothTriangle(data, degree):
     triangle=np.concatenate((np.arange(degree + 1), np.arange(degree)[::-1])) # up then down

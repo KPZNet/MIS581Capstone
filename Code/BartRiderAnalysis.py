@@ -12,10 +12,11 @@ import BartLibs
 def BARRunFFT():
     plotdata = GetBARTData_A()
     rawLen = len(plotdata)
+    print("Lenght of BART data :", rawLen)
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
 
     BartLibs.Decomposition(smoothData, 5)
-    BartLibs.ACF(smoothData, 5)
+    BartLibs.ACF(smoothData, 10)
 
     smoothLen = len(smoothData)
     x = list(range(smoothLen))
@@ -39,7 +40,7 @@ def BARRunFFT():
     le = len(rt)
     scal = 2 / le
     rt = list(map(lambda x: scal * x, rt))
-    plt.plot(rt[:128])
+    plt.plot(rt[:int(le/2)])
     plt.show()
 
 
@@ -47,7 +48,9 @@ def GetBARTData_A():
     global smoothData, scal
     query = """
                 
-        select sum(riders), dest, extract(DOW from depart_date) as dow,extract(WEEK from depart_date) as week
+        select avg(cast(riders as double precision)), dest, 
+            extract(DOW from depart_date) as dow,
+            extract(WEEK from depart_date) as week
         from hourlystationqueue
         where
                 extract(ISODOW from depart_date) in (1,2,3,4,5)
@@ -57,8 +60,9 @@ def GetBARTData_A():
                 depart_hour = 7
         
           and
-                extract(YEAR from depart_date) in (2014,2015, 2016, 2017, 2018)
-        group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
+                extract(YEAR from depart_date) in (2013,2014,2015,2017,2018)
+        group by dest,  extract(WEEK from depart_date), 
+                        extract(DOW from depart_date)
                 
     """
     dat = bart.PGBartLocal(query)
@@ -67,9 +71,9 @@ def GetBARTData_A():
 
 
 def CosFFT():
-    N = 400
+    N = 512
     T = 1/N
-    F = int(30)
+    F = int(20)
     P = int(np.round(N/F))
     print("Frequency: ", F)
     print("Period: ",P)
@@ -92,7 +96,7 @@ def CosFFT():
     plt.show()
 
     BartLibs.Decomposition(y, P)
-    BartLibs.ACF(y, int(P*2) )
+    BartLibs.ACF(y, P*2 )
 
 
 def TryDecomp():
@@ -105,7 +109,7 @@ def TryDecomp():
 
 try:
     BARRunFFT()
-    CosFFT()
+    #CosFFT()
 
     #TryDecomp()
 
