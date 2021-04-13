@@ -77,13 +77,16 @@ def CosFFT():
 
 def GetPITTDistroCompare():
 
-    plotData14 = BARTQueries.GetAverageDailyFromPITT14()
-    plotData15 = BARTQueries.GetAverageDailyFromPITT15()
+    plotData14 = BARTQueries.GetAverageDailyFromPITTYear(2014)
+    plotData15 = BARTQueries.GetAverageDailyFromPITTYear(2015)
 
     plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
 
     pData14 = list(map(lambda x: x[0], plotData14S))
     pData15 = list(map(lambda x: x[0], plotData15S))
+
+    rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
+    print("Reject HO: ", rejectHO, " p-value :", pVal)
 
     cat_names = list(map(lambda x: x[2], plotData14S))
     #add data to bar chart
@@ -97,11 +100,11 @@ def GetPITTDistroCompare():
     ax1.set_title("2014")
     ax2.set_title("2015")
 
-    plt.suptitle("Rider counts Comparative")
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nReject H0:'{1}' ".format(pVal,rejectHO)
+    plt.suptitle(hypTest)
 
     ax1.tick_params(labelrotation=45)
     ax2.tick_params(labelrotation=45)
-
 
     myLocator = mticker.MultipleLocator(4)
     ax1.xaxis.set_major_locator(myLocator)
@@ -112,7 +115,7 @@ def GetPITTDistroCompare():
     plt.subplots_adjust(left=0.1,
                     bottom=0.1,
                     right=0.9,
-                    top=0.9,
+                    top=.7,
                     wspace=0.4,
                     hspace=0.4)
     plt.show()

@@ -168,3 +168,23 @@ def GetAverageDailyFromPITT15():
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
+
+def GetAverageDailyFromPITTYear(year):
+    global smoothData, scal
+    query = """
+                                
+    select AVG(riders) as riders, source, dest
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+            source = 'PITT'
+      AND depart_hour = 7
+      and extract(YEAR from depart_date) = '{0}'
+    group by source, dest
+                
+    """.format(year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
