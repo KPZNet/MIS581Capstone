@@ -35,6 +35,7 @@ def PlotTimeSeriesFFT(smoothData):
     fftScale = 2.0 / (realAmpsLen)
     realAmplitudesScaled = list(map(lambda x: fftScale * x, realAmplitudes))
     plt.plot(realAmplitudesScaled[:int(realAmpsLen / 2.0)])
+    plt.suptitle("Fourrier Transform Rider Frequency")
     plt.show()
 
 
@@ -51,6 +52,7 @@ def PlotTimeSeriesWithLimitBars(plotdata):
     Minthreshold = mn - (2.0 * sdv)
     plt.hlines(Maxthreshold, 0, rawLen, colors="red")
     plt.hlines(Minthreshold, 0, rawLen, colors="red")
+    plt.suptitle("BART Daily Rider EMBR 7:00AM")
     plt.show()
 
 
