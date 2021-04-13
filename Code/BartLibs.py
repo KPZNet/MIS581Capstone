@@ -87,8 +87,16 @@ def ChiSqTest(d1,d2):
 
 def ChiSqTestExp():
     # defining the table
-    data = [[10000, 8000, 10,50,20], [1000, 800, 1,5,2]]
+    data = [[50000, 30000, 20000,40000,25000], [50000, 30000, 20000,38000,22000]]
+    data = [[10000, 900], [20000, 2100]]
     stat, p, dof, expected = chi2_contingency(data)
+
+    d1 = list(map(lambda x: x/1000, data[0]))
+    d2 = list(map(lambda x: x/1000, data[1]))
+
+    data = [d1, d2]
+    stat, p, dof, expected = chi2_contingency(data)
+
     d1 = CalcProp(data[0])
     d2 = CalcProp(data[1])
     data = [d1, d2]
@@ -102,3 +110,19 @@ def ChiSqTestExp():
     else:
         print('Independent (H0 holds true)')
     return p
+
+def RemoveSmallStations(per, l1, l2):
+    try:
+        propL1 = CalcProp(list(map(lambda x: x[0], l1)))
+        propL2 = CalcProp(list(map(lambda x: x[0], l2)))
+        l1p = []
+        l2p = []
+        for index, value in enumerate(propL1):
+            if propL1[index] > per and propL2[index] > per:
+                l1p.append(l1[index])
+                l2p.append(l2[index])
+
+    except(Exception) as e:
+        print(e)
+
+    return l1p, l2p

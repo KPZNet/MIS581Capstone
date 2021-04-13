@@ -78,14 +78,12 @@ def GetPITTDistroCompare():
     plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
     plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
 
-    pData14 = list(map(lambda x: x[0], plotData14))
-    pData15 = list(map(lambda x: x[0], plotData15))
-    #set total samples
-    total_samples_bar_chart = len(plotData14)
-    #create category names from integers
-    cat_names = list(map(lambda x: x[2], plotData14))
-    #create random data bars
-    barValues = list(map(lambda x: x[0], plotData14))
+    plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
+
+    pData14 = list(map(lambda x: x[0], plotData14S))
+    pData15 = list(map(lambda x: x[0], plotData15S))
+
+    cat_names = list(map(lambda x: x[2], plotData14S))
     #add data to bar chart
     prop14 = BartLibs.CalcProp(pData14)
     prop15 = BartLibs.CalcProp(pData15)
@@ -101,8 +99,8 @@ def GetPITTDistroCompare():
 
     plt.suptitle("Rider counts Comparative")
 
-    ax1.tick_params(labelrotation=90)
-    ax2.tick_params(labelrotation=90)
+    ax1.tick_params(labelrotation=45)
+    ax2.tick_params(labelrotation=45)
 
     # set the spacing between subplots
     plt.subplots_adjust(left=0.1,
@@ -112,6 +110,9 @@ def GetPITTDistroCompare():
                     wspace=0.4,
                     hspace=0.4)
     plt.show()
+
+    rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
+    print("Reject HO: ", rejectHO, " p-value :", pVal)
 
     #plt.suptitle('Pittsburg 2015')
     #plt.xlabel('Category')
@@ -190,10 +191,11 @@ try:
     #GetPITTDistro2014()
     #GetPITTDistro2015()
 
-    GetPITTDistroCompare()
+
+    #GetPITTDistroCompare()
 
     BartLibs.ChiSqTestExp()
-    CompareRidProp()
+    #CompareRidProp()
 
     #CosFFT()
 
