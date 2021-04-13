@@ -5,6 +5,7 @@ from statsmodels.graphics import tsaplots
 
 from Code.DataBase import bart
 from statsmodels.tsa.seasonal import seasonal_decompose
+import matplotlib.ticker as mticker
 
 import BartLibs
 import BARTQueries
@@ -75,8 +76,8 @@ def CosFFT():
 
 def GetPITTDistroCompare():
 
-    plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
-    plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
+    plotData14 = BARTQueries.GetAverageDailyFromPITT14()
+    plotData15 = BARTQueries.GetAverageDailyFromPITT15()
 
     plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
 
@@ -85,8 +86,6 @@ def GetPITTDistroCompare():
 
     cat_names = list(map(lambda x: x[2], plotData14S))
     #add data to bar chart
-    prop14 = BartLibs.CalcProp(pData14)
-    prop15 = BartLibs.CalcProp(pData15)
     le = len(pData14)
 
     fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -102,6 +101,12 @@ def GetPITTDistroCompare():
     ax1.tick_params(labelrotation=45)
     ax2.tick_params(labelrotation=45)
 
+
+    myLocator = mticker.MultipleLocator(4)
+    ax1.xaxis.set_major_locator(myLocator)
+    ax2.xaxis.set_major_locator(myLocator)
+
+    #plt.setp(ax1.get_xticklabels(), rotation=30, horizontalalignment='right', fontsize='x-small')
     # set the spacing between subplots
     plt.subplots_adjust(left=0.1,
                     bottom=0.1,
@@ -192,9 +197,9 @@ try:
     #GetPITTDistro2015()
 
 
-    #GetPITTDistroCompare()
+    GetPITTDistroCompare()
 
-    BartLibs.ChiSqTestExp()
+    #BartLibs.ChiSqTestExp()
     #CompareRidProp()
 
     #CosFFT()

@@ -68,10 +68,10 @@ def Smooth_1StandardDeviation(dataSet):
 
 
 def CalcProp(dataArray):
-    tot = 0
+    tot: Decimal = 0.0
     for d in dataArray:
-        tot = tot+d
-    propList = list(map(lambda x: (x/tot)*100.0, dataArray))
+        tot = tot+float(d)
+    propList = list(map(lambda x: float( (float(x)/tot) )*100.0, dataArray))
     return propList
 
 def ChiSqTest(d1,d2):
@@ -111,7 +111,7 @@ def ChiSqTestExp():
         print('Independent (H0 holds true)')
     return p
 
-def RemoveSmallStations(per, l1, l2):
+def RemoveSmallStationsPercent(per, l1, l2):
     try:
         propL1 = CalcProp(list(map(lambda x: x[0], l1)))
         propL2 = CalcProp(list(map(lambda x: x[0], l2)))
@@ -119,6 +119,22 @@ def RemoveSmallStations(per, l1, l2):
         l2p = []
         for index, value in enumerate(propL1):
             if propL1[index] > per and propL2[index] > per:
+                l1p.append(l1[index])
+                l2p.append(l2[index])
+
+    except(Exception) as e:
+        print(e)
+
+    return l1p, l2p
+
+def RemoveSmallStations(per, l1, l2):
+    try:
+        dataL1 = (list(map(lambda x: x[0], l1)))
+        dataL2 = (list(map(lambda x: x[0], l2)))
+        l1p = []
+        l2p = []
+        for index, value in enumerate(dataL1):
+            if dataL1[index] > per and dataL2[index] > per:
                 l1p.append(l1[index])
                 l2p.append(l2[index])
 

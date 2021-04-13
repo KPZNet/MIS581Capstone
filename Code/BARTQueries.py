@@ -107,3 +107,64 @@ def GetYearlyRiderDistFromPITT2015():
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
+
+
+def GetYearlyRiderDistFromPITT2015_AVG():
+    global smoothData, scal
+    query = """
+                                
+    select AVG(riders) as riders, source, dest
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+            source = 'PITT'
+      AND depart_hour = 7
+      and extract(YEAR from depart_date) = 2015
+    group by source, dest
+                
+    """
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
+
+def GetAverageDailyFromPITT14():
+    global smoothData, scal
+    query = """
+                                
+    select AVG(riders) as riders, source, dest
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+            source = 'PITT'
+      AND depart_hour = 7
+      and extract(YEAR from depart_date) = 2014
+    group by source, dest
+                
+    """
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
+
+def GetAverageDailyFromPITT15():
+    global smoothData, scal
+    query = """
+                                
+    select AVG(riders) as riders, source, dest
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+            source = 'PITT'
+      AND depart_hour = 7
+      and extract(YEAR from depart_date) = 2015
+    group by source, dest
+                
+    """
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
