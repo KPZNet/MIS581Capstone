@@ -13,7 +13,7 @@ import BARTQueries
 
 
 def BARRunFFT():
-    plotdata = BARTQueries.GetWeeklyRidersToEMBRAtHour()
+    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016)')
     rawLen = len(plotdata)
     print("Lenght of BART data :", rawLen)
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
@@ -77,8 +77,8 @@ def CosFFT():
 
 def GetPITTDistroCompare():
 
-    plotData14 = BARTQueries.GetAverageDailyFromPITTYear(2014)
-    plotData15 = BARTQueries.GetAverageDailyFromPITTYear(2015)
+    plotData14 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2014)
+    plotData15 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2015)
 
     plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
 
