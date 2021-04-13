@@ -76,7 +76,7 @@ def CalcProp(dataArray):
 
 def ChiSqTest(d1,d2):
     # defining the table
-    data = [[1000, 800, 10], [100, 800, 1]]
+    data = [[10000, 8000, 10,5,20,7,6,7,2], [10000, 8000, 5,1,5,2,2,9,8]]
     stat, p, dof, expected = chi2_contingency(data)
     d1 = CalcProp(data[0])
     d2 = CalcProp(data[1])
