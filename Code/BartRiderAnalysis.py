@@ -117,10 +117,12 @@ def GetPITTDistro2015():
     prop15 = BartLibs.CalcProp(pData15)
     le = len(pData14)
     X = np.arange(le)
-    plt.bar(X + 0.00, prop14, color = 'b', width = 0.50)
-    plt.bar(X + 0.60, prop15, color = 'r', width = 0.50)
+    fig, ax = plt.subplots()
+    ax.bar(X + 0.00, prop14, color = 'b', width = 0.50)
+    ax.bar(X + 0.60, prop15, color = 'r', width = 0.50)
 
-
+    ax.set_xticklabels( cat_names )
+    plt.xticks(rotation=90)
     plt.show()
 
     #plt.suptitle('Pittsburg 2015')
