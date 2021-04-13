@@ -131,10 +131,27 @@ def GetPITTDistro2015():
     #plt.xticks(rotation=90)
     #plt.show()
 
+def CompareRidProp():
+    plotData14 = BARTQueries.GetYearlyRiderDistFromPITT2014()
+    plotData15 = BARTQueries.GetYearlyRiderDistFromPITT2015()
+
+    pData14 = list(map(lambda x: x[0], plotData14))
+    pData15 = list(map(lambda x: x[0], plotData15))
+
+    BartLibs.ChiSqTest(pData14, pData15)
+
+    prop14 = BartLibs.CalcProp(pData14)
+    prop15 = BartLibs.CalcProp(pData15)
+
+    BartLibs.ChiSqTest(prop14, prop15)
+
 try:
-    BARRunFFT()
-    GetPITTDistro2014()
-    GetPITTDistro2015()
+    #BARRunFFT()
+    #GetPITTDistro2014()
+    #GetPITTDistro2015()
+
+    CompareRidProp()
+
     #CosFFT()
 
     #TryDecomp()

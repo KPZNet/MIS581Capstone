@@ -6,6 +6,7 @@ import os
 from datetime import timedelta, date
 import calendar
 import psycopg2
+from scipy.stats import chi2_contingency
 
 import matplotlib.pyplot as plt
 from statsmodels.graphics import tsaplots
@@ -72,3 +73,21 @@ def CalcProp(dataArray):
         tot = tot+d
     propList = list(map(lambda x: (x/tot)*100.0, dataArray))
     return propList
+
+def ChiSqTest(d1,d2):
+    # defining the table
+    data = [[1000, 800, 10], [100, 800, 1]]
+    stat, p, dof, expected = chi2_contingency(data)
+    d1 = CalcProp(data[0])
+    d2 = CalcProp(data[1])
+    data = [d1, d2]
+    stat, p, dof, expected = chi2_contingency(data)
+
+    # interpret p-value
+    alpha = 0.05
+    print("p value is " + str(p))
+    if p <= alpha:
+        print('Dependent (reject H0)')
+    else:
+        print('Independent (H0 holds true)')
+    return p
