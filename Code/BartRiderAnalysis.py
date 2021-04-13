@@ -12,10 +12,52 @@ import BartLibs
 import BARTQueries
 
 
-def BARRunFFT():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016)')
+def RunBARTTimeSeries():
+    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
+
+    PlotTimeSeriesWithLimitBars(plotdata)
+
+    smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
+    PlotTimeSeriesWithLimitBars(smoothData)
+
+    PlotTimeSeriesFFT(smoothData)
+
+    BartLibs.Decomposition(smoothData, 5)
+    BartLibs.ACF(smoothData, 10)
+
+
+def PlotTimeSeriesFFT(smoothData):
+    smoothLen = len(smoothData)
+    smoothDataZeroed = list(map(lambda x: x - statistics.mean(smoothData), smoothData))
+    ft = np.fft.fft(smoothDataZeroed)
+    realAmplitudes = list(map(lambda x: BartLibs.SumSquares(x), ft))
+    realAmpsLen = len(realAmplitudes)
+    fftScale = 2 / realAmpsLen
+    realAmplitudesScaled = list(map(lambda x: fftScale * x, realAmplitudes))
+    plt.plot(realAmplitudesScaled[:int(realAmpsLen / 2)])
+    plt.show()
+
+
+def PlotTimeSeriesWithLimitBars(plotdata):
     rawLen = len(plotdata)
-    print("Lenght of BART data :", rawLen)
+    x = list(range(rawLen))
+    plt.plot(x, plotdata,
+             color='blue',
+             linewidth=1
+             )
+    sdv = statistics.stdev(plotdata)
+    mn = statistics.mean(plotdata)
+    Maxthreshold = mn + (2.0 * sdv)
+    Minthreshold = mn - (2.0 * sdv)
+    plt.hlines(Maxthreshold, 0, rawLen, colors="red")
+    plt.hlines(Minthreshold, 0, rawLen, colors="red")
+    plt.show()
+
+
+def BARRunFFT():
+    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
+    rawLen = len(plotdata)
+    print("Length of BART data :", rawLen)
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
 
     BartLibs.Decomposition(smoothData, 5)
@@ -77,8 +119,8 @@ def CosFFT():
 
 def GetPITTDistroCompare():
 
-    plotData14 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2014)
-    plotData15 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2015)
+    plotData14 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
+    plotData15 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2019)
 
     plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
 
@@ -196,9 +238,8 @@ def CompareRidProp():
     print("Reject HO: ", rejectHO, " p-value :", pVal)
 
 try:
-    BARRunFFT()
+    RunBARTTimeSeries()
     GetPITTDistroCompare()
-
 
 except(Exception) as e:
     print(e)
