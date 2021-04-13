@@ -62,7 +62,7 @@ def GetAveragedWeekdayRidersToDest(dest, hour, years):
         and
             depart_hour = {1}
         and 
-            extract(MONTH from depart_date) in (2,3,4,5,6,7,8,9,10,11)
+            extract(MONTH from depart_date) in (1,2,3,4,5,6,7,8,9,10,11,12)
         and
             extract(YEAR from depart_date) in {2}
         group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)

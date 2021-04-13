@@ -34,7 +34,7 @@ def PlotTimeSeriesFFT(smoothData):
     realAmpsLen = len(realAmplitudes)
     fftScale = 2.0 / (realAmpsLen)
     realAmplitudesScaled = list(map(lambda x: fftScale * x, realAmplitudes))
-    plt.plot(realAmplitudesScaled[:int(realAmpsLen / 2.0)])
+    plt.plot(realAmplitudesScaled[:int(realAmpsLen / 3.0)])
     plt.suptitle("Fourrier Transform Rider Frequency")
     plt.show()
 
@@ -53,41 +53,6 @@ def PlotTimeSeriesWithLimitBars(plotdata):
     plt.hlines(Maxthreshold, 0, rawLen, colors="red")
     plt.hlines(Minthreshold, 0, rawLen, colors="red")
     plt.suptitle("BART Daily Rider EMBR 7:00AM")
-    plt.show()
-
-
-def BARRunFFT():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
-    rawLen = len(plotdata)
-    print("Length of BART data :", rawLen)
-    smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
-
-    BartLibs.Decomposition(smoothData, 5)
-    BartLibs.ACF(smoothData, 10)
-
-    smoothLen = len(smoothData)
-    x = list(range(smoothLen))
-
-    plt.plot(x, smoothData,
-             color='blue',
-             linewidth=1
-             )
-    sdv = statistics.stdev(plotdata)
-    mn = statistics.mean(plotdata)
-    Maxthreshold = mn + (2.0 * sdv)
-    Minthreshold = mn - (2.0 * sdv)
-    plt.hlines(Maxthreshold, 0, smoothLen, colors="red")
-    plt.hlines(Minthreshold, 0, smoothLen, colors="red")
-    plt.show()
-    #smoothData = smoothData[:256]
-    smoothData = list(map(lambda x: x - statistics.mean(smoothData), smoothData))
-    print("Smoothed Mean: ",statistics.mean(smoothData))
-    ft = np.fft.fft(smoothData)
-    rt = list(map(lambda x: BartLibs.SumSquares(x), ft))
-    le = len(rt)
-    scal = 2 / le
-    rt = list(map(lambda x: scal * x, rt))
-    plt.plot(rt[:int(le/2)])
     plt.show()
 
 
