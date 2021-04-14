@@ -119,7 +119,6 @@ def GetPITTDistroCompare():
     ax1.xaxis.set_major_locator(myLocator)
     ax2.xaxis.set_major_locator(myLocator)
 
-    #plt.setp(ax1.get_xticklabels(), rotation=30, horizontalalignment='right', fontsize='x-small')
     # set the spacing between subplots
     plt.subplots_adjust(left=0.1,
                     bottom=0.1,
@@ -129,22 +128,16 @@ def GetPITTDistroCompare():
                     hspace=0.4)
     plt.show()
 
-    rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
 def ShowAverageDailyDestFrom():
     plotData = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
-
-    #create category names from integers
     cat_names = list(map(lambda x: x[2], plotData))
-    #create random data bars
     barValues = list(map(lambda x: x[0], plotData))
-    #add data to bar chart
     plt.bar(cat_names, barValues)
-    plt.suptitle('Rider Distrobution Pittsburgh Station 2018')
+    plt.suptitle('Riders Pittsburgh Station 2018')
     plt.xlabel('Category')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
+
     plt.show()
 
 try:
@@ -153,7 +146,6 @@ try:
     ShowAverageDailyDestFrom()
 
     GetPITTDistroCompare()
-
 
 except(Exception) as e:
     print(e)
