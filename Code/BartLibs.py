@@ -1,3 +1,4 @@
+import decimal
 import requests
 import numpy as np
 import statistics
@@ -68,22 +69,22 @@ def Smooth_1StandardDeviation(dataSet):
 
 
 def CalcProp(dataArray):
-    tot: Decimal = 0.0
+    tot: decimal.Decimal = 0.0
     for d in dataArray:
         tot = tot+float(d)
     propList = list(map(lambda x: float( (float(x)/tot) )*100.0, dataArray))
     return propList
 
 def ChiSqTest(d1,d2):
-    rejectHO = False
+    acceptH0 = True
     data = [d1, d2]
     stat, p, dof, expected = chi2_contingency(data)
 
     # interpret p-value
     alpha = 0.05
     if p <= alpha:
-        rejectHO = True
-    return rejectHO, p
+        acceptH0 = False
+    return acceptH0, p
 
 def ChiSqTestExp():
     # defining the table

@@ -109,7 +109,7 @@ def GetPITTDistroCompare():
     ax1.set_title("2014")
     ax2.set_title("2015")
 
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nReject H0:'{1}' ".format(pVal,rejectHO)
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0:'{1}' ".format(pVal,rejectHO)
     plt.suptitle(hypTest)
 
     ax1.tick_params(labelrotation=45)
