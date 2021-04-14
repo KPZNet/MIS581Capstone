@@ -89,7 +89,7 @@ def GetPITTDistroCompare():
     plotData14 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
     plotData15 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2019)
 
-    plotData14S, plotData15S = BartLibs.RemoveSmallStations(5, plotData14, plotData15)
+    plotData14S, plotData15S = BartLibs.RemoveSmallRiderCounts(5, plotData14, plotData15)
 
     pData14 = list(map(lambda x: x[0], plotData14S))
     pData15 = list(map(lambda x: x[0], plotData15S))

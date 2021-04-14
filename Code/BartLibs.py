@@ -128,14 +128,14 @@ def RemoveSmallStationsPercent(per, l1, l2):
 
     return l1p, l2p
 
-def RemoveSmallStations(per, l1, l2):
+def RemoveSmallRiderCounts(counts, l1, l2):
     try:
         dataL1 = (list(map(lambda x: x[0], l1)))
         dataL2 = (list(map(lambda x: x[0], l2)))
         l1p = []
         l2p = []
         for index, value in enumerate(dataL1):
-            if dataL1[index] > per and dataL2[index] > per:
+            if dataL1[index] > counts and dataL2[index] > counts:
                 l1p.append(l1[index])
                 l2p.append(l2[index])
 
