@@ -141,7 +141,7 @@ def ShowAverageDailyDestFrom():
     barValues = list(map(lambda x: x[0], plotData))
     #add data to bar chart
     plt.bar(cat_names, barValues)
-    plt.suptitle('Rider Distro')
+    plt.suptitle('Rider Distrobution Pittsburgh Station 2018')
     plt.xlabel('Category')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
@@ -149,9 +149,11 @@ def ShowAverageDailyDestFrom():
 
 try:
     RunBARTTimeSeries()
-    GetPITTDistroCompare()
 
     ShowAverageDailyDestFrom()
+
+    GetPITTDistroCompare()
+
 
 except(Exception) as e:
     print(e)
