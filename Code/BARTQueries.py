@@ -1,12 +1,4 @@
-import requests
-import numpy as np
-import statistics
-import csv
-import os
-from datetime import timedelta, date
-import calendar
 import psycopg2
-
 
 def PGBart(query):
     try:
