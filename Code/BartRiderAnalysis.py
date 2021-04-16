@@ -19,11 +19,14 @@ try:
     # BARTPlots.ShowAverageDailyRidersFromSource('PITT', 7, 2016)
     # BARTPlots.GetPITTDistroCompare()
 
-    BARTPlots.ShowDailyRiders(7, 'PITT', 11, 3, 2015)
-    BARTPlots.ShowDailyRiders(7, 'PITT', 11, 4, 2015)
+    # BARTPlots.ShowDailyRiders(7, 'PITT', 11, 3, 2015)
+    # BARTPlots.ShowDailyRiders(7, 'PITT', 11, 4, 2015)
+    #
+    # BARTPlots.CompareDailyRidersFromDestPerHour(7, 'PITT', 16, 3, 2015,
+    #                                             7, 'PITT', 15, 4, 2015)
 
-    BARTPlots.CompareDailyRidersFromDestPerHour(7, 'PITT', 16, 3, 2015,
-                                                7, 'PITT', 15, 4, 2015)
+    BARTPlots.CompareAverageDayRiders(7, 'PITT', 1,  2015,
+                                      7, 'PITT', 1,  2016)
 
 except(Exception) as e:
     print(e)
