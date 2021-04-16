@@ -254,14 +254,13 @@ def ShowDailyRiders(hour, source, day, month, year):
     plt.show()
 
 def ShowAverageWeeklyRiderForHour(dest, hour, year):
-    plotdata = BARTQueries.GetAverageWeeklyRiderForHour(dest, 7, year)
+    plotdata = BARTQueries.GetAverageWeeklyRiderForHour(dest, hour, year)
     viewData = list(map(lambda x: x[0], plotdata))
     PlotTimeSeriesWithLimitBars(viewData)
 
     smoothData = BartLibs.Smooth_1StandardDeviation(viewData)
     PlotTimeSeriesWithLimitBars(smoothData)
 
-    PlotTimeSeriesFFT(smoothData)
-
-    BartLibs.Decomposition(smoothData, 4)
-    BartLibs.ACF(smoothData, 10)
+    # PlotTimeSeriesFFT(smoothData)
+    # BartLibs.Decomposition(smoothData, 4)
+    # BartLibs.ACF(smoothData, 10)
