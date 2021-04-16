@@ -198,7 +198,7 @@ def CompareAverageDayRiders(hour1, source1, day1, year1,
     ax1.set_title(title1)
     ax2.set_title(title2)
 
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0:'{1}' ".format(pVal,rejectHO)
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
     plt.suptitle(hypTest)
 
     ax1.tick_params(labelrotation=45)

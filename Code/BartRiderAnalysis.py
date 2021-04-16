@@ -25,8 +25,8 @@ try:
     # BARTPlots.CompareDailyRidersFromDestPerHour(7, 'PITT', 16, 3, 2015,
     #                                             7, 'PITT', 15, 4, 2015)
 
-    BARTPlots.CompareAverageDayRiders(7, 'PITT', 1,  2015,
-                                      7, 'PITT', 1,  2016)
+    BARTPlots.CompareAverageDayRiders(7, 'PITT', 1,  2018,
+                                      9, 'PITT', 2,  2018)
 
 except(Exception) as e:
     print(e)
