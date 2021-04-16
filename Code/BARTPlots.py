@@ -126,6 +126,52 @@ def GetPITTDistroCompare():
                         hspace=0.4)
     plt.show()
 
+
+def CompareDailyRidersFromDestPerHour(hour1, source1, day1, month1, year1,
+                                      hour2, source2, day2, month2, year2):
+
+    plot1 = BARTQueries.GetDailyRiders(hour1, source1, day1, month1, year1)
+    plot2 = BARTQueries.GetDailyRiders(hour2, source2, day2, month2, year2)
+
+    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
+
+    plotData1 = list(map(lambda x: x[0], plot1S))
+    plotData2 = list(map(lambda x: x[0], plot2S))
+
+    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
+    print("Reject HO: ", rejectHO, " p-value :", pVal)
+
+    cat_names = list(map(lambda x: x[2], plot1S))
+    #add data to bar chart
+    le = len(plotData1)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+
+    ax1.bar(cat_names, plotData1)
+    ax2.bar(cat_names, plotData2)
+
+    ax1.set_title("2014")
+    ax2.set_title("2015")
+
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0:'{1}' ".format(pVal,rejectHO)
+    plt.suptitle(hypTest)
+
+    ax1.tick_params(labelrotation=45)
+    ax2.tick_params(labelrotation=45)
+
+    myLocator = mticker.MultipleLocator(4)
+    ax1.xaxis.set_major_locator(myLocator)
+    ax2.xaxis.set_major_locator(myLocator)
+
+    # set the spacing between subplots
+    plt.subplots_adjust(left=0.1,
+                        bottom=0.1,
+                        right=0.9,
+                        top=.7,
+                        wspace=0.4,
+                        hspace=0.4)
+    plt.show()
+
 def ShowAverageDailyRidersFromSource(source, hour, year):
     plotData = BARTQueries.GetAverageDailyRidersFromSource(source, hour, year)
     cat_names = list(map(lambda x: x[2], plotData))
@@ -145,6 +191,17 @@ def ShowHourlyAverageRidersSource(source):
     plt.bar(cat_names, barValues)
     plt.suptitle('{0} Riders Avg by Hour'.format(source))
     plt.xlabel('Hour')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=90)
+    plt.show()
+
+def ShowDailyRiders(hour, source, day, month, year):
+    plotData = BARTQueries.GetDailyRiders(hour, source, day, month, year)
+    cat_names = list(map(lambda x: x[2], plotData))
+    barValues = list(map(lambda x: x[0], plotData))
+    plt.bar(cat_names, barValues)
+    plt.suptitle('{1} Riders AT Hour {0}, Day {2}, Month {3}, Year {4}'.format(hour, source, day, month, year))
+    plt.xlabel('Dest')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
     plt.show()
