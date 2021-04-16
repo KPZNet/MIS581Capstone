@@ -40,7 +40,6 @@ def PGBartLocal(query):
 
 
 def GetAveragedWeekdayRidersToDest(dest, hour, years):
-    global smoothData, scal
     query = """
                 
         select avg(cast(riders as double precision)), dest, 
@@ -65,8 +64,7 @@ def GetAveragedWeekdayRidersToDest(dest, hour, years):
     return plotdata
 
 
-def GetAverageDailyDestFrom(source, hour, year):
-    global smoothData, scal
+def GetAverageDailyRidersFromSource(source, hour, year):
     query = """
                                 
         select AVG(riders) as riders, source, dest
@@ -88,7 +86,6 @@ def GetAverageDailyDestFrom(source, hour, year):
     return plotdata
 
 def GetAverageDailySourceByHour(source):
-    global smoothData, scal
     query = """
                                 
     select AVG(riders) as riders, source, hour

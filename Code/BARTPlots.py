@@ -84,8 +84,8 @@ def CosFFT():
 
 def GetPITTDistroCompare():
 
-    plotData14 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
-    plotData15 = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2019)
+    plotData14 = BARTQueries.GetAverageDailyRidersFromSource('PITT', 7, 2018)
+    plotData15 = BARTQueries.GetAverageDailyRidersFromSource('PITT', 7, 2019)
 
     plotData14S, plotData15S = BartLibs.RemoveSmallRiderCounts(5, plotData14, plotData15)
 
@@ -126,8 +126,8 @@ def GetPITTDistroCompare():
                         hspace=0.4)
     plt.show()
 
-def ShowAverageDailyDestFrom(source, hour, year):
-    plotData = BARTQueries.GetAverageDailyDestFrom(source, hour, year)
+def ShowAverageDailyRidersFromSource(source, hour, year):
+    plotData = BARTQueries.GetAverageDailyRidersFromSource(source, hour, year)
     cat_names = list(map(lambda x: x[2], plotData))
     barValues = list(map(lambda x: x[0], plotData))
     plt.bar(cat_names, barValues)

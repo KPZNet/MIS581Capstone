@@ -16,7 +16,7 @@ import BARTPlots
 try:
     BARTPlots.ShowHourlyAverageRidersSource('PITT')
     BARTPlots.RunBARTTimeSeries()
-    BARTPlots.ShowAverageDailyDestFrom('PITT', 7, 2016)
+    BARTPlots.ShowAverageDailyRidersFromSource('PITT', 7, 2016)
     BARTPlots.GetPITTDistroCompare()
 
 except(Exception) as e:
