@@ -86,3 +86,23 @@ def GetAverageDailyDestFrom(source, hour, year):
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
+
+def GetAverageDailySourceByHour(source):
+    global smoothData, scal
+    query = """
+                                
+    select AVG(riders) as riders, source, hour
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+            source = '{0}'
+      and
+        extract(YEAR from depart_date) in (2014,2015,2016,2017,2018)
+    group by source, hour
+                
+    """.format(source)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
