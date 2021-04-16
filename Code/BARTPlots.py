@@ -126,12 +126,12 @@ def GetPITTDistroCompare():
                         hspace=0.4)
     plt.show()
 
-def ShowAverageDailyDestFrom():
-    plotData = BARTQueries.GetAverageDailyDestFrom('PITT', 7, 2018)
+def ShowAverageDailyDestFrom(source, hour, year):
+    plotData = BARTQueries.GetAverageDailyDestFrom(source, hour, year)
     cat_names = list(map(lambda x: x[2], plotData))
     barValues = list(map(lambda x: x[0], plotData))
     plt.bar(cat_names, barValues)
-    plt.suptitle('Riders Pittsburgh Station 2018')
+    plt.suptitle('Ave Riders from {0}, Hour {1}, Year {2}'.format(source, hour, year))
     plt.xlabel('Category')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
