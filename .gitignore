@@ -3,6 +3,7 @@
 /.idea
 .idea
 *.csv
+*.pyc
 workspace.code-workspace
 
 
