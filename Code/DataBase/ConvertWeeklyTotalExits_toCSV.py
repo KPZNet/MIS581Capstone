@@ -6,17 +6,19 @@ def DeleteFile(f):
     if os.path.exists(f):
         os.remove(f)
 
+AVG_WEEK_EXITS_BART = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AVERAGE_WEEKDAY_EXITS.csv'
+averageweeklyexits = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AverageWeekdayExits.csv'
 
-with open('AVERAGE_WEEKDAY_EXITS.csv', 'r') as csv_file:
+with open(AVG_WEEK_EXITS_BART, 'r') as csv_file:
     csv_reader = reader(csv_file)
     # Passing the cav_reader object to list() to get a list of lists
     list_of_rows = list(csv_reader)
     for l in list_of_rows:
         print(l)
 
-DeleteFile('AverageWeekdayExits.csv')
+DeleteFile(averageweeklyexits)
 
-with open('AverageWeekdayExits.csv', mode='w', newline='') as aveweekexits:
+with open(averageweeklyexits, mode='w', newline='') as aveweekexits:
     route_writer = csv.writer(aveweekexits, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     route_writer.writerow(['station', 'abbr','year', 'number'])
     for r in range(1, len(list_of_rows)):
