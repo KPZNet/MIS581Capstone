@@ -22,11 +22,13 @@ try:
     # BARTPlots.ShowDailyRiders(7, 'PITT', 11, 3, 2015)
     # BARTPlots.ShowDailyRiders(7, 'PITT', 11, 4, 2015)
     #
-    # BARTPlots.CompareDailyRidersFromDestPerHour(7, 'PITT', 16, 3, 2015,
-    #                                             7, 'PITT', 15, 4, 2015)
+
+    BARTPlots.CompareDailyRidersFromDestPerHour(7, 'PITT', 6, 3, 2018,
+                                                7, 'PITT', 13, 3, 2018)
+
     # BARTPlots.ShowAverageWeeklyRiderForHour('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
-    BARTPlots.CompareAverageDayRiders(7, 'PITT', 1,  2018,
-                                      7, 'PITT', 1,  2019)
+    # BARTPlots.CompareAverageDayRiders(7, 'PITT', 1,  2018,
+    #                                   7, 'PITT', 1,  2019)
 
 except(Exception) as e:
     print(e)

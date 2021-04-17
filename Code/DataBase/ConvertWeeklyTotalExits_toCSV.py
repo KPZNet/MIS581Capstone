@@ -6,8 +6,13 @@ def DeleteFile(f):
     if os.path.exists(f):
         os.remove(f)
 
-AVG_WEEK_EXITS_BART = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AVERAGE_WEEKDAY_EXITS.csv'
-averageweeklyexits = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AverageWeekdayExits.csv'
+#AVG_WEEK_EXITS_BART = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AVERAGE_WEEKDAY_EXITS.csv'
+#averageweeklyexits = 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AverageWeekdayExits.csv'
+
+
+AVG_WEEK_EXITS_BART = '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/AVERAGE_WEEKDAY_EXITS.csv'
+averageweeklyexits  = '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/AverageWeekdayExits.csv'
+
 
 with open(AVG_WEEK_EXITS_BART, 'r') as csv_file:
     csv_reader = reader(csv_file)

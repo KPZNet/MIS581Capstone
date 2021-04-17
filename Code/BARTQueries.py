@@ -126,6 +126,30 @@ def GetDailyRiders( hour, source, day, month, year):
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
+
+def GetDailyRidersAveByMonth(hour, source, isodow, month, year):
+    query = """
+                                
+    select riders as riders, source, dest, depart_hour, depart_date
+    from hourlystationqueue
+    where
+        depart_hour = {0}
+      AND
+        source = '{1}'
+      and
+        extract(ISODOW from depart_date) = {2}
+      and
+        extract(MONTH from depart_date) = {3}
+      and
+        extract(YEAR from depart_date) = {4}
+                
+    """.format(hour, source, isodow, month, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
+
+
 def GetAverageDayRider(source, hour, isodow, year):
     query = """
                                 

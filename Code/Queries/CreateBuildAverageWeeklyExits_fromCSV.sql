@@ -18,7 +18,7 @@ ALTER TABLE public.bartyearlyexits
 TRUNCATE bartyearlyexits RESTART IDENTITY;
 
 COPY public.bartyearlyexits(station, abbr, year, riders)
-    FROM 'K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\AverageWeekdayExits.csv'
+    FROM '/Users/KenCeglia/OneDrive/CSUGlobal/MIS581/PortfolioProject/Data/AverageWeekdayExits.csv'
     DELIMITER ','
 CSV HEADER;
 
