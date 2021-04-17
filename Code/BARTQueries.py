@@ -130,10 +130,11 @@ def GetDailyRiders( hour, source, day, month, year):
 def GetDailyRidersAveByMonth(hour, source, isodow, month, year):
     query = """
                                 
-    select riders as riders, source, dest, depart_hour, depart_date
+    select avg(riders) as riders, source, dest, depart_hour,
+           extract(ISODOW from depart_date) as ISODOW
     from hourlystationqueue
     where
-        depart_hour = {0}
+            depart_hour = {0}
       AND
         source = '{1}'
       and
@@ -142,6 +143,7 @@ def GetDailyRidersAveByMonth(hour, source, isodow, month, year):
         extract(MONTH from depart_date) = {3}
       and
         extract(YEAR from depart_date) = {4}
+    group by source, dest, depart_hour, extract(ISODOW from depart_date)
                 
     """.format(hour, source, isodow, month, year)
 
