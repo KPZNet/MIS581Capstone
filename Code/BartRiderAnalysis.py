@@ -33,7 +33,7 @@ try:
     # BARTPlots.CompareAverageDayRidersByMonth('PITT', 7, 1, 4, 2019,
     #                                          'PITT', 7, 1, 3, 2019)
 
-
+    BartLibs.ChiSqTestExp()
     BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 10, 2019,
                                           'PITT', 7, 12, 2019)
 
