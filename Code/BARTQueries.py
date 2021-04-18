@@ -174,25 +174,25 @@ def GetAverageDayRider(source, hour, isodow, year):
     return plotdata
 
 
-def GetTotalDayRiderByWeek(source, hour, week, month, year):
+def GetTotalDayRiderByWeek(source, hour, week, year):
     query = """
                                 
     select sum(riders) as riders, source, dest, depart_hour
     from hourlystationqueue
     where
-        extract(WEEK from depart_date) in ({2})
+        extract(ISODOW from depart_date) in (1,2,3,4,5)
+    and
+        extract(WEEK from depart_date) = {2}
     AND
         source = '{0}'
     AND
         depart_hour = {1}
     AND
-        extract(MONTH from depart_date) = {3}
-    AND
-        extract(YEAR from depart_date) = {4}
+        extract(YEAR from depart_date) = {3}
     group by source, dest, depart_hour
     order by dest
                 
-    """.format(source, hour, week, month, year)
+    """.format(source, hour, week, year)
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))

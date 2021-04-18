@@ -34,8 +34,8 @@ try:
     #                                          'PITT', 7, 1, 3, 2019)
 
 
-    BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 1, 2, 2019,
-                                             'PITT', 7, 1, 3, 2019)
+    BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 10, 2019,
+                                          'PITT', 7, 12, 2019)
 
 except(Exception) as e:
     print(e)

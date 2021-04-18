@@ -265,11 +265,11 @@ def CompareAverageDayRidersByMonth(source1, hour1, isodow1, month1, year1,
                         hspace=0.4)
     plt.show()
 
-def CompareTotalDayRidersByWeek(source1, hour1, week1, month1, year1,
-                                   source2, hour2, week2, month2, year2):
+def CompareTotalDayRidersByWeek(source1, hour1, week1, year1,
+                                source2, hour2, week2, year2):
 
-    plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, week1, month1, year1)
-    plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, week2, month2, year2)
+    plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, week1, year1)
+    plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, week2, year2)
 
     plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
 
@@ -288,8 +288,8 @@ def CompareTotalDayRidersByWeek(source1, hour1, week1, month1, year1,
     ax1.bar(cat_names, plotData1)
     ax2.bar(cat_names, plotData2)
 
-    title1 = 'Ave Riders from {0}\nHour {1}, day {2}, Month {3}, Year {4}'.format(source1, hour1, isodow1, month1, year1)
-    title2 = 'Ave Riders from {0}\nHour {1}, day {2}, Month {3}, Year {4}'.format(source2, hour2, isodow2, month2, year2)
+    title1 = 'Ave Riders from {0}\nHour {1}, week {2}, Year {3}'.format(source1, hour1, week1, year1)
+    title2 = 'Ave Riders from {0}\nHour {1}, week {2}, Year {3}'.format(source2, hour2, week2, year2)
 
     ax1.set_title(title1)
     ax2.set_title(title2)
