@@ -31,11 +31,18 @@ try:
     #                                   7, 'PITT', 1,  2019)
 
     # BARTPlots.CompareAverageDayRidersByMonth('PITT', 7, 1, 4, 2019,
-    #                                          'PITT', 7, 1, 3, 2019)
+    #                                          'PITT', 7, 1, 4, 2019)
 
-    BartLibs.ChiSqTestExp()
-    BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 10, 2019,
-                                          'PITT', 7, 12, 2019)
+
+    #BartLibs.ChiSqTestExp()
+     BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, (1,2,3,4,5), 2, 2018,
+                                           'PITT', 7, (1,2,3,4,5), 11, 2018)
+
+    # BARTPlots.CompareTotalDayRidersByWeekToDest('EMBR', 7, (1,2,3,4,5), 8, 2018,
+    #                                       'EMBR', 7, (1,2,3,4,5), 9, 2018)
+
+    # BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 1, 5, 2018,
+    #                                       'PITT', 7, 2, 5, 2018)
 
 except(Exception) as e:
     print(e)

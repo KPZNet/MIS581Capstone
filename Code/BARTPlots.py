@@ -265,13 +265,13 @@ def CompareAverageDayRidersByMonth(source1, hour1, isodow1, month1, year1,
                         hspace=0.4)
     plt.show()
 
-def CompareTotalDayRidersByWeek(source1, hour1, week1, year1,
-                                source2, hour2, week2, year2):
+def CompareTotalDayRidersByWeek(source1, hour1, day1, week1, year1,
+                                source2, hour2, day2, week2, year2):
 
-    plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, week1, year1)
-    plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, week2, year2)
+    plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, day1, week1, year1)
+    plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, day2, week2, year2)
 
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
+    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(100, plot1, plot2)
 
     plotData1 = list(map(lambda x: x[0], plot1S))
     plotData2 = list(map(lambda x: x[0], plot2S))
@@ -288,8 +288,8 @@ def CompareTotalDayRidersByWeek(source1, hour1, week1, year1,
     ax1.bar(cat_names, plotData1)
     ax2.bar(cat_names, plotData2)
 
-    title1 = 'Ave Riders from {0}\nHour {1}, week {2}, Year {3}'.format(source1, hour1, week1, year1)
-    title2 = 'Ave Riders from {0}\nHour {1}, week {2}, Year {3}'.format(source2, hour2, week2, year2)
+    title1 = 'Riders from {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(source1, hour1, day1, week1, year1)
+    title2 = 'Riders from {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(source2, hour2, day2, week2, year2)
 
     ax1.set_title(title1)
     ax2.set_title(title2)
@@ -314,6 +314,53 @@ def CompareTotalDayRidersByWeek(source1, hour1, week1, year1,
     plt.show()
 
 
+def CompareTotalDayRidersByWeekToDest(dest1, hour1, day1, week1, year1,
+                                dest2, hour2, day2, week2, year2):
+
+    plot1 = BARTQueries.GetTotalDayRiderByWeekToDest(dest1, hour1, day1, week1, year1)
+    plot2 = BARTQueries.GetTotalDayRiderByWeekToDest(dest2, hour2, day2, week2, year2)
+
+    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
+
+    plotData1 = list(map(lambda x: x[0], plot1S))
+    plotData2 = list(map(lambda x: x[0], plot2S))
+
+    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
+    print("Reject HO: ", rejectHO, " p-value :", pVal)
+
+    cat_names = list(map(lambda x: x[2], plot1S))
+    #add data to bar chart
+    le = len(plotData1)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+
+    ax1.bar(cat_names, plotData1)
+    ax2.bar(cat_names, plotData2)
+
+    title1 = 'Riders to {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(dest1, hour1, day1, week1, year1)
+    title2 = 'Riders to {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(dest2, hour2, day2, week2, year2)
+
+    ax1.set_title(title1)
+    ax2.set_title(title2)
+
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
+    plt.suptitle(hypTest)
+
+    ax1.tick_params(labelrotation=45)
+    ax2.tick_params(labelrotation=45)
+
+    myLocator = mticker.MultipleLocator(4)
+    ax1.xaxis.set_major_locator(myLocator)
+    ax2.xaxis.set_major_locator(myLocator)
+
+    # set the spacing between subplots
+    plt.subplots_adjust(left=0.1,
+                        bottom=0.1,
+                        right=0.9,
+                        top=.7,
+                        wspace=0.4,
+                        hspace=0.4)
+    plt.show()
 
 
 def ShowAverageDailyRidersFromSource(source, hour, year):
