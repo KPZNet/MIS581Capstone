@@ -271,7 +271,7 @@ def CompareTotalDayRidersByWeek(source1, hour1, day1, week1, year1,
     plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, day1, week1, year1)
     plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, day2, week2, year2)
 
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(100, plot1, plot2)
+    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
 
     plotData1 = list(map(lambda x: x[0], plot1S))
     plotData2 = list(map(lambda x: x[0], plot2S))
