@@ -53,6 +53,17 @@ def CalcProp(dataArray):
     propList = list(map(lambda x: float( (float(x)/tot) )*100.0, dataArray))
     return propList
 
+def ChiSqTestNxN(d1):
+    acceptH0 = True
+    data = d1
+    stat, p, dof, expected = chi2_contingency(data)
+
+    # interpret p-value
+    alpha = 0.05
+    if p <= alpha:
+        acceptH0 = False
+    return acceptH0, p
+
 def ChiSqTest(d1,d2):
     acceptH0 = True
     data = [d1, d2]
@@ -98,6 +109,31 @@ def ChiSqTestExp():
         print('Independent (H0 holds true)')
     return p
 
+
+def IntersectStations(statA, statB):
+    subSetA = [ele1 for ele1 in statA
+           for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2]) ]
+
+    subSetB = [ele1 for ele1 in statB
+              for ele2 in statA if (ele1[1] == ele2[1] and ele1[2] == ele2[2]) ]
+
+    return subSetA, subSetB
+
+
+def IntersectAllStations(stats):
+    newList = []
+    riderList = []
+    for i, s in enumerate(stats):
+        sub = stats[i]
+        for j, k in enumerate(stats):
+            if i != j:
+                sub, junk = IntersectStations(sub, stats[j])
+        newList.append(sub)
+        riderList.append(list(map(lambda x: x[0], sub)))
+    return riderList, newList
+
+
+
 def RemoveSmallStationsPercent(per, l1, l2):
     try:
         propL1 = CalcProp(list(map(lambda x: x[0], l1)))
@@ -116,6 +152,9 @@ def RemoveSmallStationsPercent(per, l1, l2):
 
 def RemoveSmallRiderCounts(counts, l1, l2):
     try:
+
+        l1, l2 = IntersectStations(l1, l2)
+
         dataL1 = (list(map(lambda x: x[0], l1)))
         dataL2 = (list(map(lambda x: x[0], l2)))
         l1p = []
@@ -129,3 +168,17 @@ def RemoveSmallRiderCounts(counts, l1, l2):
         print(e)
 
     return l1p, l2p
+
+def RemoveSmallRiderCounts(counts, l1):
+    try:
+
+        dataL1 = (list(map(lambda x: x[0], l1)))
+        l1p = []
+        for index, value in enumerate(dataL1):
+            if dataL1[index] > counts :
+                l1p.append(l1[index])
+
+    except(Exception) as e:
+        print(e)
+
+    return l1p
