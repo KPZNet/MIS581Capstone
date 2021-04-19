@@ -164,9 +164,8 @@ def RemoveSmallRiderCounts(counts, l1, l2):
 
     return l1p, l2p
 
-def RemoveSmallRiderCounts(counts, l1):
+def RemoveSmallRiderCountsForStation(counts, l1):
     try:
-
         dataL1 = (list(map(lambda x: x[0], l1)))
         l1p = []
         for index, value in enumerate(dataL1):

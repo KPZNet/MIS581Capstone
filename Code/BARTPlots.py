@@ -124,53 +124,54 @@ def GetPITTDistroCompare():
                         hspace=0.4)
     plt.show()
 
-
-def CompareMultipleDayRidersTo():
+def CompareMultipleDayRidersFrom():
 
     plotD = []
 
-    start_date = date(2019, 5, 1)
+    start_date = date(2019, 4, 1)
     end_date = date(2019, 6, 1)
     delta = timedelta(days=1)
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
-            print (start_date.strftime("%Y-%m-%d"))
-            da = BARTQueries.GetDailyRiders('PITT', 7, sDate)
+            da = BARTQueries.GetDailyRidersTo('PITT', 7, sDate)
+            print (sDate, " Len: ", len(da) )
             if len(da) > 20:
                 plotD.append( da )
         start_date += delta
 
     plotD_Data = []
     for n in plotD:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCounts(5, n))
+        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
+
     allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
     rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-
-
-    plotData1 = BARTQueries.GetDailyRiders('PITT', 7, '03-27-2019')
-    plotData2 = BARTQueries.GetDailyRiders('PITT', 7, '03-26-2019')
-    plotData3 = BARTQueries.GetDailyRiders('PITT', 7, '02-27-2019')
-    plotData4 = BARTQueries.GetDailyRiders('PITT', 7, '06-14-2019')
-    plotData5 = BARTQueries.GetDailyRiders('PITT', 7, '07-5-2019')
-    plotData6 = BARTQueries.GetDailyRiders('PITT', 7, '08-8-2019')
-    plotData7 = BARTQueries.GetDailyRiders('PITT', 7, '09-26-2019')
-    plotData8 = BARTQueries.GetDailyRiders('PITT', 7, '11-27-2019')
-
-    plot1S = BartLibs.RemoveSmallRiderCounts(5, plotData1)
-    plot2S = BartLibs.RemoveSmallRiderCounts(5, plotData2)
-    plot3S = BartLibs.RemoveSmallRiderCounts(5, plotData3)
-
-    allStats = [plot1S, plot2S, plot3S]
-    LL = BartLibs.IntersectAllStations(allStats)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-    plotData3 = list(map(lambda x: x[0], plot3S))
-
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(LL)
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
+
+def CompareMultipleDayRidersTo():
+
+    plotD = []
+
+    start_date = date(2019, 3, 1)
+    end_date = date(2019, 4, 1)
+    delta = timedelta(days=1)
+    while start_date <= end_date:
+        if start_date.weekday() < 5:
+            sDate =  start_date.strftime("%m-%d-%Y")
+            da = BARTQueries.GetDailyRidersFrom('PITT', 7, sDate)
+            print (sDate, " Len: ", len(da) )
+            if len(da) > 20:
+                plotD.append( da )
+        start_date += delta
+
+    plotD_Data = []
+    for n in plotD:
+        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
+
+    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
+    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
+    print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
 
 
