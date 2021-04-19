@@ -35,7 +35,7 @@ try:
 
 
     #BartLibs.ChiSqTestExp()
-     BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, (1,2,3,4,5), 2, 2018,
+     BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, (1,2,3,4,5), 8, 2018,
                                            'PITT', 7, (1,2,3,4,5), 11, 2018)
 
     # BARTPlots.CompareTotalDayRidersByWeekToDest('EMBR', 7, (1,2,3,4,5), 8, 2018,
