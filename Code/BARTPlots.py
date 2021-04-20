@@ -174,6 +174,58 @@ def CompareMultipleDayRidersTo():
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
 
+def CompareMultiDayFromRidersToYearlyAve(source1, hour1, year1):
+
+    yearlyAvg = BARTQueries.GetAverageDailyRidersFromSource(source1, hour1, year1)
+
+    plotD = []
+
+    start_date = date(2019, 1, 1)
+    end_date = date(2019, 4, 1)
+    delta = timedelta(days=1)
+    while start_date <= end_date:
+        if start_date.weekday() == 0:
+            sDate =  start_date.strftime("%m-%d-%Y")
+            da = BARTQueries.GetDailyRidersFrom('PITT', 7, sDate)
+            print (sDate, " Len: ", len(da) )
+            if len(da) > 20:
+                plotD.append( da )
+                CompareDays(da, sDate, hour1, source1, year1, yearlyAvg)
+        start_date += delta
+
+
+def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
+    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, yearlyAvg)
+    plotData1 = list(map(lambda x: x[0], plot1S))
+    plotData2 = list(map(lambda x: x[0], plot2S))
+    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
+    print("Reject HO: ", not rejectHO, " p-value :", pVal)
+    cat_names = list(map(lambda x: x[2], plot1S))
+    # add data to bar chart
+    le = len(plotData1)
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.bar(cat_names, plotData1)
+    ax2.bar(cat_names, plotData2)
+    title1 = 'Daily Riders from {0}\nHour {1}, date {2}'.format(source1, hour1, date1)
+    title2 = 'Average Annual {0}\nHour {1}, Year {2}'.format(source1, hour1, year1)
+    ax1.set_title(title1)
+    ax2.set_title(title2)
+    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal, rejectHO)
+    plt.suptitle(hypTest)
+    ax1.tick_params(labelrotation=45)
+    ax2.tick_params(labelrotation=45)
+    myLocator = mticker.MultipleLocator(4)
+    ax1.xaxis.set_major_locator(myLocator)
+    ax2.xaxis.set_major_locator(myLocator)
+    # set the spacing between subplots
+    plt.subplots_adjust(left=0.1,
+                        bottom=0.1,
+                        right=0.9,
+                        top=.7,
+                        wspace=0.4,
+                        hspace=0.4)
+    plt.show()
+
 
 def CompareDayRidersToYearlyAve(source1, hour1, date1, year1):
 
