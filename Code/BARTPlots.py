@@ -153,8 +153,8 @@ def CompareMultipleDayRidersTo():
 
     plotD = []
 
-    start_date = date(2019, 3, 1)
-    end_date = date(2019, 4, 1)
+    start_date = date(2021, 2, 1)
+    end_date = date(2021, 3, 1)
     delta = timedelta(days=1)
     while start_date <= end_date:
         if start_date.weekday() < 5:
@@ -180,8 +180,8 @@ def CompareMultiDayFromRidersToYearlyAve(source1, hour1, year1):
 
     plotD = []
 
-    start_date = date(2019, 1, 1)
-    end_date = date(2019, 4, 1)
+    start_date = date(2021, 2, 1)
+    end_date = date(2021, 3, 1)
     delta = timedelta(days=1)
     while start_date <= end_date:
         if start_date.weekday() == 0:
