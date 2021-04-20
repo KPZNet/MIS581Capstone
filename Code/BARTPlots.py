@@ -84,7 +84,7 @@ def CosFFT():
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders):
 
-    plotD = []
+    propList = []
     start_date = startDate
     end_date = endDate
     delta = timedelta(days = 1)
@@ -94,21 +94,14 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
             da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
             print (sDate, " Len: ", len(da) )
             if len(da) > minStations:
-                plotD.append( da )
+                propList.append( da )
         start_date += delta
 
-    plotD_Data = []
-    for n in plotD:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
-
-    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-    print("Reject HO: ", not rejectHO, " p-value :", pVal)
+    TestMultipleRoutes(propList)
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
 
-    plotD = []
-
+    propList = []
     start_date = startDate
     end_date = endDate
     delta = timedelta(days = 1)
@@ -118,24 +111,27 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
             da = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
             print (sDate, " Len: ", len(da) )
             if len(da) > 20:
-                plotD.append( da )
+                propList.append( da )
         start_date += delta
 
+    TestMultipleRoutes(propList)
+
+
+def TestMultipleRoutes(propList):
     plotD_Data = []
-    for n in plotD:
+    for n in propList:
         plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
 
     allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
     rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
-
+    return rejectHO
 
 def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1):
 
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersToDest(dest1, hour1, year1)
 
     plotD = []
-
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=1)
@@ -146,7 +142,7 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
             print (sDate, " Len: ", len(da) )
             if len(da) > 20:
                 plotD.append( da )
-                CompareDays(da, sDate, hour1, dest1, year1, yearlyAvg)
+                CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
 def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1):
@@ -154,7 +150,6 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersFromSource(source1, hour1, year1)
 
     plotD = []
-
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=1)
@@ -165,19 +160,23 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
             print (sDate, " Len: ", len(da) )
             if len(da) > 20:
                 plotD.append( da )
-                CompareDays(da, sDate, hour1, source1, year1, yearlyAvg)
+                CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
 
-def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
+def CompareRouteProportions(plot1, plot2):
     plot1S = BartLibs.RemoveSmallRiderCountsForStation(5, plot1)
-    plot2S = BartLibs.RemoveSmallRiderCountsForStation(5, yearlyAvg)
+    plot2S = BartLibs.RemoveSmallRiderCountsForStation(5, plot2)
     cTable = [plot1S, plot2S]
 
     allStatsInter, OrigList = BartLibs.IntersectAllStations(cTable)
     rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
+    #PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1)
+
+
+def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1):
     cat_names = list(map(lambda x: x[2], plot1S))
     # add data to bar chart
     le = len(plotData1)
