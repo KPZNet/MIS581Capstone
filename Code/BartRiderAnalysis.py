@@ -34,8 +34,8 @@ try:
     #                                          'PITT', 7, 1, 3, 2019)
 
     #BartLibs.ChiSqTestExp()
-    BARTPlots.CompareMultiDayFromRidersToYearlyAve('PITT', 7, 2019)
-    #BARTPlots.CompareMultipleDayRidersFrom()
+    #BARTPlots.CompareMultiDayFromRidersToYearlyAve('PITT', 7, 2019)
+    BARTPlots.CompareMultipleDayRidersFrom()
     #BARTPlots.CompareMultipleDayRidersTo()
 
     # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '03-27-2019', 2019)

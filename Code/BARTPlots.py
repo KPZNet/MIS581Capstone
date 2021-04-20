@@ -128,7 +128,7 @@ def CompareMultipleDayRidersFrom():
 
     plotD = []
 
-    start_date = date(2019, 4, 1)
+    start_date = date(2019, 3, 1)
     end_date = date(2019, 6, 1)
     delta = timedelta(days=1)
     while start_date <= end_date:
