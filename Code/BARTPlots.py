@@ -1,5 +1,6 @@
 
 import numpy as np
+import pandas
 import statistics
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -81,10 +82,9 @@ def CosFFT():
     BartLibs.ACF(y, P*2 )
 
 
-def CompareMultipleDayRidersTo(startDate, endDate, dest, hour):
+def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders):
 
     plotD = []
-
     start_date = startDate
     end_date = endDate
     delta = timedelta(days = 1)
@@ -93,13 +93,13 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour):
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
             print (sDate, " Len: ", len(da) )
-            if len(da) > 20:
+            if len(da) > minStations:
                 plotD.append( da )
         start_date += delta
 
     plotD_Data = []
     for n in plotD:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(50, n))
+        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
 
     allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
     rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
@@ -170,11 +170,15 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
 
 
 def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, yearlyAvg)
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-    rejectHO, pVal = BartLibs.ChiSqTestNxN( [plotData1, plotData2] )
+    plot1Sc, plot2Sc = BartLibs.RemoveSmallRiderCounts(5, plot1, yearlyAvg)
+    plot1S = BartLibs.RemoveSmallRiderCountsForStation(5, plot1)
+    plot2S = BartLibs.RemoveSmallRiderCountsForStation(5, yearlyAvg)
+    cTable = [plot1S, plot2S]
+
+    allStatsInter, OrigList = BartLibs.IntersectAllStations(cTable)
+    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
+
     cat_names = list(map(lambda x: x[2], plot1S))
     # add data to bar chart
     le = len(plotData1)
