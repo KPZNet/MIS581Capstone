@@ -97,11 +97,7 @@ def ChiSqTestExp():
 def IntersectStations(statA, statB):
     subSetA = [ele1 for ele1 in statA
            for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2]) ]
-
-    subSetB = [ele1 for ele1 in statB
-              for ele2 in statA if (ele1[1] == ele2[1] and ele1[2] == ele2[2]) ]
-
-    return subSetA, subSetB
+    return subSetA
 
 
 def IntersectAllStations(stats):
@@ -111,57 +107,18 @@ def IntersectAllStations(stats):
         sub = stats[i]
         for j, k in enumerate(stats):
             if i != j:
-                sub, junk = IntersectStations(sub, stats[j])
+                sub = IntersectStations(sub, stats[j])
         newList.append(sub)
         riderList.append(list(map(lambda x: x[0], sub)))
     return riderList, newList
 
 
-
-def RemoveSmallStationsPercent(per, l1, l2):
-    try:
-        propL1 = CalcProp(list(map(lambda x: x[0], l1)))
-        propL2 = CalcProp(list(map(lambda x: x[0], l2)))
-        l1p = []
-        l2p = []
-        for index, value in enumerate(propL1):
-            if propL1[index] > per and propL2[index] > per:
-                l1p.append(l1[index])
-                l2p.append(l2[index])
-
-    except(Exception) as e:
-        print(e)
-
-    return l1p, l2p
-
-def RemoveSmallRiderCounts(counts, l1, l2):
-    try:
-
-        l1, l2 = IntersectStations(l1, l2)
-
-        dataL1 = (list(map(lambda x: x[0], l1)))
-        dataL2 = (list(map(lambda x: x[0], l2)))
-        l1p = []
-        l2p = []
-        for index, value in enumerate(dataL1):
-            if dataL1[index] > counts and dataL2[index] > counts:
-                l1p.append(l1[index])
-                l2p.append(l2[index])
-
-    except(Exception) as e:
-        print(e)
-
-    return l1p, l2p
-
 def RemoveSmallRiderCountsForStation(counts, l1):
     try:
-        dataL1 = (list(map(lambda x: x[0], l1)))
         l1p = []
-        for index, value in enumerate(dataL1):
-            if dataL1[index] > counts :
-                l1p.append(l1[index])
-
+        for l in l1:
+            if l[0] > counts:
+                l1p.append(l)
     except(Exception) as e:
         print(e)
-
     return l1p

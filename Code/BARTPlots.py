@@ -170,7 +170,6 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
 
 
 def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
-    plot1Sc, plot2Sc = BartLibs.RemoveSmallRiderCounts(5, plot1, yearlyAvg)
     plot1S = BartLibs.RemoveSmallRiderCountsForStation(5, plot1)
     plot2S = BartLibs.RemoveSmallRiderCountsForStation(5, yearlyAvg)
     cTable = [plot1S, plot2S]
