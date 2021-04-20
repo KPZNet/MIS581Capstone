@@ -130,7 +130,6 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
 
-
 def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1):
 
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersToDest(dest1, hour1, year1)
@@ -203,6 +202,15 @@ def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
     plt.show()
 
 
+def PlotRiderBargraph(plotData):
+    cat_names = list(map(lambda x: x[2], plotData))
+    barValues = list(map(lambda x: x[0], plotData))
+    plt.bar(cat_names, barValues)
+    plt.suptitle('Hello Kitty')
+    plt.xlabel('Hour')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=90)
+    plt.show()
 
 def ShowAverageWeeklyRiderForHour(dest, hour, year):
     plotdata = BARTQueries.GetAverageWeeklyRiderForHour(dest, hour, year)
