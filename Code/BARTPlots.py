@@ -82,6 +82,17 @@ def CosFFT():
     BartLibs.ACF(y, P*2 )
 
 
+def TestMultipleRoutes(propList, minRiders):
+    plotD_Data = []
+    for n in propList:
+        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
+
+    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
+    print("Intersection Size: ", len(allStatsInter[0]) )
+    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
+    print("Reject HO: ", rejectHO, " p-value :", pVal)
+    return rejectHO
+
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders):
 
     propList = []
@@ -97,9 +108,12 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
                 propList.append( da )
         start_date += delta
 
-    TestMultipleRoutes(propList)
+    if( len(propList) > 1 ):
+        TestMultipleRoutes(propList, minRiders)
+    else:
+        print("No Stations Found")
 
-def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
+def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders):
 
     propList = []
     start_date = startDate
@@ -110,28 +124,20 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
             print (sDate, " Len: ", len(da) )
-            if len(da) > 20:
+            if len(da) > minStations:
                 propList.append( da )
         start_date += delta
 
-    TestMultipleRoutes(propList)
+    if( len(propList) > 1 ):
+        TestMultipleRoutes(propList, minRiders)
+    else:
+        print("No Stations Found")
 
 
-def TestMultipleRoutes(propList):
-    plotD_Data = []
-    for n in propList:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
-
-    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-    print("Reject HO: ", not rejectHO, " p-value :", pVal)
-    return rejectHO
-
-def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1):
+def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1, minStations, minRiders):
 
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersToDest(dest1, hour1, year1)
 
-    plotD = []
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=1)
@@ -140,16 +146,15 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
             print (sDate, " Len: ", len(da) )
-            if len(da) > 20:
-                plotD.append( da )
-                CompareRouteProportions(da, yearlyAvg)
+            if len(da) > minStations:
+                TestMultipleRoutes( [da, yearlyAvg], minRiders)
+                #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
-def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1):
+def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders):
 
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersFromSource(source1, hour1, year1)
 
-    plotD = []
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=1)
@@ -158,9 +163,9 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersFrom(source1, hour1, sDate)
             print (sDate, " Len: ", len(da) )
-            if len(da) > 20:
-                plotD.append( da )
-                CompareRouteProportions(da, yearlyAvg)
+            if len(da) > minStations:
+                TestMultipleRoutes( [da, yearlyAvg], minRiders)
+                #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
 
@@ -204,11 +209,12 @@ def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1)
     plt.show()
 
 
-def PlotRiderBargraph(plotData):
-    cat_names = list(map(lambda x: x[2], plotData))
-    barValues = list(map(lambda x: x[0], plotData))
+def PlotYearlySumRidersPerOrigin(origin, year):
+    hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin,year)
+    cat_names = list(map(lambda x: x[1], hourlyRiders))
+    barValues = list(map(lambda x: x[0], hourlyRiders))
     plt.bar(cat_names, barValues)
-    plt.suptitle('Hello Kitty')
+    plt.suptitle('Total Riders : {0}'.format(year))
     plt.xlabel('Hour')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)

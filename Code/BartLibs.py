@@ -54,15 +54,15 @@ def CalcProp(dataArray):
     return propList
 
 def ChiSqTestNxN(d1):
-    acceptH0 = True
+    rejectHO = False
     data = d1
     stat, p, dof, expected = chi2_contingency(data)
 
     # interpret p-value
     alpha = 0.05
     if p <= alpha:
-        acceptH0 = False
-    return acceptH0, p
+        rejectHO = True
+    return rejectHO, p
 
 def ChiSqTestExp():
     # defining the table

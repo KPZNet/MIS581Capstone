@@ -43,7 +43,7 @@ def PGBartLocal(query):
 def GetYearlyAverageDailyRidersToDest(dest, hour, year):
     query = """
                                 
-        select cast(AVG(riders) as int) as riders, source, dest
+        select cast(AVG(riders) as int) as riders, source, dest, hour
         from hourlystationqueue
         where
             extract(ISODOW from date) in (1,2,3,4,5)
@@ -53,7 +53,7 @@ def GetYearlyAverageDailyRidersToDest(dest, hour, year):
             hour = {1}
         and 
             extract(YEAR from date) = {2}
-        group by source, dest
+        group by source, dest, hour
         order by source asc
                 
     """.format(dest, hour, year)
@@ -66,7 +66,7 @@ def GetYearlyAverageDailyRidersToDest(dest, hour, year):
 def GetYearlyAverageDailyRidersFromSource(source, hour, year):
     query = """
                                 
-        select cast(AVG(riders) as int) as riders, source, dest
+        select cast(AVG(riders) as int) as riders, source, dest, depart_hour
         from hourlystationqueue
         where
             extract(ISODOW from depart_date) in (1,2,3,4,5)
@@ -76,7 +76,7 @@ def GetYearlyAverageDailyRidersFromSource(source, hour, year):
             depart_hour = {1}
         and 
             extract(YEAR from depart_date) = {2}
-        group by source, dest
+        group by source, dest, depart_hour
         order by dest asc
                 
     """.format(source, hour, year)
@@ -94,11 +94,11 @@ def GetDailyRidersTo( dest, hour, date):
     where
         extract(ISODOW from depart_date) in (1,2,3,4,5)
      and
-        hour = {0}
+        depart_hour = {0}
       AND
         dest = '{1}'
       and
-        date = '{2}'
+        depart_date = '{2}'
       order by source asc 
     """.format(hour, dest, date)
 
@@ -128,7 +128,26 @@ def GetDailyRidersFrom( origin, hour, date):
     return plotdata
 
 
+def GetSumYearRidersPerHour(origin, year):
+    query = """
+                                
+    select cast(sum(riders) as int) as riders, depart_hour
+    from hourlystationqueue
+    where
+          extract(ISODOW from depart_date) in (1,2,3,4,5)
+      AND
+          source = '{0}'
+      and
+          extract(YEAR from depart_date) = {1}
+    
+    group by source, depart_hour
+    order by depart_hour asc
+                
+    """.format(origin,year)
 
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
 
 
 def GetAverageWeeklyRiderForHour(dest, hour, year):
