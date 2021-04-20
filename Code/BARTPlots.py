@@ -80,73 +80,6 @@ def CosFFT():
     BartLibs.Decomposition(y, P)
     BartLibs.ACF(y, P*2 )
 
-def GetPITTDistroCompare():
-
-    plotData14 = BARTQueries.GetAverageDailyRidersFromSource('PITT', 7, 2018)
-    plotData15 = BARTQueries.GetAverageDailyRidersFromSource('PITT', 7, 2019)
-
-    plotData14S, plotData15S = BartLibs.RemoveSmallRiderCounts(5, plotData14, plotData15)
-
-    pData14 = list(map(lambda x: x[0], plotData14S))
-    pData15 = list(map(lambda x: x[0], plotData15S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(pData14, pData15)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plotData14S))
-    #add data to bar chart
-    le = len(pData14)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, pData14)
-    ax2.bar(cat_names, pData15)
-
-    ax1.set_title("2014")
-    ax2.set_title("2015")
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0:'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-def CompareMultipleDayRidersFrom():
-
-    plotD = []
-
-    start_date = date(2019, 3, 1)
-    end_date = date(2019, 6, 1)
-    delta = timedelta(days=1)
-    while start_date <= end_date:
-        if start_date.weekday() < 5:
-            sDate =  start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersTo('PITT', 7, sDate)
-            print (sDate, " Len: ", len(da) )
-            if len(da) > 20:
-                plotD.append( da )
-        start_date += delta
-
-    plotD_Data = []
-    for n in plotD:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
-
-    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-    print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour):
 
@@ -158,7 +91,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour):
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersFrom(dest, hour, sDate)
+            da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
             print (sDate, " Len: ", len(da) )
             if len(da) > 20:
                 plotD.append( da )
@@ -166,7 +99,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour):
 
     plotD_Data = []
     for n in plotD:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(5, n))
+        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(50, n))
 
     allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
     rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
@@ -197,19 +130,39 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour):
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
 
 
-def CompareMultiDayFromRidersToYearlyAve(source1, hour1, year1):
 
-    yearlyAvg = BARTQueries.GetAverageDailyRidersFromSource(source1, hour1, year1)
+def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1):
+
+    yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersToDest(dest1, hour1, year1)
 
     plotD = []
 
-    start_date = date(2021, 2, 1)
-    end_date = date(2021, 3, 1)
+    start_date = startDate
+    end_date = endDate
     delta = timedelta(days=1)
     while start_date <= end_date:
-        if start_date.weekday() == 0:
+        if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersFrom('PITT', 7, sDate)
+            da = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
+            print (sDate, " Len: ", len(da) )
+            if len(da) > 20:
+                plotD.append( da )
+                CompareDays(da, sDate, hour1, dest1, year1, yearlyAvg)
+        start_date += delta
+
+def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1):
+
+    yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersFromSource(source1, hour1, year1)
+
+    plotD = []
+
+    start_date = startDate
+    end_date = endDate
+    delta = timedelta(days=1)
+    while start_date <= end_date:
+        if start_date.weekday() < 5:
+            sDate =  start_date.strftime("%m-%d-%Y")
+            da = BARTQueries.GetDailyRidersFrom(source1, hour1, sDate)
             print (sDate, " Len: ", len(da) )
             if len(da) > 20:
                 plotD.append( da )
@@ -221,7 +174,7 @@ def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
     plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, yearlyAvg)
     plotData1 = list(map(lambda x: x[0], plot1S))
     plotData2 = list(map(lambda x: x[0], plot2S))
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
+    rejectHO, pVal = BartLibs.ChiSqTestNxN( [plotData1, plotData2] )
     print("Reject HO: ", not rejectHO, " p-value :", pVal)
     cat_names = list(map(lambda x: x[2], plot1S))
     # add data to bar chart
@@ -250,314 +203,6 @@ def CompareDays(plot1, date1, hour1, source1, year1, yearlyAvg):
     plt.show()
 
 
-def CompareDayRidersToYearlyAve(source1, hour1, date1, year1):
-
-    plot1 = BARTQueries.GetDailyRiders(source1, hour1, date1)
-    plot2 = BARTQueries.GetAverageDailyRidersFromSource(source1, hour1, year1)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", not rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    title1 = 'Daily Riders from {0}\nHour {1}, date {2}'.format(source1, hour1, date1)
-    title2 = 'Average Annual {0}\nHour {1}, Year {2}'.format(source1, hour1, year1)
-
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-
-
-def CompareDailyRidersFromDestPerHour(hour1, source1, day1, month1, year1,
-                                      hour2, source2, day2, month2, year2):
-
-    plot1 = BARTQueries.GetDailyRiders(hour1, source1, day1, month1, year1)
-    plot2 = BARTQueries.GetDailyRiders(hour2, source2, day2, month2, year2)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    ax1.set_title("2014")
-    ax2.set_title("2015")
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0:'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-def CompareAverageDayRiders(hour1, source1, day1, year1,
-                            hour2, source2, day2, year2):
-
-    plot1 = BARTQueries.GetAverageDayRider(source1, hour1, day1, year1)
-    plot2 = BARTQueries.GetAverageDayRider(source2, hour2, day2, year2)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    title1 = 'Ave Riders from {0}\nHour {1}, day {2}, Year {3}'.format(source1, hour1, day1, year1)
-    title2 = 'Ave Riders from {0}\nHour {1}, day {2}, Year {3}'.format(source2, hour2, day2, year2)
-
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-def CompareAverageDayRidersByMonth(source1, hour1, isodow1, month1, year1,
-                                   source2, hour2, isodow2, month2, year2):
-
-    plot1 = BARTQueries.GetAverageDayRiderByMonth(source1, hour1, isodow1, month1, year1)
-    plot2 = BARTQueries.GetAverageDayRiderByMonth(source2, hour2, isodow2, month2, year2)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    title1 = 'Ave Riders from {0}\nHour {1}, day {2}, Month {3}, Year {4}'.format(source1, hour1, isodow1, month1, year1)
-    title2 = 'Ave Riders from {0}\nHour {1}, day {2}, Month {3}, Year {4}'.format(source2, hour2, isodow2, month2, year2)
-
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-def CompareTotalDayRidersByWeek(source1, hour1, day1, week1, year1,
-                                source2, hour2, day2, week2, year2):
-
-    plot1 = BARTQueries.GetTotalDayRiderByWeek(source1, hour1, day1, week1, year1)
-    plot2 = BARTQueries.GetTotalDayRiderByWeek(source2, hour2, day2, week2, year2)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    title1 = 'Riders from {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(source1, hour1, day1, week1, year1)
-    title2 = 'Riders from {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(source2, hour2, day2, week2, year2)
-
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-
-def CompareTotalDayRidersByWeekToDest(dest1, hour1, day1, week1, year1,
-                                dest2, hour2, day2, week2, year2):
-
-    plot1 = BARTQueries.GetTotalDayRiderByWeekToDest(dest1, hour1, day1, week1, year1)
-    plot2 = BARTQueries.GetTotalDayRiderByWeekToDest(dest2, hour2, day2, week2, year2)
-
-    plot1S, plot2S = BartLibs.RemoveSmallRiderCounts(5, plot1, plot2)
-
-    plotData1 = list(map(lambda x: x[0], plot1S))
-    plotData2 = list(map(lambda x: x[0], plot2S))
-
-    rejectHO, pVal = BartLibs.ChiSqTest(plotData1, plotData2)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-
-    cat_names = list(map(lambda x: x[2], plot1S))
-    #add data to bar chart
-    le = len(plotData1)
-
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-
-    title1 = 'Riders to {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(dest1, hour1, day1, week1, year1)
-    title2 = 'Riders to {0}\nHour {1}, day {2}\n week {3}, Year {4}'.format(dest2, hour2, day2, week2, year2)
-
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal,rejectHO)
-    plt.suptitle(hypTest)
-
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-def ShowHourlyAverageRidersSource(source):
-    plotData = BARTQueries.GetAverageDailySourceByHour(source)
-    cat_names = list(map(lambda x: x[2], plotData))
-    barValues = list(map(lambda x: x[0], plotData))
-    plt.bar(cat_names, barValues)
-    plt.suptitle('{0} Riders Avg by Hour'.format(source))
-    plt.xlabel('Hour')
-    plt.ylabel('Riders')
-    plt.xticks(rotation=90)
-    plt.show()
-
-def ShowDailyRiders(hour, source, day, month, year):
-    plotData = BARTQueries.GetDailyRiders(hour, source, day, month, year)
-    cat_names = list(map(lambda x: x[2], plotData))
-    barValues = list(map(lambda x: x[0], plotData))
-    plt.bar(cat_names, barValues)
-    plt.suptitle('{1} Riders AT Hour {0}, Day {2}, Month {3}, Year {4}'.format(hour, source, day, month, year))
-    plt.xlabel('Dest')
-    plt.ylabel('Riders')
-    plt.xticks(rotation=90)
-    plt.show()
 
 def ShowAverageWeeklyRiderForHour(dest, hour, year):
     plotdata = BARTQueries.GetAverageWeeklyRiderForHour(dest, hour, year)

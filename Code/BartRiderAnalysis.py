@@ -35,21 +35,13 @@ try:
     #                                          'PITT', 7, 1, 3, 2019)
 
     #BartLibs.ChiSqTestExp()
-    #BARTPlots.CompareMultiDayFromRidersToYearlyAve('PITT', 7, 2019)
-    BARTPlots.CompareMultipleDayRidersFrom(date(2019, 3, 1),date(2019, 4, 1), 'PITT', 7)
-    BARTPlots.CompareMultipleDayRidersTo(date(2019, 3, 1),date(2019, 4, 1), 'EMBR', 7)
-    #BARTPlots.CompareMultipleDayRidersTo()
+    #BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019, 3, 1),date(2019, 4, 1),'PITT', 7, 2019)
+    BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 3, 1),date(2019, 4, 1),'EMBR', 7, 2019)
+    #BARTPlots.CompareMultipleDayRidersFrom(date(2019, 3, 1),date(2019, 4, 1), 'PITT', 7)
+    #BARTPlots.CompareMultipleDayRidersTo(date(2019, 3, 1),date(2019, 4, 1), 'EMBR', 7)
 
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '03-27-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '03-26-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '02-27-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '06-14-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '07-5-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '08-8-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '09-26-2019', 2019)
-    # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '11-27-2019', 2019)
-    # BARTPlots.CompareTotalDayRidersByWeek('PITT', 7, 2, 2019,
-    #                                       'PITT', 7, 7, 2019)
+
+
 
 except(Exception) as e:
     print(e)

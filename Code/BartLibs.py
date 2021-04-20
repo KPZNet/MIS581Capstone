@@ -64,17 +64,6 @@ def ChiSqTestNxN(d1):
         acceptH0 = False
     return acceptH0, p
 
-def ChiSqTest(d1,d2):
-    acceptH0 = True
-    data = [d1, d2]
-    stat, p, dof, expected = chi2_contingency(data)
-
-    # interpret p-value
-    alpha = 0.05
-    if p <= alpha:
-        acceptH0 = False
-    return acceptH0, p
-
 def ChiSqTestExp():
     # defining the table
     data = [[550, 90, 45],
