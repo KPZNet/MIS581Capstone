@@ -7,6 +7,7 @@ from statsmodels.graphics import tsaplots
 from Code.DataBase import bart
 from statsmodels.tsa.seasonal import seasonal_decompose
 import matplotlib.ticker as mticker
+from datetime import date, timedelta
 
 import BartLibs
 import BARTQueries
@@ -35,7 +36,8 @@ try:
 
     #BartLibs.ChiSqTestExp()
     #BARTPlots.CompareMultiDayFromRidersToYearlyAve('PITT', 7, 2019)
-    BARTPlots.CompareMultipleDayRidersFrom()
+    BARTPlots.CompareMultipleDayRidersFrom(date(2019, 3, 1),date(2019, 4, 1), 'PITT', 7)
+    BARTPlots.CompareMultipleDayRidersTo(date(2019, 3, 1),date(2019, 4, 1), 'EMBR', 7)
     #BARTPlots.CompareMultipleDayRidersTo()
 
     # BARTPlots.CompareDayRidersToYearlyAve('PITT', 7, '03-27-2019', 2019)

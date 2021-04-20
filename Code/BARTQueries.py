@@ -105,7 +105,7 @@ def GetAverageDailySourceByHour(source):
     return plotdata
 
 
-def GetDailyRidersTo( dest, hour, date):
+def GetDailyRidersFrom( origin, hour, date):
     query = """
                                 
     select riders, source, dest, depart_hour
@@ -119,12 +119,32 @@ def GetDailyRidersTo( dest, hour, date):
       and
         depart_date = '{2}'
       order by dest asc 
-    """.format(hour, dest, date)
+    """.format(hour, origin, date)
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
+
+def GetDailyRidersTo( dest, hour, date):
+    query = """
+                                
+    select riders, source, dest, depart_hour
+    from hourlystationqueue
+    where
+        extract(ISODOW from depart_date) in (1,2,3,4,5)
+     and
+        hour = {0}
+      AND
+        dest = '{1}'
+      and
+        date = '{2}'
+      order by dest asc 
+    """.format(hour, dest, date)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
 
 def GetDailyRidersFrom( source, hour, date):
     query = """
