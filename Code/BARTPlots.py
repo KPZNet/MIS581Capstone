@@ -172,23 +172,49 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 dayYearPair = [da, yearlyAvg]
                 allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
                 rejectHO, pVal = TestMultipleRoutes(allStations)
-                print("MultiRiders From {0}, Stats: {1}, RejectHO: {4}, PVal: {2} Date {3}".format(source1, len(da), pVal, sDate, rejectHO))
-
+                title = "MultiRiders From {0}, Stats: {1}\nRejectHO: {4}, PVal: {2:.5f}\nDate {3}".format(source1, len(da), pVal,                                                                                       sDate, rejectHO)
+                print(title)
+                PlotTwoSets(allStationsComplete, sDate, year1, title)
+                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, title)
                 #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
 
-def CompareRouteProportions(plot1, plot2):
-    plot1S = BartLibs.RemoveSmallRiderCountsForStation(5, plot1)
-    plot2S = BartLibs.RemoveSmallRiderCountsForStation(5, plot2)
-    cTable = [plot1S, plot2S]
+def PlotTwoSets(stats, lab1, lab2, title):
+    cats = list(map(lambda x: x[2], stats[0]))
+    d1 = list(map(lambda x: x[0], stats[0]))
+    d2 = list(map(lambda x: x[0], stats[1]))
+    X = np.arange( len(d1) )
+    plt.bar(X + 0.00, d1, color='b', width=0.25)
+    plt.bar(X + 0.3, d2, color='r', width=0.25)
+    plt.xticks(X, cats)
+    plt.legend(labels=[lab1, lab2])
+    plt.tick_params(labelrotation=45)
 
-    allStatsInter, OrigList = BartLibs.IntersectAllStations(cTable)
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-    print("Reject HO: ", not rejectHO, " p-value :", pVal)
+    plt.title(title)
+    plt.show()
 
-    #PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1)
+def PlotTwoSetsTrueProp(stats, lab1, lab2, title):
+    cats = list(map(lambda x: x[2], stats[0]))
+    d1 = list(map(lambda x: x[0], stats[0]))
+    d2 = list(map(lambda x: x[0], stats[1]))
 
+    d1Scale = 100.0/max(d1)
+    d2Scale = 100.0/max(d2)
+
+    d1 = list(map(lambda x: x*d1Scale, d1))
+    d2 = list(map(lambda x: x*d2Scale, d2))
+
+
+    X = np.arange( len(d1) )
+    plt.bar(X + 0.00, d1, color='b', width=0.25)
+    plt.bar(X + 0.3, d2, color='r', width=0.25)
+    plt.xticks(X, cats)
+    plt.legend(labels=[lab1, lab2])
+    plt.tick_params(labelrotation=45)
+
+    plt.title(title)
+    plt.show()
 
 def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1):
     cat_names = list(map(lambda x: x[2], plot1S))
