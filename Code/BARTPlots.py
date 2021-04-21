@@ -111,7 +111,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
     if( len(propList) > 1 ):
         allStations, allStationsComplete = ScrubRiders(minRiders, propList)
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        print("MultiRiders From {0}, Num: {1}, PVal: {2}".format( dest, len(allStations), pVal ) )
+        print("MultiRiders From {0}, Reject: {3}, Num: {1}, PVal: {2}".format( dest, len(allStations), pVal, rejectHO ) )
     else:
         print("No Stations Found")
 
@@ -133,7 +133,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
     if( len(propList) > 1 ):
         allStations, allStationsComplete = ScrubRiders(minRiders, propList)
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        print("MultiRiders To {0}, Num: {1}, PVal: {2}".format( origin, len(allStations), pVal ) )
+        print("MultiRiders To {0}, RejectHO: {3}, Num: {1}, PVal: {2}".format( origin, len(allStations), pVal, rejectHO ) )
     else:
         print("No Stations Found")
 
@@ -153,7 +153,7 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
                 dayYearPair = [da, yearlyAvg]
                 allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
                 rejectHO, pVal = TestMultipleRoutes( allStations)
-                print("MultiRiders To {0}, Stats: {1}, PVal: {2}  Date: {3}".format(dest1, len(da), pVal, sDate))
+                print("MultiRiders To {0}, Stats: {1}, RejectHO: {4}, PVal: {2}  Date: {3}".format(dest1, len(da), pVal, sDate, rejectHO))
                 #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
@@ -172,7 +172,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 dayYearPair = [da, yearlyAvg]
                 allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
                 rejectHO, pVal = TestMultipleRoutes(allStations)
-                print("MultiRiders From {0}, Stats: {1}, PVal: {2} Date {3}".format(source1, len(da), pVal, sDate))
+                print("MultiRiders From {0}, Stats: {1}, RejectHO: {4}, PVal: {2} Date {3}".format(source1, len(da), pVal, sDate, rejectHO))
 
                 #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
