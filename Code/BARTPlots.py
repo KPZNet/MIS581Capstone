@@ -82,16 +82,17 @@ def CosFFT():
     BartLibs.ACF(y, P*2 )
 
 
-def TestMultipleRoutes(propList, minRiders):
-    plotD_Data = []
-    for n in propList:
-        plotD_Data.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
 
-    allStatsInter, OrigList = BartLibs.IntersectAllStations(plotD_Data)
-    print("Intersection Size: ", len(allStatsInter[0]) )
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(allStatsInter)
-    print("Reject HO: ", rejectHO, " p-value :", pVal)
-    return rejectHO
+def ScrubRiders(minRiders, propList) :
+    riderCleaned = []
+    for n in propList :
+        riderCleaned.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
+    allStatsInter, origList = BartLibs.IntersectAllStations(riderCleaned)
+    return allStatsInter, origList
+
+def TestMultipleRoutes(riderContTable):
+    rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
+    return rejectHO, pVal
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders):
 
@@ -103,15 +104,17 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
-            print (sDate, " Len: ", len(da) )
             if len(da) > minStations:
                 propList.append( da )
         start_date += delta
 
     if( len(propList) > 1 ):
-        TestMultipleRoutes(propList, minRiders)
+        allStations, allStationsComplete = ScrubRiders(minRiders, propList)
+        rejectHO, pVal = TestMultipleRoutes(allStations)
+        print("MultiRiders From {0}, Num: {1}, PVal: {2}".format( dest, len(allStations), pVal ) )
     else:
         print("No Stations Found")
+
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders):
 
@@ -123,13 +126,14 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
-            print (sDate, " Len: ", len(da) )
             if len(da) > minStations:
                 propList.append( da )
         start_date += delta
 
     if( len(propList) > 1 ):
-        TestMultipleRoutes(propList, minRiders)
+        allStations, allStationsComplete = ScrubRiders(minRiders, propList)
+        rejectHO, pVal = TestMultipleRoutes(allStations)
+        print("MultiRiders To {0}, Num: {1}, PVal: {2}".format( origin, len(allStations), pVal ) )
     else:
         print("No Stations Found")
 
