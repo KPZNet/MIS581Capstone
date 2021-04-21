@@ -149,9 +149,11 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
-            print (sDate, " Len: ", len(da) )
             if len(da) > minStations:
-                TestMultipleRoutes( [da, yearlyAvg], minRiders)
+                dayYearPair = [da, yearlyAvg]
+                allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
+                rejectHO, pVal = TestMultipleRoutes( allStations)
+                print("MultiRiders To {0}, Stats: {1}, PVal: {2}  Date: {3}".format(dest1, len(da), pVal, sDate))
                 #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
@@ -166,9 +168,12 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
         if start_date.weekday() < 5:
             sDate =  start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersFrom(source1, hour1, sDate)
-            print (sDate, " Len: ", len(da) )
             if len(da) > minStations:
-                TestMultipleRoutes( [da, yearlyAvg], minRiders)
+                dayYearPair = [da, yearlyAvg]
+                allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
+                rejectHO, pVal = TestMultipleRoutes(allStations)
+                print("MultiRiders From {0}, Stats: {1}, PVal: {2} Date {3}".format(source1, len(da), pVal, sDate))
+
                 #CompareRouteProportions(da, yearlyAvg)
         start_date += delta
 
