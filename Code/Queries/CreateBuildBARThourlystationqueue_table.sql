@@ -24,7 +24,7 @@ with trips as
 (select origin,
         dest,
         AVG(triptime) as triptime
-from triptimes group by dest, origin)
+from triptimes where dow = 0 group by dest, origin)
 
 select hourlyriders.date, hourlyriders.hour, hourlyriders.source, hourlyriders.dest, hourlyriders.riders,
        trips.triptime,
