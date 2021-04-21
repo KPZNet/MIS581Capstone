@@ -1,3 +1,4 @@
+from random import random
 
 import numpy as np
 import pandas
@@ -7,6 +8,7 @@ import matplotlib.ticker as mticker
 import BartLibs
 import BARTQueries
 from datetime import date, timedelta
+import random
 
 
 def RunBARTTimeSeries():
@@ -134,6 +136,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         allStations, allStationsComplete = ScrubRiders(minRiders, propList)
         rejectHO, pVal = TestMultipleRoutes(allStations)
         print("MultiRiders To {0}, RejectHO: {3}, Num: {1}, PVal: {2}".format( origin, len(allStations), pVal, rejectHO ) )
+        PlotMultiSets(allStationsComplete, "title")
     else:
         print("No Stations Found")
 
@@ -174,6 +177,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 rejectHO, pVal = TestMultipleRoutes(allStations)
                 title = "MultiRiders From {0}, Stats: {1}\nRejectHO: {4}, PVal: {2:.5f}\nDate {3}".format(source1, len(da), pVal,                                                                                       sDate, rejectHO)
                 print(title)
+                PlotMultiSets(allStationsComplete, title)
                 PlotTwoSets(allStationsComplete, sDate, year1, title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, title)
                 #CompareRouteProportions(da, yearlyAvg)
@@ -215,6 +219,24 @@ def PlotTwoSetsTrueProp(stats, lab1, lab2, title):
 
     plt.title(title)
     plt.show()
+
+def PlotMultiSets(stats, title):
+    cats = list(map(lambda x: x[2], stats[0]))
+    X = np.arange(len(cats))
+    barWidth = .25
+    n = len(cats)/4
+    for index, p in enumerate(stats):
+        c = (random.random(), random.random(), random.random())
+        d = list(map(lambda x: x[0], p))
+        d = list(map(lambda x: x*100.0/max(d), d))
+        plt.bar(X + (barWidth*index)/10, d, color=c, width=barWidth/2)
+
+    plt.xticks(X + barWidth/2, cats)
+    plt.tick_params(labelrotation=45)
+
+    plt.title(title)
+    plt.show()
+
 
 def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1):
     cat_names = list(map(lambda x: x[2], plot1S))
