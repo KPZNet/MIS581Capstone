@@ -121,7 +121,7 @@ def TestMultipleRoutes(riderContTable):
     return rejectHO, pVal
 
 
-def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders):
+def CompareMultipleDayRidersToX(startDate, endDate, dest, hour, minStations, minRiders):
     propList = []
     start_date = startDate
     end_date = endDate
@@ -141,6 +141,34 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
     else:
         print("No Stations Found")
 
+def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
+    propList = []
+    start_date = startDate
+    end_date = endDate
+    delta = timedelta(days=dayInterval)
+    while start_date <= end_date:
+        if start_date.weekday() < 5:
+            sDate = start_date.strftime("%m-%d-%Y")
+            da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
+            if len(da) > 0:
+                propList.append(da)
+        start_date += delta
+
+    if (len(propList) > 1):
+        PrintRoutes(propList)
+        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
+
+        stations = len(allStationsComplete[0])
+        rejectHO, pVal = TestMultipleRoutes(allStations)
+        title = "MultiRiders From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
+                                                                                                       len(allStations),
+                                                                                                       pVal, rejectHO,
+                                                                                                       stations)
+        print(title)
+        PlotMultiSets(allStationsComplete, title)
+        PrintRoutes ( allStationsComplete )
+    else:
+        print("No Stations Found")
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []

@@ -89,10 +89,10 @@ def GetYearlyAverageDailyRidersFromSource(source, hour, year):
 def GetDailyRidersTo( dest, hour, date):
     query = """
                                 
-    select riders, source, dest, depart_hour
+    select riders, source, dest, depart_hour, depart_date
     from hourlystationqueue
     where
-        extract(ISODOW from depart_date) in (1,2,3,4,5)
+        extract(ISODOW from depart_date) in (1)
      and
         depart_hour = {0}
       AND
