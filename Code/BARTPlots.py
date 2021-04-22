@@ -3,7 +3,10 @@ from random import random
 import numpy as np
 import pandas
 import statistics
+# cycler is a separate package extracted from matplotlib.
+from cycler import cycler
 import matplotlib.pyplot as plt
+from matplotlib.colors import hsv_to_rgb
 import matplotlib.ticker as mticker
 import BartLibs
 import BARTQueries
@@ -231,14 +234,20 @@ def PlotTwoSetsTrueProp(stats, lab1, lab2, title):
 
 def PlotMultiSets(stats, title):
     cats = list(map(lambda x: x[2], stats[0]))
-    X = np.arange(len(cats))
+    N = len(cats)
+    ns = len(stats)
+    X = np.arange(N)
     barWidth = .25
-    n = int(len(cats) * .5)
+    spread = (ns/2)
+
+    colors = [hsv_to_rgb([(i * 0.618033988749895) % 1.0, 1, 1])
+              for i in range(100)]
+    plt.rc('axes', prop_cycle=(cycler('color', colors)))
+
     for index, p in enumerate(stats):
-        c = (random.random(), random.random(), random.random())
         d = list(map(lambda x: x[0], p))
-        d = list(map(lambda x: x * 100.0 / max(d), d))
-        plt.bar(X + (barWidth * index) / 40, d, color=c, width=barWidth / 2)
+        #d = list(map(lambda x: x * 100.0 / max(d), d))
+        plt.bar(X + (barWidth * index) / spread, d, width=barWidth / 2)
 
     plt.xticks(X + barWidth / 2, cats)
     plt.tick_params(labelrotation=45)
@@ -274,6 +283,16 @@ def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1)
                         hspace=0.4)
     plt.show()
 
+def PlotRoute(s, date1):
+    hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)
+    cat_names = list(map(lambda x: x[1], hourlyRiders))
+    barValues = list(map(lambda x: x[0], hourlyRiders))
+    plt.bar(cat_names, barValues)
+    plt.suptitle('Total Riders : {0}'.format(year))
+    plt.xlabel('Hour')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=90)
+    plt.show()
 
 def PlotYearlySumRidersPerOrigin(origin, year):
     hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)
