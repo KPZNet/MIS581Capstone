@@ -392,8 +392,6 @@ def PlotRidersOnMap():
     df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
     df['text'] = df['airport'] + '' + df['city'] + ', ' + df['state'] + '' + 'Arrivals: ' + df['cnt'].astype(str)
 
-    #pk.eyJ1Ijoia2VuY2VnbGlhIiwiYSI6ImNrbnQ1amhlaDBua2Mybm41dWlmbnJ6cnMifQ.KReG5Hv7pblmQLXqOigYqg
-
     px.set_mapbox_access_token(open(".mapbox_token").read())
 
     gg = BARTQueries.GetTotalRidersInNetworkByHourFrom(7, 2019)
@@ -405,30 +403,3 @@ def PlotRidersOnMap():
 
     fig.show()
 
-def PlotRidersOnMap2():
-    # 1. Draw the map background
-    fig = plt.figure(figsize=(8, 8))
-    m = Basemap(projection='lcc', resolution='h',
-                lat_0=37.5, lon_0=-119,
-                width=1E6, height=1.2E6)
-    m.shadedrelief()
-    m.drawcoastlines(color='gray')
-    m.drawcountries(color='gray')
-    m.drawstates(color='gray')
-
-    # 2. scatter city data, with color reflecting population
-    # and size reflecting area
-    m.scatter(lon, lat, latlon=True,
-              c=np.log10(population), s=area,
-              cmap='Reds', alpha=0.5)
-
-    # 3. create colorbar and legend
-    plt.colorbar(label=r'$\log_{10}({\rm population})$')
-    plt.clim(3, 7)
-
-    # make legend with dummy points
-    for a in [100, 300, 500]:
-        plt.scatter([], [], c='k', alpha=0.5, s=a,
-                    label=str(a) + ' km$^2$')
-    plt.legend(scatterpoints=1, frameon=False,
-               labelspacing=1, loc='lower left');
