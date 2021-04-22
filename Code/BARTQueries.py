@@ -173,3 +173,29 @@ def GetAverageWeeklyRiderForHour(dest, hour, year):
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
+
+
+def GetTotalRidersInNetworkByHourFrom(hour, year):
+    query = """
+
+     select cast(sum(riders) as int) as riders,source,
+               extract(ISODOW from depart_date) as dow,
+               depart_hour, cast(gtfslat as decimal ), cast(gtfslong as decimal)
+        from hourlystationqueue, bartstations
+        where depart_hour = {0}
+        AND
+              extract(ISODOW from depart_date) in (1)
+          and
+              extract(YEAR from depart_date) = {1}
+        and
+              hourlystationqueue.source = bartstations.abbr
+        group by source, extract(ISODOW from depart_date), depart_hour,
+                 gtfslat, gtfslong
+        order by depart_hour asc
+
+    """.format(hour, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    return plotdata
+

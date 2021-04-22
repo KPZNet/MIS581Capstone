@@ -35,12 +35,13 @@ try:
     # BARTPlots.CompareAverageDayRidersByMonth('PITT', 7, 1, 4, 2019,
     #                                          'PITT', 7, 1, 3, 2019)
 
+    BARTPlots.PlotRidersOnMap()
     #BartLibs.ChiSqTestExp()
     #BARTPlots.PlotYearlySumRidersPerOrigin("PITT", 2019)
     #BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019, 2, 1),date(2019, 7, 1),'PITT', 7, 2017, 20, 5)
     #BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 2, 1),date(2019, 7, 1),'MONT', 8, 2017, 20, 5)
     #BARTPlots.CompareMultipleDayRidersFrom(date(2019, 1, 1),date(2019, 12, 30), 'PHIL', 7, 20, 5, 0, 1)
-    BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 2, 1 ), date ( 2019, 10, 30 ), 'MONT', 8, 15, 5, 0, 1 )
+    #BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 2, 1 ), date ( 2019, 10, 30 ), 'MONT', 8, 15, 5, 0, 1 )
     #BARTPlots.CompareMultipleDayRidersTo(date(2014, 4, 4),date(2014, 5, 6), 'MONT', 8, 20, 5)
 
 
