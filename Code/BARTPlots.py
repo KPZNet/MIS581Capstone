@@ -14,6 +14,9 @@ import plotly.express as px
 import pandas as pd
 
 
+def CreateDataFram(inData):
+    df = pd.DataFrame(inData, columns=['riders', 'abbr', 'isodow', 'hour', 'lat', 'long'])
+
 def RunBARTTimeSeries():
     plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
 
