@@ -112,7 +112,7 @@ def GetDailyRidersFrom( origin, hour, date):
     select riders, source, dest, depart_hour
     from hourlystationqueue
     where
-        extract(ISODOW from depart_date) in (1,2,3,4,5)
+        extract(ISODOW from depart_date) in (1)
      and
         depart_hour = {0}
       AND

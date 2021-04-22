@@ -87,10 +87,14 @@ def CosFFT():
     BartLibs.ACF(y, P * 2)
 
 
-def ScrubRiders(minRiders, propList):
+def ScrubRiders(propList, minRiders, minStations, minNumber):
     riderCleaned = []
     for n in propList:
-        riderCleaned.append(BartLibs.RemoveSmallRiderCountsForStation(minRiders, n))
+        g = BartLibs.RemoveSmallRiderCountsForStation(minRiders, n)
+        if len(g) >= minStations:
+            rdr = BartLibs.GetTotRiders(g)
+            if rdr > minNumber:
+                riderCleaned.append(g)
     allStatsInter, origList = BartLibs.IntersectAllStations(riderCleaned)
     return allStatsInter, origList
 
@@ -121,7 +125,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         print("No Stations Found")
 
 
-def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, dayInterval):
+def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
     start_date = startDate
     end_date = endDate
@@ -130,12 +134,12 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
             da = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
-            if len(da) > minStations:
+            if len(da) > 0:
                 propList.append(da)
         start_date += delta
 
     if (len(propList) > 1):
-        allStations, allStationsComplete = ScrubRiders(minRiders, propList)
+        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
         title = "MultiRiders From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
@@ -195,6 +199,18 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
         start_date += delta
 
 
+def PlotRouteSet(stats, title):
+    cats = list(map(lambda x: x[2], stats))
+    d1 = list(map(lambda x: x[0], stats))
+
+    X = np.arange(len(d1))
+    plt.bar(X + 0.00, d1, color='b', width=0.25)
+    plt.xticks(X, cats)
+    plt.tick_params(labelrotation=45)
+
+    plt.title(title)
+    plt.show()
+
 def PlotTwoSets(stats, lab1, lab2, title):
     cats = list(map(lambda x: x[2], stats[0]))
     d1 = list(map(lambda x: x[0], stats[0]))
@@ -246,7 +262,7 @@ def PlotMultiSets(stats, title):
 
     for index, p in enumerate(stats):
         d = list(map(lambda x: x[0], p))
-        #d = list(map(lambda x: x * 100.0 / max(d), d))
+        d = list(map(lambda x: x * 100.0 / max(d), d))
         plt.bar(X + (barWidth * index) / spread, d, width=barWidth / 2)
 
     plt.xticks(X + barWidth / 2, cats)
@@ -283,16 +299,7 @@ def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1)
                         hspace=0.4)
     plt.show()
 
-def PlotRoute(s, date1):
-    hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)
-    cat_names = list(map(lambda x: x[1], hourlyRiders))
-    barValues = list(map(lambda x: x[0], hourlyRiders))
-    plt.bar(cat_names, barValues)
-    plt.suptitle('Total Riders : {0}'.format(year))
-    plt.xlabel('Hour')
-    plt.ylabel('Riders')
-    plt.xticks(rotation=90)
-    plt.show()
+
 
 def PlotYearlySumRidersPerOrigin(origin, year):
     hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)

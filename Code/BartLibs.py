@@ -46,6 +46,13 @@ def Smooth_1StandardDeviation(dataSet):
     return returnData
 
 
+def GetTotRiders(rts):
+    tot = 0
+    for n in rts:
+        tot = tot + n[0]
+    return tot
+
+
 def CalcProp(dataArray):
     tot: decimal.Decimal = 0.0
     for d in dataArray:
@@ -107,7 +114,8 @@ def IntersectAllStations(stats):
         sub = stats[i]
         for j, k in enumerate(stats):
             if i != j:
-                sub = IntersectStations(sub, stats[j])
+                subPrime = IntersectStations(sub, stats[j])
+                sub = subPrime
         newList.append(sub)
         riderList.append(list(map(lambda x: x[0], sub)))
     return riderList, newList
