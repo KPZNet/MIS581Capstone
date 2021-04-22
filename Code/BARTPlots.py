@@ -87,14 +87,31 @@ def CosFFT():
     BartLibs.ACF(y, P * 2)
 
 
+def PrintRoutes(propList):
+    for n in propList:
+        stns = len ( n )
+        rdr = BartLibs.GetTotRiders ( n )
+        dtd = n[0][4]
+        str = "Date:{0}, Stations:{1}, Riders:{2}".format(dtd, stns, rdr)
+        print(str)
+
+
+
 def ScrubRiders(propList, minRiders, minStations, minNumber):
     riderCleaned = []
     for n in propList:
+        rdrBRem = BartLibs.GetTotRiders ( n )
+        numStnsBRem = len (n)
         g = BartLibs.RemoveSmallRiderCountsForStation(minRiders, n)
-        if len(g) >= minStations:
-            rdr = BartLibs.GetTotRiders(g)
-            if rdr > minNumber:
-                riderCleaned.append(g)
+        rdr = BartLibs.GetTotRiders (g)
+        numStns = len(g)
+        if numStns >= minStations and rdr > minNumber:
+            riderCleaned.append(g)
+        else:
+            dtd = n[0][4]
+            str = "SCRUBBED: Date:{0}, Stations:{1}, Riders:{2} - CStations:{3}, CRiders:{4}".format ( dtd, numStns, rdr, numStnsBRem, rdrBRem )
+            print(str)
+
     allStatsInter, origList = BartLibs.IntersectAllStations(riderCleaned)
     return allStatsInter, origList
 
@@ -139,7 +156,9 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         start_date += delta
 
     if (len(propList) > 1):
+        PrintRoutes(propList)
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
+
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
         title = "MultiRiders From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
@@ -148,6 +167,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
                                                                                                        stations)
         print(title)
         PlotMultiSets(allStationsComplete, title)
+        PrintRoutes ( allStationsComplete )
     else:
         print("No Stations Found")
 
