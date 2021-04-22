@@ -3,7 +3,6 @@ from random import random
 import numpy as np
 import pandas
 import statistics
-# cycler is a separate package extracted from matplotlib.
 from cycler import cycler
 import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
@@ -11,8 +10,6 @@ import matplotlib.ticker as mticker
 import BartLibs
 import BARTQueries
 from datetime import date, timedelta
-from mpl_toolkits.basemap import Basemap
-import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 
@@ -388,13 +385,13 @@ def ShowAverageWeeklyRiderForHour(dest, hour, year):
     # BartLibs.ACF(smoothData, 10)
 
 
-def PlotRidersOnMap():
+def PlotRidersOnMap(hour, year):
     df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
     df['text'] = df['airport'] + '' + df['city'] + ', ' + df['state'] + '' + 'Arrivals: ' + df['cnt'].astype(str)
 
     px.set_mapbox_access_token(open(".mapbox_token").read())
 
-    gg = BARTQueries.GetTotalRidersInNetworkByHourFrom(7, 2019)
+    gg = BARTQueries.GetTotalRidersInNetworkByHourFrom(hour, year)
 
     df = pd.DataFrame(gg, columns = ['riders','abbr','isodow','hour', 'lat', 'long'])
 
