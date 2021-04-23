@@ -61,7 +61,9 @@ def RunBARTTimeSeries2():
 
     # ADF statistic to check stationarity
     timeseries = adfuller ( smoothData ,autolag='AIC')
-    if timeseries[0] > timeseries[4]["5%"] :
+    pVal = timeseries[1]
+    #if timeseries[0] > timeseries[4]["5%"] :
+    if pVal > 0.05:
         print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
     else :
         print ( "Reject Ho - Time Series is Stationary" )
