@@ -33,7 +33,7 @@ def RunBARTTimeSeries():
 
     model = sm.tsa.UnobservedComponents ( pd,
                                     level='fixed intercept',
-                                    seasonal=18)
+                                    seasonal=5)
     res_f = model.fit ( disp=False )
     print ( res_f.summary () )
     # The first state variable holds our estimate of the intercept
@@ -44,25 +44,8 @@ def RunBARTTimeSeries():
 
 
 def RunBARTTimeSeries2():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource('PITT', 7, '(2019)')
-    pd = plotdata
-    # ADF statistic to check stationarity
-    timeseries = adfuller ( pd )
-    if timeseries[0] > timeseries[4]["5%"] :
-        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
-    else :
-        print ( "Reject Ho - Time Series is Stationary" )
+    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource('CONC', 7, '(2019)')
 
-    model = sm.tsa.UnobservedComponents ( pd,
-                                    level='fixed intercept',
-                                    seasonal=18)
-    res_f = model.fit ( disp=False )
-    print ( res_f.summary () )
-    # The first state variable holds our estimate of the intercept
-    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
-
-    res_f.plot_components ()
-    plt.show ()
 
     PlotTimeSeriesWithLimitBars(plotdata)
 
@@ -73,6 +56,27 @@ def RunBARTTimeSeries2():
 
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
+
+
+
+    # ADF statistic to check stationarity
+    timeseries = adfuller ( smoothData ,autolag='AIC')
+    if timeseries[0] > timeseries[4]["5%"] :
+        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
+    else :
+        print ( "Reject Ho - Time Series is Stationary" )
+
+    model = sm.tsa.UnobservedComponents ( smoothData,
+                                    level='fixed intercept',
+                                          freq_seasonal=[{'period' : 50,
+                                                          'harmonics' : 5}] )
+    res_f = model.fit ( disp=False )
+    print ( res_f.summary () )
+    # The first state variable holds our estimate of the intercept
+    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
+
+    res_f.plot_components ()
+    plt.show ()
 
 
 def PlotTimeSeriesFFT(smoothData):
