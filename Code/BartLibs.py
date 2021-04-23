@@ -5,6 +5,7 @@ from scipy.stats import chi2_contingency
 import matplotlib.pyplot as plt
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
+import pandas as pd
 
 def Decomposition(data, per):
     decomposition = seasonal_decompose(data, model="additive", period=per)
@@ -130,3 +131,16 @@ def RemoveSmallRiderCountsForStation(counts, l1):
     except(Exception) as e:
         print(e)
     return l1p
+
+def CalcTotlRidersRun(l1):
+    tot = 0
+    for n in l1:
+        for r in n:
+            tot = tot + r[0]
+    return tot
+
+def CalcDroppedRiders(beforeList, afterList):
+    b = CalcTotlRidersRun(beforeList)
+    a = CalcTotlRidersRun(afterList)
+    perc = a/b
+    return perc

@@ -12,6 +12,9 @@ import BARTQueries
 from datetime import date, timedelta
 import plotly.express as px
 import pandas as pd
+from matplotlib.cm import get_cmap
+import matplotlib.pyplot as plt
+
 
 
 def CreateDataFram(inData):
@@ -198,6 +201,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
                                                                                                        stations)
         print(title)
         PlotMultiSets(allStationsComplete, title)
+        dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
     else:
         print("No Stations Found")
@@ -318,9 +322,13 @@ def PlotMultiSets(stats, title):
     barWidth = .25
     spread = (ns/2)
 
-    colors = [hsv_to_rgb([(i * 0.618033988749895) % 1.0, 1, 1])
-              for i in range(100)]
-    plt.rc('axes', prop_cycle=(cycler('color', colors)))
+    plt.rcParams["axes.prop_cycle"] = plt.cycler ( "color", plt.cm.tab20b.colors )
+##
+##    colors = [hsv_to_rgb([(i * 0.618033988749895) % 1.0, 1, 1])
+##              for i in range(100)]
+##    plt.rc('axes', prop_cycle=(cycler('color', colors)))
+##
+
 
     for index, p in enumerate(stats):
         d = list(map(lambda x: x[0], p))
