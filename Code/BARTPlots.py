@@ -14,14 +14,55 @@ import plotly.express as px
 import pandas as pd
 from matplotlib.cm import get_cmap
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import adfuller
 
 
 
-def CreateDataFram(inData):
-    df = pd.DataFrame(inData, columns=['riders', 'abbr', 'isodow', 'hour', 'lat', 'long'])
 
 def RunBARTTimeSeries():
     plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
+    pd = plotdata
+
+    # ADF statistic to check stationarity
+    timeseries = adfuller ( pd )
+    if timeseries[0] > timeseries[4]["5%"] :
+        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
+    else :
+        print ( "Reject Ho - Time Series is Stationary" )
+
+    model = sm.tsa.UnobservedComponents ( pd,
+                                    level='fixed intercept',
+                                    seasonal=18)
+    res_f = model.fit ( disp=False )
+    print ( res_f.summary () )
+    # The first state variable holds our estimate of the intercept
+    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
+
+    res_f.plot_components ()
+    plt.show ()
+
+
+def RunBARTTimeSeries2():
+    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource('PITT', 7, '(2019)')
+    pd = plotdata
+    # ADF statistic to check stationarity
+    timeseries = adfuller ( pd )
+    if timeseries[0] > timeseries[4]["5%"] :
+        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
+    else :
+        print ( "Reject Ho - Time Series is Stationary" )
+
+    model = sm.tsa.UnobservedComponents ( pd,
+                                    level='fixed intercept',
+                                    seasonal=18)
+    res_f = model.fit ( disp=False )
+    print ( res_f.summary () )
+    # The first state variable holds our estimate of the intercept
+    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
+
+    res_f.plot_components ()
+    plt.show ()
 
     PlotTimeSeriesWithLimitBars(plotdata)
 

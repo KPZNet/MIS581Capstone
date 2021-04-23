@@ -150,7 +150,79 @@ def GetSumYearRidersPerHour(origin, year):
     return plotdata
 
 
-def GetAverageWeeklyRiderForHour(dest, hour, year):
+def GetAveragedWeekdayRidersToDest(dest, hour, years) :
+    query = """
+
+        select avg(cast(riders as double precision)), dest, 
+            extract(DOW from depart_date) as dow,
+            extract(WEEK from depart_date) as week
+        from hourlystationqueue
+        where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+        AND
+            dest = '{0}'
+        and
+            depart_hour = {1}
+        and 
+            extract(MONTH from depart_date) in (4,5,6,7,8,9,10,11)
+        and
+            extract(YEAR from depart_date) in {2}
+        group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
+
+    """.format ( dest, hour, years )
+    dat = PGBartLocal ( query )
+    plotdata = list ( map ( lambda x : x[0], dat ) )
+    return plotdata
+
+def GetAveragedWeekdayRidersFromSource(source, hour, years) :
+    query = """
+
+        select sum(cast(riders as double precision)), source, 
+            extract(DOW from depart_date) as dow,
+            extract(WEEK from depart_date) as week
+        from hourlystationqueue
+        where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+        AND
+            source = '{0}'
+        and
+            depart_hour = {1}
+        and 
+            extract(MONTH from depart_date) in (1,2,3,4,5,6,7,8,9,10,11,12)
+        and
+            extract(YEAR from depart_date) in {2}
+        group by source,  extract(WEEK from depart_date), extract(DOW from depart_date)
+
+    """.format ( source, hour, years )
+    dat = PGBartLocal ( query )
+    plotdata = list ( map ( lambda x : x[0], dat ) )
+    return plotdata
+
+
+def GetWeekdayRidersFrom(origin, hour, years) :
+    query = """
+
+        select sum(cast(riders as double precision))
+        from hourlystationqueue
+        where
+            extract(ISODOW from depart_date) in (1)
+        AND
+            source = '{0}'
+        and
+            depart_hour = {1}
+        and 
+            extract(MONTH from depart_date) in (2,3,4,5,6,7,8,9,10,11)
+        and
+            extract(YEAR from depart_date) in {2}
+        group by source, 
+        
+    """.format ( origin, hour, years )
+    dat = PGBartLocal ( query )
+    plotdata = list ( map ( lambda x : x[0], dat ) )
+    return plotdata
+
+
+def GetAverageWeeklyRiderForHour2(dest, hour, year):
     query = """
                                 
         select avg(cast(riders as double precision)), dest, 
