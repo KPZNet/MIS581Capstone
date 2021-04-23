@@ -17,7 +17,7 @@ import BARTPlots
 try:
     BARTPlots.PlotTotalRidersByHourBySource('PHIL',2019)
     BARTPlots.GetTotalRidersPerHourPerDayForStation('PHIL', 2019)
-    BARTPlots.GetTotalRidersPerHourPerDayForStations3D('PHIL', 2019)
+
     # BARTPlots.ShowHourlyAverageRidersSource('PITT')
     # BARTPlots.RunBARTTimeSeries2()
      #BARTPlots.RunBARTTimeSeries()
