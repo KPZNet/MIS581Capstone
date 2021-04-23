@@ -1,4 +1,5 @@
 import psycopg2
+import pandas as pd
 
 def PGBart(query):
     try:
@@ -271,3 +272,66 @@ def GetTotalRidersInNetworkByHourFrom(hour, year):
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
+
+def GetTotalRidersPerHour(year):
+    query = """
+                                
+    select sum(riders) as riders, depart_hour
+    from hourlystationqueue
+    where
+      extract(ISODOW from depart_date) in (1,2,3,4,5)
+    and
+      extract(YEAR from depart_date) = 2019
+    
+    group by depart_hour
+    order by riders desc
+                
+    """.format(year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','hour'])
+    return plotdata, df
+
+def GetTotalRidersPerHourForStation(source, year):
+    query = """
+                                
+    select sum(riders) as riders, depart_hour
+    from hourlystationqueue
+    where
+      extract(ISODOW from depart_date) in (1,2,3,4,5)
+    and
+      source = '{0}'
+    and
+      extract(YEAR from depart_date) = {1}
+    
+    group by depart_hour
+    order by riders desc
+                
+    """.format(source, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','hour'])
+    return plotdata, df
+
+def GetTotalRidersPerHourPerDayForStation(source, year):
+    query = """
+                                
+    select SUM(riders) as riders, depart_hour, extract(DOY from depart_date) as DOY
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      and
+            source = '{0}'
+      and
+            extract(YEAR from depart_date) = {1}
+        group by depart_hour, extract(DOY from depart_date)
+    order by DOY, depart_hour
+                
+    """.format(source, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','depart_hour', 'doy'])
+    return plotdata, df
