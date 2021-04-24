@@ -261,33 +261,37 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         print("No Stations Found")
 
 
-def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1, minStations, minRiders):
+def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1, minStations, minRiders, interval):
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersToDest(dest1, hour1, year1)
 
     start_date = startDate
     end_date = endDate
-    delta = timedelta(days=1)
+    delta = timedelta(days=interval)
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
+            da, df = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
             if len(da) > 0:
                 dayYearPair = [da, yearlyAvg]
-                allStations, allStationsComplete = ScrubRiders(minRiders, dayYearPair)
+                allStations, allStationsComplete = ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
                 rejectHO, pVal = TestMultipleRoutes(allStations)
-                print("MultiRiders To {0}, Stats: {1}, RejectHO: {4}, PVal: {2:.5f}  Date: {3}".format(dest1, len(da),
-                                                                                                       pVal, sDate,
-                                                                                                       rejectHO))
-                # CompareRouteProportions(da, yearlyAvg)
+                title = "{0}, Stats: {1}RejectHO: {4}\nPVal: {2:.5f} Date {3}".format(dest1,
+                                                                                                          len(da), pVal,
+                                                                                                          sDate,
+                                                                                                          rejectHO)
+                print(title)
+                PlotTwoSets(allStationsComplete, sDate, year1, 1,title)
+                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 1,title)
+
         start_date += delta
 
 
-def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders):
+def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders, interval):
     yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersFromSource(source1, hour1, year1)
 
     start_date = startDate
     end_date = endDate
-    delta = timedelta(days=1)
+    delta = timedelta(days=interval)
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
@@ -296,15 +300,14 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 dayYearPair = [da, yearlyAvg]
                 allStations, allStationsComplete = ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
                 rejectHO, pVal = TestMultipleRoutes(allStations)
-                title = "MultiRiders From {0}, Stats: {1}\nRejectHO: {4}, PVal: {2:.5f}\nDate {3}".format(source1,
+                title = "{0}, Stats: {1}RejectHO: {4}\nPVal: {2:.5f} Date {3}".format(source1,
                                                                                                           len(da), pVal,
                                                                                                           sDate,
                                                                                                           rejectHO)
                 print(title)
-                #PlotMultiSets(allStationsComplete, title)
-                PlotTwoSets(allStationsComplete, sDate, year1, title)
-                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, title)
-                # CompareRouteProportions(da, yearlyAvg)
+                PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
+                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2,title)
+
         start_date += delta
 
 def PlotStationUsage(stats, title):
@@ -331,8 +334,8 @@ def PlotRouteSet(stats, title):
     plt.title(title)
     plt.show()
 
-def PlotTwoSets(stats, lab1, lab2, title):
-    cats = list(map(lambda x: x[2], stats[0]))
+def PlotTwoSets(stats, lab1, lab2, statIndex, title):
+    cats = list(map(lambda x: x[statIndex], stats[0]))
     d1 = list(map(lambda x: x[0], stats[0]))
     d2 = list(map(lambda x: x[0], stats[1]))
     X = np.arange(len(d1))
@@ -346,8 +349,8 @@ def PlotTwoSets(stats, lab1, lab2, title):
     plt.show()
 
 
-def PlotTwoSetsTrueProp(stats, lab1, lab2, title):
-    cats = list(map(lambda x: x[2], stats[0]))
+def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
+    cats = list(map(lambda x: x[statIndex], stats[0]))
     d1 = list(map(lambda x: x[0], stats[0]))
     d2 = list(map(lambda x: x[0], stats[1]))
 

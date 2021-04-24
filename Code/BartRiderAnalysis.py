@@ -30,8 +30,8 @@ try:
     #BartLibs.ChiSqTestExp()
     #BARTPlots.PlotYearlySumRidersPerOrigin("PITT", 2019)
 
-    BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019, 2, 1),date(2019, 7, 1),'CONC', 7, 2019, 1, 5)
-    #BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 2, 1),date(2019, 7, 1),'MONT', 8, 2017, 20, 5)
+    #BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019, 1, 1),date(2019, 12, 1),'CONC', 7, 2019, 1, 5, 1)
+    BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 1, 1),date(2019, 12, 1),'19TH', 8, 2019, 1, 5, 1)
 
     #BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 1, 1 ), date ( 2019, 12, 30 ), 'CONC', 7, 20, 5, 0, 1 )
     #BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 28), '19TH', 8, 17, 5, 500,1)
