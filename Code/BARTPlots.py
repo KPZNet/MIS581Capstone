@@ -237,11 +237,12 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
                                                                                                        pVal, rejectHO,
                                                                                                        stations)
         print(title)
-        PlotMultiSets(allStationsComplete, title)
+        PlotMultiSetsTo(allStationsComplete, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
 
-        Plot3DRoutes(allStationsComplete)
+        Plot3DRoutesTo(allStationsComplete)
+        PlotTimeSeriesRoutesTo(allStationsComplete)
     else:
         print("No Stations Found")
 
@@ -399,6 +400,33 @@ def PlotMultiSets(stats, title):
 ##              for i in range(100)]
 ##    plt.rc('axes', prop_cycle=(cycler('color', colors)))
 ##
+
+
+    for index, p in enumerate(stats):
+        d = list(map(lambda x: x[0], p))
+        d = list(map(lambda x: x * 100.0 / max(d), d))
+        plt.bar(X + (barWidth * index) / spread, d, width=barWidth / 2)
+
+    plt.xticks(X + barWidth / 2, cats)
+    plt.tick_params(labelrotation=45)
+
+    plt.title(title)
+    plt.show()
+
+def PlotMultiSetsTo(stats, title):
+    cats = list(map(lambda x: x[1], stats[0]))
+    N = len(cats)
+    ns = len(stats)
+    X = np.arange(N)
+    barWidth = .25
+    spread = (ns/2)
+
+    plt.rcParams["axes.prop_cycle"] = plt.cycler ( "color", plt.cm.tab20b.colors )
+    ##
+    ##    colors = [hsv_to_rgb([(i * 0.618033988749895) % 1.0, 1, 1])
+    ##              for i in range(100)]
+    ##    plt.rc('axes', prop_cycle=(cycler('color', colors)))
+    ##
 
 
     for index, p in enumerate(stats):
@@ -573,4 +601,64 @@ def Plot3DRoutes(allStations):
     plt.title("Riders per Route over 2019")
     plt.show()
 
+
+def Plot3DRoutesTo(allStations):
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111, projection='3d')
+
+    vals = []
+    numDays = len(allStations)
+    stations = list(map(lambda x: x[1], allStations[0]))
+    numStations = len(stations)
+
+    x = []
+    y = []
+
+    zBottom = []
+    dx = []
+    dy = []
+    daynum = 0
+    statnum = 0
+    for d in allStations:
+        statnum = 0
+        for c in d:
+            vals.append( c[0] )
+            zBottom.append(0)
+
+            x.append(daynum)
+            y.append(statnum)
+
+            statnum = statnum + 1
+        daynum = daynum + 1
+
+    ax1.bar3d(x, y, zBottom, 1, 1, vals)
+
+    ax1.w_yaxis.set_ticklabels(stations)
+    ax1.set_xlabel('Days')
+    ax1.set_ylabel('Stations')
+    ax1.set_zlabel('Riders')
+    plt.title("Riders per Route over 2019")
+    plt.show()
+
+def PlotTimeSeriesRoutesTo(allStations):
+
+    plt.subplots(figsize=(10,5))
+    stations = list(map(lambda x: x[1], allStations[0]))
+
+    for i in range(len(stations)):
+        vals = []
+        for day in allStations:
+            v = day[i]
+            vals.append( v[0] )
+        rawLen = len(vals)
+        x = list(range(rawLen))
+        #add curves to plot
+        plt.plot(x, vals,
+                      linewidth=1,
+                      label = stations[i]
+                      )
+    plt.legend()
+
+    plt.show()
 
