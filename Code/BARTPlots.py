@@ -100,23 +100,24 @@ def PlotTimeSeriesFFT(smoothData, title):
     plt.show()
 
 
-def PlotTimeSeriesWithLimitBars(plotdata, title):
+def PlotTimeSeriesWithLimitBars(plotdata, title, showBars = True):
     rawLen = len(plotdata)
     x = list(range(rawLen))
     plt.plot(x, plotdata,
              color='blue',
              linewidth=1
              )
-    sdv = statistics.stdev(plotdata)
-    mn = statistics.mean(plotdata)
-    Maxthreshold = mn + (2.0 * sdv)
-    Minthreshold = mn - (2.0 * sdv)
-    plt.hlines(Maxthreshold, 0, rawLen, colors="red")
-    plt.hlines(Minthreshold, 0, rawLen, colors="red")
+    if showBars:
+        sdv = statistics.stdev(plotdata)
+        mn = statistics.mean(plotdata)
+        Maxthreshold = mn + (2.0 * sdv)
+        Minthreshold = mn - (2.0 * sdv)
+        plt.hlines(Maxthreshold, 0, rawLen, colors="red")
+        plt.hlines(Minthreshold, 0, rawLen, colors="red")
     plt.suptitle(title)
     plt.show()
 
-
+    
 def CosFFT():
     N = 512
     T = 1 / N
@@ -590,3 +591,25 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
     plt.show()
 
 
+def PlotTotalRidersPerMonth():
+    plotdata,df = BARTQueries.GetTotalRidersPerMonth()
+    df = df[df['year']<2020]
+    df = df[df['year']>2015]
+    title = "Riders per Month 2016 to 2019"
+    PlotTimeSeriesWithLimitBars(df['riders'], title, False)
+
+    # Initialise and fit linear regression model using `statsmodels`
+    model = ols('riders ~ rMonth', data=df)
+    model = model.fit()
+    a = model.params
+    print(a)
+    print(model.summary())
+    month_predict = model.predict()
+
+    plt.plot(df['rMonth'], df['riders'])           # scatter plot showing actual data
+    plt.plot(df['rMonth'], month_predict, 'r', linewidth=2)   # regression line
+    plt.xlabel('Months 2016 to 2019')
+    plt.ylabel('Riders')
+    plt.title('Riders per Month 2016 to 2019')
+
+    plt.show()

@@ -474,13 +474,15 @@ def GetTotalRidersPerDOWForStation(source, year):
 def GetTotalRidersPerMonth() :
     query = """
     select sum(cast(riders as double precision)),
-           extract(MONTH from depart_date) as month,
-           extract(YEAR from depart_date) as year
+           extract(MONTH from date) as month,
+           extract(YEAR from date) as year,
+           row_number() over()
     from hourlystationqueue
     group by month,  year
     order by year asc , month asc
 
     """.format ()
     dat = PGBartLocal ( query )
-    plotdata = list ( map ( lambda x : x[0], dat ) )
-    return plotdata
+    plotdata = list ( map ( lambda x : x, dat ) )
+    df = pd.DataFrame(dat, columns = ['riders','month', 'year','rMonth'])
+    return plotdata,df
