@@ -19,10 +19,10 @@ try:
     BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
     BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)
     BARTPlots.TwoWayAnova('CONC', 2019)
-    BARTPlots.PlotTotalRidersByHourBySource('PHIL',2019)
-    BARTPlots.GetTotalRidersPerHourPerDayForStation('PITT', 2019)
 
-    BARTPlots.ShowHourlyAverageRidersSource('PITT')
+    BARTPlots.PlotTotalRidersByHourBySource('CONC',2019)
+    BARTPlots.GetTotalRidersPerHourPerDayForStation('CONC', 2019)
+
     BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
 
     BARTPlots.PlotRidersOnMap(2019)
