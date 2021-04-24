@@ -152,6 +152,19 @@ def PrintRoutes(propList):
         print(str)
 
 
+def PlotRoutes(plotdata):
+
+    for d in plotdata:
+        data = list ( map ( lambda x : x[0], d ) )
+        x = list( range( len(d)))
+        plt.plot(x, data,
+                 linewidth=1
+                 )
+
+    plt.suptitle("test")
+    plt.show()
+
+
 
 def ScrubRiders(propList, minRiders, minStations, minNumber):
     riderCleaned = []
@@ -234,7 +247,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
+            da, df = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
             if len(da) > 0:
                 propList.append(da)
         start_date += delta
@@ -253,6 +266,8 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         PlotMultiSets(allStationsComplete, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
+
+        PlotRoutes(allStationsComplete)
     else:
         print("No Stations Found")
 

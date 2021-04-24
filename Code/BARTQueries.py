@@ -126,7 +126,8 @@ def GetDailyRidersFrom( origin, hour, date):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    return plotdata
+    df = pd.DataFrame(dat, columns = ['riders','source','dest','depart_hour','depart_date'])
+    return plotdata, df
 
 
 def GetSumYearRidersPerHour(origin, year):
