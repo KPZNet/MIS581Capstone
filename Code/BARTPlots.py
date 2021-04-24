@@ -242,7 +242,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         PrintRoutes ( allStationsComplete )
 
         Plot3DRoutesTo(allStationsComplete)
-        PlotTimeSeriesRoutesTo(allStationsComplete)
+        PlotTimeSeriesRoutesTo(allStationsComplete, dest, startDate, endDate)
     else:
         print("No Stations Found")
 
@@ -641,9 +641,9 @@ def Plot3DRoutesTo(allStations):
     plt.title("Riders per Route over 2019")
     plt.show()
 
-def PlotTimeSeriesRoutesTo(allStations):
+def PlotTimeSeriesRoutesTo(allStations, dest, start, end):
 
-    plt.subplots(figsize=(10,5))
+    plt.subplots(figsize=(12,8))
     stations = list(map(lambda x: x[1], allStations[0]))
 
     for i in range(len(stations)):
@@ -659,6 +659,6 @@ def PlotTimeSeriesRoutesTo(allStations):
                       label = stations[i]
                       )
     plt.legend()
-
+    plt.title('Riders per day arriving at: {0}, {1} to {2}'.format(dest, start, end))
     plt.show()
 
