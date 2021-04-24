@@ -219,7 +219,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
                                                                                                        pVal, rejectHO,
                                                                                                        stations)
         print(title)
-        PlotMultiSetsTo(allStationsComplete, 2, title)
+        PlotMultiSetsTo(allStationsComplete, 1, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
 
