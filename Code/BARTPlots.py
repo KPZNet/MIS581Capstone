@@ -496,6 +496,15 @@ def PlotRidersOnMap(year):
 
     fig.show()
 
+    df = df[df['riders'] > 4000]
+
+    plt.barh(df['source'], df['riders'])
+    plt.suptitle('Total Riders Departing Station : {0}'.format(year))
+    plt.xlabel('Stations')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=45)
+    plt.show()
+
 def PlotRidersOnMapTo(year):
 
     px.set_mapbox_access_token(open(".mapbox_token").read())
@@ -506,6 +515,15 @@ def PlotRidersOnMapTo(year):
                             color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
 
     fig.show()
+
+    df = df[df['riders'] > 4000]
+
+    plt.barh(df['source'], df['riders'])
+    plt.suptitle('Total Riders Arriving Station: {0}'.format(year))
+    plt.xlabel('Stations')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=45)
+    plt.show()
 
 def Plot3DRoutesTo(allStations, statIndex, title):
 

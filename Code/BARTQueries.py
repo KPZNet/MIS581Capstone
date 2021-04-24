@@ -285,7 +285,7 @@ def GetTotalRidersInNetworkByHourTo(hour, year):
               hourlystationqueue.source = bartstations.abbr
         group by dest,  
                  gtfslat, gtfslong
-        order by riders asc
+        order by riders desc
 
     """.format(hour, year)
 
