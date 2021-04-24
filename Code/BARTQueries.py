@@ -191,7 +191,7 @@ def GetAveragedWeekdayRidersFromSource(source, hour, years) :
         and 
             extract(MONTH from depart_date) in (1,2,3,4,5,6,7,8,9,10,11,12)
         and
-            extract(YEAR from depart_date) in {2}
+            extract(YEAR from depart_date) = {2}
         group by source,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
     """.format ( source, hour, years )
@@ -252,25 +252,45 @@ def GetTotalRidersInNetworkByHourFrom(hour, year):
     query = """
 
      select cast(sum(riders) as int) as riders,source,
-               extract(ISODOW from depart_date) as dow,
-               depart_hour, cast(gtfslat as decimal ), cast(gtfslong as decimal)
+             cast(gtfslat as decimal ), cast(gtfslong as decimal)
         from hourlystationqueue, bartstations
         where depart_hour = {0}
-        AND
-              extract(ISODOW from depart_date) in (1)
           and
               extract(YEAR from depart_date) = {1}
         and
               hourlystationqueue.source = bartstations.abbr
-        group by source, extract(ISODOW from depart_date), depart_hour,
+        group by source,  
                  gtfslat, gtfslong
-        order by depart_hour asc
+        order by riders asc
 
     """.format(hour, year)
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    return plotdata
+    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    return plotdata, df
+
+def GetTotalRidersInNetwork(year):
+    query = """
+
+    select cast(sum(riders) as int) as riders,source,
+           cast(gtfslat as decimal ), cast(gtfslong as decimal)
+    from hourlystationqueue, bartstations
+        where
+        extract(ISODOW from depart_date) in (1,2,3,4,5)
+              and
+                  extract(YEAR from depart_date) = {0}
+            and
+                  hourlystationqueue.source = bartstations.abbr
+    group by source, gtfslat, gtfslong
+    order by riders desc
+
+    """.format(year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    return plotdata, df
 
 
 def GetTotalRidersPerHour(year):
@@ -335,3 +355,73 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns = ['riders','depart_hour', 'doy'])
     return plotdata, df
+
+def GetTotalRidersPerHourPerDOWForStation(source, year):
+    query = """
+                                
+    select sum(riders) as riders, depart_hour, extract(ISODOW from depart_date) as isodow, depart_date
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+    and
+            depart_hour in (4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+      and
+            source = '{0}'
+      and
+            extract(YEAR from depart_date) = {1}
+        group by depart_hour, extract(ISODOW from depart_date), depart_date
+    order by depart_date, isodow, depart_hour
+                
+    """.format(source, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','hour', 'isodow', 'depart_date'])
+    return plotdata, df
+
+def GetTotalRidersPerHourPerDOWForStationTEXT(source, year):
+    query = """
+                                
+    select sum(riders) as riders, cast(depart_hour as TEXT),
+           cast(extract(ISODOW from depart_date) as TEXT) as isodow,
+           depart_date
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      and
+            depart_hour in (5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+      and
+            source = '{0}'
+      and
+            extract(YEAR from depart_date) = {1}
+    group by depart_hour, extract(ISODOW from depart_date), depart_date
+    order by depart_date, isodow, depart_hour
+                
+    """.format(source, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','hour', 'isodow', 'date'])
+    return plotdata, df
+
+def GetTotalRidersPerDOWForStation(source, year):
+    query = """
+                                
+    select sum(riders) as riders, extract(ISODOW from depart_date) as isodow, depart_date
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      and
+            source = '{0}'
+      and
+            extract(YEAR from depart_date) = {1}
+        group by  extract(ISODOW from depart_date), depart_date
+    order by depart_date, isodow
+                
+    """.format(source, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','isodow', 'depart_date'])
+    return plotdata, df
+

@@ -15,6 +15,7 @@ import pandas as pd
 from matplotlib.cm import get_cmap
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
+from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
 
 from mpl_toolkits.mplot3d import axes3d
@@ -46,25 +47,24 @@ def RunBARTTimeSeries():
     plt.show ()
 
 
-def RunBARTTimeSeries2():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource('CONC', 7, '(2019)')
-
-
-    PlotTimeSeriesWithLimitBars(plotdata)
+def RunBARTTimeSeries2(source, hour, year):
+    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource(source, hour, year)
+    title = "Daily Riders for {0} at {1}:00AM in {2}".format(source, hour, year)
+    PlotTimeSeriesWithLimitBars(plotdata, title)
 
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
-    PlotTimeSeriesWithLimitBars(smoothData)
+    PlotTimeSeriesWithLimitBars(smoothData, title)
 
-    PlotTimeSeriesFFT(smoothData)
+    PlotTimeSeriesFFT(smoothData, title)
 
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
 
 
-
     # ADF statistic to check stationarity
     timeseries = adfuller ( smoothData ,autolag='AIC')
     pVal = timeseries[1]
+    print("\n\n\nAugmented Dickey-Fuller Test: pval = {0}\n\n\n".format(pVal))
     #if timeseries[0] > timeseries[4]["5%"] :
     if pVal > 0.05:
         print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
@@ -84,7 +84,7 @@ def RunBARTTimeSeries2():
     plt.show ()
 
 
-def PlotTimeSeriesFFT(smoothData):
+def PlotTimeSeriesFFT(smoothData, title):
     smoothMean = statistics.mean(smoothData)
     smoothDataZeroed = list(map(lambda x: x - smoothMean, smoothData))
     ft = np.fft.fft(smoothDataZeroed)
@@ -93,11 +93,11 @@ def PlotTimeSeriesFFT(smoothData):
     fftScale = 2.0 / (realAmpsLen)
     realAmplitudesScaled = list(map(lambda x: fftScale * x, realAmplitudes))
     plt.plot(realAmplitudesScaled[:int(realAmpsLen / 3.0)])
-    plt.suptitle("Fourrier Transform Rider Frequency")
+    plt.suptitle(title)
     plt.show()
 
 
-def PlotTimeSeriesWithLimitBars(plotdata):
+def PlotTimeSeriesWithLimitBars(plotdata, title):
     rawLen = len(plotdata)
     x = list(range(rawLen))
     plt.plot(x, plotdata,
@@ -110,7 +110,7 @@ def PlotTimeSeriesWithLimitBars(plotdata):
     Minthreshold = mn - (2.0 * sdv)
     plt.hlines(Maxthreshold, 0, rawLen, colors="red")
     plt.hlines(Minthreshold, 0, rawLen, colors="red")
-    plt.suptitle("BART Daily Rider EMBR 7:00AM")
+    plt.suptitle(title)
     plt.show()
 
 
@@ -392,35 +392,6 @@ def PlotMultiSets(stats, title):
     plt.show()
 
 
-def PlotComareRouteDistros(date1, hour1, pVal, plot1S, rejectHO, source1, year1):
-    cat_names = list(map(lambda x: x[2], plot1S))
-    # add data to bar chart
-    le = len(plotData1)
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    ax1.bar(cat_names, plotData1)
-    ax2.bar(cat_names, plotData2)
-    title1 = 'Daily Riders from {0}\nHour {1}, date {2}'.format(source1, hour1, date1)
-    title2 = 'Average Annual {0}\nHour {1}, Year {2}'.format(source1, hour1, year1)
-    ax1.set_title(title1)
-    ax2.set_title(title2)
-    hypTest = "Rider Proportion\nAlpha = '{0:.9f}'\nAccept H0 :'{1}' ".format(pVal, rejectHO)
-    plt.suptitle(hypTest)
-    ax1.tick_params(labelrotation=45)
-    ax2.tick_params(labelrotation=45)
-    myLocator = mticker.MultipleLocator(4)
-    ax1.xaxis.set_major_locator(myLocator)
-    ax2.xaxis.set_major_locator(myLocator)
-    # set the spacing between subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.1,
-                        right=0.9,
-                        top=.7,
-                        wspace=0.4,
-                        hspace=0.4)
-    plt.show()
-
-
-
 def PlotYearlySumRidersPerOrigin(origin, year):
     hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)
     cat_names = list(map(lambda x: x[1], hourlyRiders))
@@ -475,17 +446,56 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
     plt.xticks(rotation=0)
     plt.show()
 
+def CompareRidersPerHourPerDayForStation(source, year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerHourPerDOWForStation(source, year)
+    labels =[]
+    data = []
+
+    for i in range(4, 21):
+        dv = df[df['hour'] == i].riders.tolist()
+        labels.append(str(i))
+        data.append(dv)
+
+    # Creating plot
+    bp = plt.boxplot(data, labels=labels)
+    plt.title("Riders by Hour, Station: {0}, Year:{1}".format(source,year))
+    plt.xlabel('Departure Hour')
+    plt.ylabel('Riders')
+    # show plot
+    plt.show()
+
+def CompareRidersPerISODOWForStation2(source, year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerDOWForStation(source, year)
+    labels =[]
+    data = []
+
+    for i in range(1, 6):
+        dv = df[df['isodow'] == i].riders.tolist()
+        labels.append(str(i))
+        data.append(dv)
+
+    labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
+    # Creating plot
+    bp = plt.boxplot(data, labels=labels)
+    plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source,year))
+    plt.xlabel('DOW')
+    plt.ylabel('Riders')
+    # show plot
+    plt.show()
 
 
-def PlotRidersOnMap(hour, year):
-    df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
-    df['text'] = df['airport'] + '' + df['city'] + ', ' + df['state'] + '' + 'Arrivals: ' + df['cnt'].astype(str)
+def TwoWayAnova(source, year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerHourPerDOWForStationTEXT(source, year)
+    #perform two-way ANOVA
+    model = ols('riders ~ C(hour) + C(isodow) + C(hour):C(isodow)', data=df).fit()
+    g = sm.stats.anova_lm(model, typ=2)
+    print(g)
+
+def PlotRidersOnMap(year):
 
     px.set_mapbox_access_token(open(".mapbox_token").read())
 
-    gg = BARTQueries.GetTotalRidersInNetworkByHourFrom(hour, year)
-
-    df = pd.DataFrame(gg, columns = ['riders','abbr','isodow','hour', 'lat', 'long'])
+    dat, df = BARTQueries.GetTotalRidersInNetworkByHourFrom(7,year)
 
     fig = px.scatter_mapbox(df, lat='lat', lon='long', size='riders',
                             color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
