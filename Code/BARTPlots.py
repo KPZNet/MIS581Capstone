@@ -7,6 +7,9 @@ from cycler import cycler
 import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 import matplotlib.ticker as mticker
+from mpl_toolkits.mplot3d import axes3d
+from matplotlib import style
+
 import BartLibs
 import BARTQueries
 from datetime import date, timedelta
@@ -218,7 +221,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
-            da = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
+            da, df = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
             if len(da) > 0:
                 propList.append(da)
         start_date += delta
@@ -235,7 +238,10 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
                                                                                                        stations)
         print(title)
         PlotMultiSets(allStationsComplete, title)
+        dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
+
+        Plot3DRoutes(allStationsComplete)
     else:
         print("No Stations Found")
 
@@ -267,7 +273,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes ( allStationsComplete )
 
-        PlotRoutes(allStationsComplete)
+        Plot3DRoutes(allStationsComplete)
     else:
         print("No Stations Found")
 
@@ -516,4 +522,55 @@ def PlotRidersOnMap(year):
                             color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
 
     fig.show()
+
+def PlotRidersOnMapTo(year):
+
+    px.set_mapbox_access_token(open(".mapbox_token").read())
+
+    dat, df = BARTQueries.GetTotalRidersInNetworkByHourTo(8,year)
+
+    fig = px.scatter_mapbox(df, lat='lat', lon='long', size='riders',
+                            color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
+
+    fig.show()
+
+def Plot3DRoutes(allStations):
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111, projection='3d')
+
+    vals = []
+    numDays = len(allStations)
+    stations = list(map(lambda x: x[2], allStations[0]))
+    numStations = len(stations)
+
+    x = []
+    y = []
+
+    zBottom = []
+    dx = []
+    dy = []
+    daynum = 0
+    statnum = 0
+    for d in allStations:
+        statnum = 0
+        for c in d:
+            vals.append( c[0] )
+            zBottom.append(0)
+
+            x.append(daynum)
+            y.append(statnum)
+
+            statnum = statnum + 1
+        daynum = daynum + 1
+
+    ax1.bar3d(x, y, zBottom, 1, 1, vals)
+
+    ax1.w_yaxis.set_ticklabels(stations)
+    ax1.set_xlabel('Days')
+    ax1.set_ylabel('Stations')
+    ax1.set_zlabel('Riders')
+    plt.title("Riders per Route over 2019")
+    plt.show()
+
 

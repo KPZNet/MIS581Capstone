@@ -90,22 +90,23 @@ def GetYearlyAverageDailyRidersFromSource(source, hour, year):
 def GetDailyRidersTo( dest, hour, date):
     query = """
                                 
-    select riders, source, dest, depart_hour, depart_date
+    select riders, source, dest, hour, date
     from hourlystationqueue
     where
         extract(ISODOW from depart_date) in (1)
      and
-        depart_hour = {0}
+        hour = {0}
       AND
         dest = '{1}'
       and
-        depart_date = '{2}'
+        date = '{2}'
       order by source asc 
     """.format(hour, dest, date)
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    return plotdata
+    df = pd.DataFrame(dat, columns = ['riders','source','dest','depart_hour','depart_date'])
+    return plotdata, df
 
 def GetDailyRidersFrom( origin, hour, date):
     query = """
@@ -271,6 +272,29 @@ def GetTotalRidersInNetworkByHourFrom(hour, year):
     df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
     return plotdata, df
 
+def GetTotalRidersInNetworkByHourTo(hour, year):
+    query = """
+
+     select cast(sum(riders) as int) as riders,dest,
+             cast(gtfslat as decimal ), cast(gtfslong as decimal)
+        from hourlystationqueue, bartstations
+        where hour = {0}
+          and
+              extract(YEAR from date) = {1}
+        and
+              hourlystationqueue.source = bartstations.abbr
+        group by dest,  
+                 gtfslat, gtfslong
+        order by riders asc
+
+    """.format(hour, year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    return plotdata, df
+
+
 def GetTotalRidersInNetwork(year):
     query = """
 
@@ -426,3 +450,17 @@ def GetTotalRidersPerDOWForStation(source, year):
     df = pd.DataFrame(dat, columns = ['riders','isodow', 'depart_date'])
     return plotdata, df
 
+
+def GetTotalRidersPerMonth() :
+    query = """
+    select sum(cast(riders as double precision)),
+           extract(MONTH from depart_date) as month,
+           extract(YEAR from depart_date) as year
+    from hourlystationqueue
+    group by month,  year
+    order by year asc , month asc
+
+    """.format ()
+    dat = PGBartLocal ( query )
+    plotdata = list ( map ( lambda x : x[0], dat ) )
+    return plotdata
