@@ -15,23 +15,25 @@ import BARTPlots
 
 
 try:
+    #BARTPlots.PlotTotalRidersByHour(2019)
     #BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
     #BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)
     #BARTPlots.TwoWayAnova('CONC', 2019)
     #BARTPlots.PlotTotalRidersByHourBySource('PHIL',2019)
     #BARTPlots.GetTotalRidersPerHourPerDayForStation('PITT', 2019)
 
-    # BARTPlots.ShowHourlyAverageRidersSource('PITT')
-    #BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
+    #BARTPlots.ShowHourlyAverageRidersSource('PITT')
+    BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
     #BARTPlots.RunBARTTimeSeries()
 
-    BARTPlots.PlotRidersOnMap(2019)
-    BARTPlots.PlotRidersOnMapTo(2019)
+    #BARTPlots.PlotRidersOnMap(2019)
+    #BARTPlots.PlotRidersOnMapTo(2019)
+
     #BartLibs.ChiSqTestExp()
     #BARTPlots.PlotYearlySumRidersPerOrigin("PITT", 2019)
 
-    #BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019, 1, 1),date(2019, 12, 1),'CONC', 7, 2019, 1, 5, 1)
-    #BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 1, 1),date(2019, 12, 1),'19TH', 8, 2019, 1, 5, 1)
+    #BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019,3, 1),date(2019, 4, 1),'CONC', 7, 2019, 1, 5, 1)
+    #BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 11, 1),date(2019, 12, 30),'19TH', 8, 2019, 1, 5, 1)
 
     #BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 1, 1 ), date ( 2019, 12, 30 ), 'CONC', 7, 20, 5, 0, 1 )
     #BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 28), '19TH', 8, 17, 5, 500,1)

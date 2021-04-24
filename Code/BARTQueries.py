@@ -338,6 +338,26 @@ def GetTotalRidersPerHour(year):
     df = pd.DataFrame(dat, columns = ['riders','hour'])
     return plotdata, df
 
+def GetTotalRidersPerHour(year):
+    query = """
+                                
+    select sum(riders) as riders, depart_hour
+    from hourlystationqueue
+    where
+      extract(ISODOW from depart_date) in (1,2,3,4,5)
+    and
+      extract(YEAR from depart_date) = 2019
+    
+    group by depart_hour
+    order by riders desc
+                
+    """.format(year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','hour'])
+    return plotdata, df
+
 def GetTotalRidersPerHourForStation(source, year):
     query = """
                                 

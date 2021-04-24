@@ -420,6 +420,16 @@ def PlotTotalRidersByHour(year):
     plt.xticks(rotation=0)
     plt.show()
 
+def PlotAverageRidersByHour(year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
+
+    plt.bar(df['hour'], df['riders'])
+    plt.suptitle('Total Riders : {0}'.format(year))
+    plt.xlabel('Departure Hour')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=0)
+    plt.show()
+
 def PlotTotalRidersByHourBySource(source, year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourForStation(source, year)
 
