@@ -66,6 +66,14 @@ def ChiSqTestNxN(d1):
     data = d1
     stat, p, dof, expected = chi2_contingency(data)
 
+    print("\n")
+    print("Chi-square contingency results")
+    print("Stats:", stat)
+    print("p-val:", p)
+    print("Degrees of freedome:",dof)
+    print("\n")
+
+
     # interpret p-value
     alpha = 0.05
     if p <= alpha:
