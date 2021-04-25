@@ -502,8 +502,10 @@ def PlotRidersOnMap(year):
 
     dat, df = BARTQueries.GetTotalRidersInNetworkByHourFrom(7,year)
 
-    fig = px.scatter_mapbox(df, lat='lat', lon='long', size='riders',
-                            color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
+    fig = px.scatter_mapbox(df,
+                            lat='lat', lon='long', size='riders',
+                            color_continuous_scale=px.colors.cyclical.IceFire,
+                            size_max=15, zoom=1)
 
     fig.show()
 
