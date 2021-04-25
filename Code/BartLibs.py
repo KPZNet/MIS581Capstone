@@ -123,3 +123,17 @@ def CalcDroppedRiders(beforeList, afterList):
     a = CalcTotlRidersRun(afterList)
     perc = a/b
     return perc
+
+def MakeProportionalAllStations(allStations):
+    newAllStations = []
+    for index, p in enumerate(allStations):
+        d = list(map(lambda x: x[0], p))
+        d = list(map(lambda x: x * 100.0 / max(d), d))
+        dayList = []
+        for i, statTuple in enumerate(p):
+            statTPL = list(statTuple)
+            statTPL[0] = d[i]
+            nTuple = tuple(statTPL)
+            dayList.append((nTuple))
+        newAllStations.append(dayList)
+    return newAllStations
