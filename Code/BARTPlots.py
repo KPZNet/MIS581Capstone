@@ -1,53 +1,15 @@
-from random import random
-
-import numpy as np
-import pandas
 import statistics
-from cycler import cycler
-import matplotlib.pyplot as plt
-from matplotlib.colors import hsv_to_rgb
-import matplotlib.ticker as mticker
-from mpl_toolkits.mplot3d import axes3d
-from matplotlib import style
+from datetime import timedelta
 
-import BartLibs
-import BARTQueries
-from datetime import date, timedelta
-import plotly.express as px
-import pandas as pd
-from matplotlib.cm import get_cmap
 import matplotlib.pyplot as plt
+import numpy as np
+import plotly.express as px
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
 
-from mpl_toolkits.mplot3d import axes3d
-
-
-
-
-
-def RunBARTTimeSeries():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
-    pd = plotdata
-
-    # ADF statistic to check stationarity
-    timeseries = adfuller ( pd )
-    if timeseries[0] > timeseries[4]["5%"] :
-        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
-    else :
-        print ( "Reject Ho - Time Series is Stationary" )
-
-    model = sm.tsa.UnobservedComponents ( pd,
-                                    level='fixed intercept',
-                                    seasonal=5)
-    res_f = model.fit ( disp=False )
-    print ( res_f.summary () )
-    # The first state variable holds our estimate of the intercept
-    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
-
-    res_f.plot_components ()
-    plt.show ()
+import BARTQueries
+import BartLibs
 
 
 def RunBARTTimeSeries2(source, hour, year):
@@ -62,7 +24,6 @@ def RunBARTTimeSeries2(source, hour, year):
 
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
-
 
     # ADF statistic to check stationarity
     timeseries = adfuller ( smoothData ,autolag='AIC')
