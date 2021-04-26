@@ -93,7 +93,7 @@ def GetDailyRidersTo( dest, hour, date):
     select riders, source, dest, hour, date
     from hourlystationqueue
     where
-        extract(ISODOW from depart_date) in (1)
+        extract(ISODOW from depart_date) in (2)
      and
         hour = {0}
       AND
@@ -114,7 +114,7 @@ def GetDailyRidersFrom( origin, hour, date):
     select riders, source, dest, depart_hour, depart_date
     from hourlystationqueue
     where
-        extract(ISODOW from depart_date) in (1)
+        extract(ISODOW from depart_date) in (2)
      and
         depart_hour = {0}
       AND
@@ -450,6 +450,24 @@ def GetTotalRidersPerDOWForStation(source, year):
     df = pd.DataFrame(dat, columns = ['riders','isodow', 'depart_date'])
     return plotdata, df
 
+def GetTotalRidersPerDOW(year):
+    query = """
+                                
+    select sum(riders) as riders, extract(ISODOW from depart_date) as isodow
+    from hourlystationqueue
+    where
+            extract(ISODOW from depart_date) in (1,2,3,4,5)
+      and
+            extract(YEAR from depart_date) = {0}
+    group by  extract(ISODOW from depart_date)
+
+                
+    """.format(year)
+
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns = ['riders','isodow'])
+    return plotdata, df
 
 def GetTotalRidersPerMonth() :
     query = """

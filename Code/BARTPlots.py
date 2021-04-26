@@ -306,7 +306,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                                                                                                           sDate,
                                                                                                           rejectHO)
                 print(title)
-                PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
+                #PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2,title)
 
         start_date += delta
@@ -415,7 +415,7 @@ def PlotTotalRidersByHour(year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
 
     plt.bar(df['hour'], df['riders'])
-    plt.suptitle('Total Riders : {0}'.format(year))
+    plt.suptitle('Total Riders by Hour : {0}'.format(year))
     plt.xlabel('Departure Hour')
     plt.ylabel('Riders')
     plt.xticks(rotation=0)
@@ -488,6 +488,17 @@ def CompareRidersPerISODOWForStation2(source, year):
     # show plot
     plt.show()
 
+def CompareRidersPerISODOW(year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerDOW(year)
+
+    labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
+
+    plt.bar(labels, df['riders'])
+    plt.suptitle('Total Riders by Hour : {0}'.format(year))
+    plt.xlabel('Departure Hour')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=0)
+    plt.show()
 
 def TwoWayAnova(source, year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourPerDOWForStationTEXT(source, year)
