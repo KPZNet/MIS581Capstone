@@ -4,10 +4,12 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
+import pandas as pd
 import plotly.express as px
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
+import scipy.stats as stats
 
 import BARTQueries
 import BartLibs
@@ -155,19 +157,34 @@ def TestMultipleRoutes(riderContTable):
     rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
     return rejectHO, pVal
 
-def TestMultipleRoutesAnova(riderContTable):
+def TestMultipleRoutesAnova(df):
 
-    cats = list(map(lambda x: x[2], riderContTable[0]))
-    df = pandas.DataFrame(riderContTable, cats)
-    for r in riderContTable:
-        dataRow = list(map(lambda x: x[0], r))
+    boxplot = df.boxplot(column=['riders'],by="dest")
+    boxplot.plot()
+
+    plt.title("Rider by stat")
+    plt.xlabel('stat')
+    plt.ylabel('Riders')
+    plt.xticks(rotation=90)
+    plt.show()
+
+    rids = df[df.dest == '19TH'].riders
+    ridsm = df[df.dest == 'MONT'].riders
+    lst = []
+    stations = df.dest.unique()
+    for index, v in enumerate(stations):
+        lst.append( list(df[df.dest == v].riders) )
+
+    df = df.astype({"dest":'category'})
+    df = df.astype({"riders":'int64'})
+    #obj_df["body_style"] = obj_df["body_style"].astype('category')
+    df.dtypes
 
 
-
-
-
-
-
+    # Ordinary Least Squares (OLS) model
+    model = ols('riders ~ C(dest)', data=df).fit()
+    anova_table = sm.stats.anova_lm(model, typ=2)
+    anova_table
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
@@ -207,12 +224,14 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=dayInterval)
+    dfrs = pd.DataFrame(columns = ['riders','source','dest','depart_hour','depart_date'])
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
             da, df = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
             if len(da) > 0:
                 propList.append(da)
+                dfrs = dfrs.append(df)
         start_date += delta
 
     if (len(propList) > 1):
@@ -221,7 +240,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        TestMultipleRoutesAnova(allStationsComplete)
+        TestMultipleRoutesAnova(dfrs)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                        len(allStations),
                                                                                                        pVal, rejectHO,
