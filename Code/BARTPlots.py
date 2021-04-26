@@ -214,7 +214,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
 
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        title = "MultiRiders From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
+        title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
                                                                                                        len(allStations),
                                                                                                        pVal, rejectHO,
                                                                                                        stations)
@@ -247,7 +247,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        title = "MultiRiders From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
+        title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                        len(allStations),
                                                                                                        pVal, rejectHO,
                                                                                                        stations)
@@ -281,8 +281,9 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
                                                                                                           sDate,
                                                                                                           rejectHO)
                 print(title)
-                PlotTwoSets(allStationsComplete, sDate, year1, 1,title)
-                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 1,title)
+                yr = "{0} Expected".format(year1)
+                #PlotTwoSets(allStationsComplete, sDate, year1, 1,title)
+                PlotTwoSetsTrueProp(allStationsComplete, sDate, yr, 1,title)
 
         start_date += delta
 
@@ -469,32 +470,13 @@ def CompareRidersPerHourPerDayForStation(source, year):
     # show plot
     plt.show()
 
-def CompareRidersPerISODOWForStation2(source, year):
-    hourlyRiders, df = BARTQueries.GetTotalRidersPerDOWForStation(source, year)
-    labels =[]
-    data = []
-
-    for i in range(1, 6):
-        dv = df[df['isodow'] == i].riders.tolist()
-        labels.append(str(i))
-        data.append(dv)
-
-    labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
-    # Creating plot
-    bp = plt.boxplot(data, labels=labels)
-    plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source,year))
-    plt.xlabel('DOW')
-    plt.ylabel('Riders')
-    # show plot
-    plt.show()
-
 def CompareRidersPerISODOW(year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOW(year)
 
     labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
 
     plt.bar(labels, df['riders'])
-    plt.suptitle('Total Riders by Hour : {0}'.format(year))
+    plt.suptitle('Total Riders by Day : {0}'.format(year))
     plt.xlabel('Departure Hour')
     plt.ylabel('Riders')
     plt.xticks(rotation=0)
