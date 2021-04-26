@@ -184,7 +184,7 @@ def TestMultipleRoutesAnova(df):
     # Ordinary Least Squares (OLS) model
     model = ols('riders ~ C(dest)', data=df).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
-    anova_table
+    print(anova_table)
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
