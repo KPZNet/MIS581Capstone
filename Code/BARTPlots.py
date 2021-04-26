@@ -3,6 +3,7 @@ from datetime import timedelta
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas
 import plotly.express as px
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
@@ -155,8 +156,15 @@ def TestMultipleRoutes(riderContTable):
     return rejectHO, pVal
 
 def TestMultipleRoutesAnova(riderContTable):
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
-    return rejectHO, pVal
+
+    cats = list(map(lambda x: x[2], riderContTable[0]))
+    df = pandas.DataFrame(riderContTable, cats)
+
+
+
+
+
+
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
@@ -210,6 +218,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
+        TestMultipleRoutesAnova(allStationsComplete)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                        len(allStations),
                                                                                                        pVal, rejectHO,
