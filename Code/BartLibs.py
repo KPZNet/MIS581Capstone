@@ -78,12 +78,6 @@ def ChiSqTestNxN(d1):
     print("\n")
 
 
-
-
-    #perform one-way ANOVA
-    f_oneway(group1, group2, group3)
-
-
     # interpret p-value
     alpha = 0.05
     if p <= alpha:
@@ -93,6 +87,18 @@ def ChiSqTestNxN(d1):
 def ChiSqTestExp():
     # defining the table
     data = [[random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
             [random.random() * 100, random.random() * 100, random.random() * 100],
             [random.random() * 100, random.random() * 100, random.random() * 100],
             [random.random() * 100, random.random() * 100, random.random() * 100]]
