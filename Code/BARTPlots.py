@@ -168,18 +168,8 @@ def TestMultipleRoutesAnova(df):
     plt.xticks(rotation=90)
     plt.show()
 
-    rids = df[df.dest == '19TH'].riders
-    ridsm = df[df.dest == 'MONT'].riders
-    lst = []
-    stations = df.dest.unique()
-    for index, v in enumerate(stations):
-        lst.append( list(df[df.dest == v].riders) )
-
     df = df.astype({"dest":'category'})
     df = df.astype({"riders":'int64'})
-    #obj_df["body_style"] = obj_df["body_style"].astype('category')
-    df.dtypes
-
 
     # Ordinary Least Squares (OLS) model
     model = ols('riders ~ C(dest)', data=df).fit()
