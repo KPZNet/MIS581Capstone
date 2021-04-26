@@ -12,29 +12,6 @@ import BARTQueries
 import BartLibs
 
 
-def RunBARTTimeSeries():
-    plotdata = BARTQueries.GetAveragedWeekdayRidersToDest('EMBR', 7, '(2013,2014,2015,2016,2017,2018,2019)')
-    pd = plotdata
-
-    # ADF statistic to check stationarity
-    timeseries = adfuller ( pd )
-    if timeseries[0] > timeseries[4]["5%"] :
-        print ( "Failed to Reject Ho - Time Series is Non-Stationary" )
-    else :
-        print ( "Reject Ho - Time Series is Stationary" )
-
-    model = sm.tsa.UnobservedComponents ( pd,
-                                    level='fixed intercept',
-                                    seasonal=5)
-    res_f = model.fit ( disp=False )
-    print ( res_f.summary () )
-    # The first state variable holds our estimate of the intercept
-    print ( "fixed intercept estimated as {0:.3f}".format ( res_f.smoother_results.smoothed_state[0, -1 :][0] ) )
-
-    res_f.plot_components ()
-    plt.show ()
-
-
 def RunBARTTimeSeries2(source, hour, year):
     plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource(source, hour, year)
     title = "Daily Riders for {0} at {1}:00AM in {2}".format(source, hour, year)
@@ -47,7 +24,6 @@ def RunBARTTimeSeries2(source, hour, year):
 
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
-
 
     # ADF statistic to check stationarity
     timeseries = adfuller ( smoothData ,autolag='AIC')
