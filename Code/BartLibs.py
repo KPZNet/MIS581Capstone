@@ -1,11 +1,12 @@
 import decimal
-import numpy as np
 import statistics
-from scipy.stats import chi2_contingency
+
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import chi2_contingency
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
-import pandas as pd
+
 
 def Decomposition(data, per):
     decomposition = seasonal_decompose(data, model="additive", period=per)

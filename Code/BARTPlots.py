@@ -1,30 +1,15 @@
-from random import random
-
-import numpy as np
-import pandas
 import statistics
-from cycler import cycler
-import matplotlib.pyplot as plt
-from matplotlib.colors import hsv_to_rgb
-import matplotlib.ticker as mticker
-from mpl_toolkits.mplot3d import axes3d
-from matplotlib import style
+from datetime import timedelta
 
-import BartLibs
-import BARTQueries
-from datetime import date, timedelta
-import plotly.express as px
-import pandas as pd
-from matplotlib.cm import get_cmap
 import matplotlib.pyplot as plt
+import numpy as np
+import plotly.express as px
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
 
-from mpl_toolkits.mplot3d import axes3d
-
-
-
+import BARTQueries
+import BartLibs
 
 
 def RunBARTTimeSeries():
