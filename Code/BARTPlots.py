@@ -159,6 +159,9 @@ def TestMultipleRoutesAnova(riderContTable):
 
     cats = list(map(lambda x: x[2], riderContTable[0]))
     df = pandas.DataFrame(riderContTable, cats)
+    for r in riderContTable:
+        dataRow = list(map(lambda x: x[0], r))
+
 
 
 
