@@ -366,12 +366,6 @@ def PlotMultiSetsTo(stats, statIndex, title):
     spread = (ns/2)
 
     plt.rcParams["axes.prop_cycle"] = plt.cycler ( "color", plt.cm.tab20b.colors )
-    ##
-    ##    colors = [hsv_to_rgb([(i * 0.618033988749895) % 1.0, 1, 1])
-    ##              for i in range(100)]
-    ##    plt.rc('axes', prop_cycle=(cycler('color', colors)))
-    ##
-
     for index, p in enumerate(stats):
         d = list(map(lambda x: x[0], p))
         d = list(map(lambda x: x * 100.0 / max(d), d))
