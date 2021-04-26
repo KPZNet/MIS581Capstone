@@ -1,11 +1,15 @@
 import decimal
+import random
+
 import numpy as np
 import statistics
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, f_oneway
 import matplotlib.pyplot as plt
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
 import pandas as pd
+
+
 
 def Decomposition(data, per):
     decomposition = seasonal_decompose(data, model="additive", period=per)
@@ -70,8 +74,14 @@ def ChiSqTestNxN(d1):
     print("Chi-square contingency results")
     print("Stats:", stat)
     print("p-val:", p)
-    print("Degrees of freedome:",dof)
+    print("Degrees of freedom:",dof)
     print("\n")
+
+
+
+
+    #perform one-way ANOVA
+    f_oneway(group1, group2, group3)
 
 
     # interpret p-value
@@ -79,6 +89,33 @@ def ChiSqTestNxN(d1):
     if p <= alpha:
         rejectHO = True
     return rejectHO, p
+
+def ChiSqTestExp():
+    # defining the table
+    data = [[random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100],
+            [random.random() * 100, random.random() * 100, random.random() * 100]]
+
+    stat, p, dof, expected = chi2_contingency(data)
+
+
+    data = [d1, d2]
+    stat, p, dof, expected = chi2_contingency(data)
+
+    d1 = CalcProp(data[0])
+    d2 = CalcProp(data[1])
+    data = [d1, d2]
+    stat, p, dof, expected = chi2_contingency(data)
+
+    # interpret p-value
+    alpha = 0.05
+    print("p value is " + str(p))
+    if p <= alpha:
+        print('Dependent (reject H0)')
+    else:
+        print('Independent (H0 holds true)')
+    return p
 
 
 def IntersectStations(statA, statB):

@@ -193,7 +193,9 @@ def TestMultipleRoutes(riderContTable):
     rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
     return rejectHO, pVal
 
-
+def TestMultipleRoutesAnova(riderContTable):
+    rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
+    return rejectHO, pVal
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
