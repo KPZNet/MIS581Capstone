@@ -545,6 +545,15 @@ def Plot3DRoutesTo(allStations, statIndex, title):
 
 def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
 
+    for index, p in enumerate(allStations):
+        d = list(map(lambda x: x[0], p))
+        d = list(map(lambda x: x * 100.0 / max(d), d))
+        for j, s in enumerate(p):
+            listT = list(s)
+            listT[0] = d[j]
+            tupleL = tuple(listT)
+            p[j]=tupleL
+
     listOrigins = list(zip(*allStations))
 
     plt.subplots(figsize=(12,8))
@@ -554,6 +563,7 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
         vals = []
         for day in station:
             vals.append(day[0])
+
         x = list(range(len(vals)))
         plt.plot(x, vals,
                  linewidth=1,

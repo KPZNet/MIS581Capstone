@@ -8,7 +8,7 @@ try:
     # BARTPlots.PlotTotalRidersPerMonth()
     # BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
     # BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)
-    BARTPlots.TwoWayAnova('CONC', 2019)
+    # BARTPlots.TwoWayAnova('CONC', 2019)
     #
     # BARTPlots.PlotTotalRidersByHourBySource('CONC',2019)
     # BARTPlots.GetTotalRidersPerHourPerDayForStation('CONC', 2019)
