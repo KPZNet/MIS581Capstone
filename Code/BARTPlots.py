@@ -159,6 +159,7 @@ def TestMultipleRoutes(riderContTable):
 
 def TestMultipleRoutesAnova(df):
 
+    df = df[df['riders'] > 50]
     boxplot = df.boxplot(column=['riders'],by="dest")
     boxplot.plot()
 
@@ -228,6 +229,8 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         PrintRoutes(propList)
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
 
+        PlotStationDistribution(dfrs, 'EMBR', "title")
+
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(dfrs)
@@ -295,6 +298,19 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2,title)
 
         start_date += delta
+
+
+def PlotStationDistribution(df, station, title):
+
+    #df = df.astype({"dest":'category'})
+    df = df.astype({"riders":'int64'})
+
+    df = df[df['dest'] == station]
+    d1 = df[df['riders'] > 150].riders.tolist()
+
+    plt.hist(d1)
+    plt.show()
+
 
 def PlotStationUsage(stats, title):
     cats = list(map(lambda x: x[2], stats))
