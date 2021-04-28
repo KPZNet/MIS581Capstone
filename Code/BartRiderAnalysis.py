@@ -1,10 +1,11 @@
 from datetime import date
 
 import BARTPlots
+import BartLibs
 
 
 try:
-
+    BartLibs.ChiSqTestExp()
     # BARTPlots.PlotTotalRidersPerMonth()
     # BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
     # BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)

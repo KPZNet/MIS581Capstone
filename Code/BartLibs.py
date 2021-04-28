@@ -86,22 +86,8 @@ def ChiSqTestNxN(d1):
 
 def ChiSqTestExp():
     # defining the table
-    data = [[random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100],
-            [random.random() * 100, random.random() * 100, random.random() * 100]]
+    data = [ [10, 5],
+            [8,2] ]
 
     stat, p, dof, expected = chi2_contingency(data)
 
