@@ -91,15 +91,6 @@ def ChiSqTestExp():
 
     stat, p, dof, expected = chi2_contingency(data)
 
-
-    data = [d1, d2]
-    stat, p, dof, expected = chi2_contingency(data)
-
-    d1 = CalcProp(data[0])
-    d2 = CalcProp(data[1])
-    data = [d1, d2]
-    stat, p, dof, expected = chi2_contingency(data)
-
     # interpret p-value
     alpha = 0.05
     print("p value is " + str(p))
