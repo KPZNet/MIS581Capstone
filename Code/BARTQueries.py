@@ -1,6 +1,8 @@
 import psycopg2
 import pandas as pd
 
+ALIENWARE = False
+
 def PGBart(query):
     try:
         query_results = []
@@ -21,6 +23,8 @@ def PGBart(query):
         return query_results
 
 def PGBartLocal(query):
+    if ALIENWARE:
+        return PGBart(query)
     try:
         query_results = []
         conn = psycopg2.connect(host="localhost", port=5432,
