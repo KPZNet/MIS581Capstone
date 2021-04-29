@@ -159,10 +159,7 @@ def TestMultipleRoutes(riderContTable):
 
 def TestMultipleRoutesAnova(df):
 
-
-    df = df[df['riders'] > 50]
-    boxplot = df.boxplot(column=['riders'],by="dest")
-    boxplot.plot()
+    df = PlotRouteDestinations(df, 10)
 
     plt.title("Rider by stat")
     plt.xlabel('stat')
@@ -177,6 +174,14 @@ def TestMultipleRoutesAnova(df):
     model = ols('riders ~ C(dest)', data=df).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
     print(anova_table)
+
+
+def PlotRouteDestinations(df, minRiders):
+    df = df[df['riders'] > minRiders]
+    boxplot = df.boxplot(column=['riders'], by="dest")
+    boxplot.plot()
+    return df
+
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
@@ -229,9 +234,6 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
     if (len(propList) > 1):
         PrintRoutes(propList)
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
-
-        PlotStationDistribution(dfrs, 'EMBR', "title")
-
         stations = len(allStationsComplete[0])
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(dfrs)
@@ -562,14 +564,7 @@ def Plot3DRoutesTo(allStations, statIndex, title):
 
 def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
 
-    for index, p in enumerate(allStations):
-        d = list(map(lambda x: x[0], p))
-        d = list(map(lambda x: x * 100.0 / max(d), d))
-        for j, s in enumerate(p):
-            listT = list(s)
-            listT[0] = d[j]
-            tupleL = tuple(listT)
-            p[j]=tupleL
+    allStations = NormalizeAllStationsData(allStations)
 
     listOrigins = list(zip(*allStations))
 
@@ -589,6 +584,18 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
     plt.legend()
     plt.title(title)
     plt.show()
+
+
+def NormalizeAllStationsData(allStations):
+    for index, p in enumerate(allStations):
+        d = list(map(lambda x: x[0], p))
+        d = list(map(lambda x: x * 100.0 / max(d), d))
+        for j, s in enumerate(p):
+            listT = list(s)
+            listT[0] = d[j]
+            tupleL = tuple(listT)
+            p[j] = tupleL
+    return allStations
 
 
 def PlotTotalRidersPerMonth():
