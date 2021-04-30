@@ -235,6 +235,11 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         PrintRoutes(propList)
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
         stations = len(allStationsComplete[0])
+
+        for s in allStationsComplete:
+            PlotRouteSet(s)
+
+
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(dfrs)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
@@ -303,6 +308,32 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
         start_date += delta
 
 
+
+def CompareMultiDayRidersToExpectedFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders, interval):
+    yearlyAvg = BARTQueries.GetYearlyAverageDailyRidersFromSource(source1, hour1, year1)
+
+    start_date = startDate
+    end_date = endDate
+    delta = timedelta(days=interval)
+    while start_date <= end_date:
+        if start_date.weekday() < 5:
+            sDate = start_date.strftime("%m-%d-%Y")
+            da, df = BARTQueries.GetDailyRidersFrom(source1, hour1, sDate)
+            if len(da) > 0:
+                dayYearPair = [da, yearlyAvg]
+                allStations, allStationsComplete = ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
+                rejectHO, pVal = TestMultipleRoutes(allStations)
+                title = "{0}, Stats: {1}RejectHO: {4}\nPVal: {2:.5f} Date {3}".format(source1,
+                                                                                      len(da), pVal,
+                                                                                      sDate,
+                                                                                      rejectHO)
+                print(title)
+                #PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
+                PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2,title)
+
+        start_date += delta
+
+
 def PlotStationDistribution(df, station, title):
 
     #df = df.astype({"dest":'category'})
@@ -327,16 +358,21 @@ def PlotStationUsage(stats, title):
     plt.title(title)
     plt.show()
 
-def PlotRouteSet(stats, title):
+def PlotRouteSet(stats):
+    sDate = stats[0][4]
+    sDate = sDate.strftime("%m-%d-%Y")
     cats = list(map(lambda x: x[2], stats))
     d1 = list(map(lambda x: x[0], stats))
+
+    d1Scale = 100.0 / max(d1)
+    d1 = list(map(lambda x: x * d1Scale, d1))
 
     X = np.arange(len(d1))
     plt.bar(X + 0.00, d1, color='b', width=0.25)
     plt.xticks(X, cats)
     plt.tick_params(labelrotation=45)
 
-    plt.title(title)
+    plt.title(sDate)
     plt.show()
 
 def PlotTwoSets(stats, lab1, lab2, statIndex, title):
