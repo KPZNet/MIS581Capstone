@@ -178,7 +178,7 @@ def TestMultipleRoutesAnova(df):
 
 def PlotRouteDestinations(df, minRiders):
     df = df[df['riders'] > minRiders]
-    boxplot = df.boxplot(column=['riders'], by="dest")
+    boxplot = df.boxplot(column=['riders'], by="dest", showfliers=False)
     boxplot.plot()
     return df
 
@@ -496,7 +496,7 @@ def CompareRidersPerHourPerDayForStation(source, year):
         data.append(dv)
 
     # Creating plot
-    bp = plt.boxplot(data, labels=labels)
+    bp = plt.boxplot(data, labels=labels, showfliers=False)
     plt.title("Riders by Hour, Station: {0}, Year:{1}".format(source,year))
     plt.xlabel('Departure Hour')
     plt.ylabel('Riders')
