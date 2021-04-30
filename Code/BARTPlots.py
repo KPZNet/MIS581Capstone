@@ -157,6 +157,7 @@ def TestMultipleRoutes(riderContTable):
     rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
     return rejectHO, pVal
 
+
 def TestMultipleRoutesAnova(df):
 
     df = PlotRouteDestinations(df, 10)
