@@ -17,7 +17,7 @@ try:
     # BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
     #
     #BARTPlots.PlotRidersOnMap(2019)
-    BARTPlots.PlotRidersOnMapTo(2019)
+    #BARTPlots.PlotRidersOnMapTo(2019)
 
     # BARTPlots.PlotYearlySumRidersPerOrigin("CONC", 2019)
 
