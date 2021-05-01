@@ -162,14 +162,13 @@ def TestMultipleRoutesAnova(df):
 
     df = PlotRouteDestinations(df, 10)
 
+    plotList = []
+
     plt.title("Rider by stat")
     plt.xlabel('stat')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
     plt.show()
-
-    df = df.astype({"dest":'category'})
-    df = df.astype({"riders":'int64'})
 
     # Ordinary Least Squares (OLS) model
     model = ols('riders ~ C(dest)', data=df).fit()
@@ -224,21 +223,21 @@ def AllStationsToDF(allStationsComplete):
         for s in day:
             ls.append(s)
     dfrs = pd.DataFrame(ls, columns = cols)
-    print(dfrs)
+    dfrs = dfrs.astype({"dest":'category'})
+    dfrs = dfrs.astype({"riders":'int64'})
+    return dfrs
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
     start_date = startDate
     end_date = endDate
     delta = timedelta(days=dayInterval)
-    dfrs = pd.DataFrame(columns = ['riders','source','dest','depart_hour','depart_date'])
     while start_date <= end_date:
         if start_date.weekday() < 5:
             sDate = start_date.strftime("%m-%d-%Y")
             da, df = BARTQueries.GetDailyRidersFrom(origin, hour, sDate)
             if len(da) > 0:
                 propList.append(da)
-                dfrs = dfrs.append(df)
         start_date += delta
 
     if (len(propList) > 1):
@@ -246,10 +245,10 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
         stations = len(allStationsComplete[0])
 
-        AllStationsToDF(allStationsComplete)
+        df = AllStationsToDF(allStationsComplete)
 
         rejectHO, pVal = TestMultipleRoutes(allStations)
-        TestMultipleRoutesAnova(dfrs)
+        TestMultipleRoutesAnova(df)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                        len(allStations),
                                                                                                        pVal, rejectHO,
