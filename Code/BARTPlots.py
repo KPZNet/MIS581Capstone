@@ -162,7 +162,12 @@ def TestMultipleRoutesAnova(df):
 
     df = PlotRouteDestinations(df, 10)
 
-    plotList = []
+    dlist = []
+    plotList = df.dest.unique()
+    for p in plotList:
+        d = df[df['dest'] == p]
+        d = d['riders'].tolist()
+
 
     plt.title("Rider by stat")
     plt.xlabel('stat')
