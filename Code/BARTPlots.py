@@ -217,6 +217,15 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
     else:
         print("No Stations Found")
 
+def AllStationsToDF(allStationsComplete):
+    cols = ['riders','source','dest','depart_hour','depart_date']
+    ls = []
+    for day in allStationsComplete:
+        for s in day:
+            ls.append(s)
+    dfrs = pd.DataFrame(ls, columns = cols)
+    print(dfrs)
+
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     propList = []
     start_date = startDate
@@ -237,9 +246,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
         stations = len(allStationsComplete[0])
 
-        for s in allStationsComplete:
-            PlotRouteSet(s)
-
+        AllStationsToDF(allStationsComplete)
 
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(dfrs)

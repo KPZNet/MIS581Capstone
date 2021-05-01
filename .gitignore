@@ -5,6 +5,8 @@
 *.csv
 *.pyc
 .vscode
+.project
+.pydevproject
 workspace.code-workspace
 
 
