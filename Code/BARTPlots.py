@@ -236,7 +236,7 @@ def PlotMeanRidersPerStation(df, allStationsComplete):
 
     errors = [0.5, 0.25, 0.75]
 
-    dfTrimmed = df[df['riders'] > 150]
+    dfTrimmed = df[df['riders'] > 50]
     stationList = dfTrimmed.dest.unique()
 
     plt.figure()
@@ -265,6 +265,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 
         df = AllStationsToDF(allStationsComplete)
         PlotMeanRidersPerStation(df, allStationsComplete)
+
 
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(df)
