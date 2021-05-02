@@ -236,8 +236,8 @@ def PlotMeanRidersPerStation(df, allStationsComplete):
 
     errors = [0.5, 0.25, 0.75]
 
-    dfTrimmed = df.riders > 50
-    stationList = df.dest.unique()
+    dfTrimmed = df[df['riders'] > 150]
+    stationList = dfTrimmed.dest.unique()
 
     plt.figure()
     plt.errorbar(x, y, xerr=errors, fmt='o', color='k')
