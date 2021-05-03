@@ -161,13 +161,13 @@ def TestMultipleRoutesAnova(df):
     df = PlotRouteDestinations(df, 10)
 
     dlist = []
-    plotList = df.dest.unique()
+    plotList = df.dest.unique().tolist()
     for p in plotList:
-        dlist.append(df[df['dest'] == p]['riders'].tolist())
+        dlist.append(df[df['dest'] == p].riders.tolist())
 
-    plt.boxplot(dlist, plotList)
+    plt.boxplot(dlist)
     plt.title("Rider by stat")
-    plt.xlabel('stat')
+    plt.xlabel('stati')
     plt.ylabel('Riders')
     plt.xticks(rotation=90)
     plt.show()
