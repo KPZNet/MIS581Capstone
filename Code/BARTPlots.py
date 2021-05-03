@@ -8,6 +8,7 @@ import plotly.express as px
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
+import scipy.stats as st
 
 import BARTQueries
 import BartLibs
@@ -231,17 +232,25 @@ def AllStationsToDF(allStationsComplete):
 
 
 def PlotMeanRidersPerStation(df, allStationsComplete):
-    x = [2, 4, 3]
-    y = [1, 3, 5]
 
     errors = [0.5, 0.25, 0.75]
+    stationList = df.dest.unique()
+    x = []
+    y = []
+    errs = []
+    for s in stationList:
+        data = df[df['dest'] == s].riders.tolist()
+        xmean = np.mean(data)
+        sr = st.t.interval(0.95, len(data)-1, loc=xmean, scale=st.sem(data))
+        #mul = st.DescrStatsW(data).tconfint_mean()
+        x.append( xmean )
+        errs.append( xmean - sr[0] )
 
-    dfTrimmed = df[df['riders'] > 50]
-    stationList = dfTrimmed.dest.unique()
-
+    yRange = list( range( len(stationList) ) )
     plt.figure()
-    plt.errorbar(x, y, xerr=errors, fmt='o', color='k')
-    plt.yticks((0, 1, 3, 5, 6), ('', 'x3', 'x2', 'x1', ''))
+
+    plt.errorbar(x, yRange, xerr=errs, fmt='o', color='k')
+    plt.yticks(yRange, stationList)
     plt.show()
 
 
