@@ -9,6 +9,7 @@ import statsmodels.api as sm
 from statsmodels.formula.api import ols
 from statsmodels.tsa.stattools import adfuller
 import scipy.stats as st
+from statistics import NormalDist
 
 import BARTQueries
 import BartLibs
@@ -235,6 +236,11 @@ def AllStationsToDF(allStationsComplete):
     dfrs = dfrs.astype({"riders": 'int64'})
     return dfrs
 
+def confidence_interval(data, confidence=0.95):
+    dist = NormalDist.from_samples(data)
+    z = NormalDist().inv_cdf((1 + confidence) / 2.)
+    h = dist.stdev * z / ((len(data) - 1) ** .5)
+    return dist.mean - h, dist.mean + h
 
 def PlotMeanRidersPerStation(df, allStationsComplete):
 
@@ -248,7 +254,8 @@ def PlotMeanRidersPerStation(df, allStationsComplete):
         sr = st.t.interval(0.95, len(data)-1, loc=xmean, scale=st.sem(data))
         #mul = st.DescrStatsW(data).tconfint_mean()
         x.append( xmean )
-        errs.append( xmean - sr[0] )
+        c1, c2 = confidence_interval(data)
+        errs.append( abs(xmean - c1) )
 
     yRange = list( range( len(stationList) ) )
     plt.figure()
