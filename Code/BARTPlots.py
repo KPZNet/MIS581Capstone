@@ -175,10 +175,10 @@ def PlotRouteDestinations(df, minRiders):
             for p in plotList:
                 dlist.append(df[df['dest'] == p].riders.tolist())
 
-            plt.boxplot(dlist, showmeans=True)
-            plt.title("Rider by stat")
-            plt.xlabel('stati')
-            plt.ylabel('Riders')
+            plt.boxplot(dlist, labels=plotList, vert=False, showmeans=True)
+            plt.title("Rider by Stations")
+            plt.xlabel('Riders')
+            plt.ylabel('Station')
             plt.xticks(rotation=90)
             plt.show()
 
@@ -238,7 +238,6 @@ def AllStationsToDF(allStationsComplete):
 
 def PlotMeanRidersPerStation(df, allStationsComplete):
 
-    errors = [0.5, 0.25, 0.75]
     stationList = df.dest.unique()
     x = []
     y = []
