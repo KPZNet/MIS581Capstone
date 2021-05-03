@@ -1,10 +1,15 @@
 from datetime import date
+import time
+
 
 import BARTPlots
 import BartLibs
 
 
 try:
+    start_time = time.time()
+
+
     # BartLibs.ChiSqTestExp()
     # BARTPlots.PlotTotalRidersPerMonth()
     # BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
@@ -28,6 +33,8 @@ try:
     #BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 30), '19TH', 8, 20, 5, 0,1)
     #BARTPlots.PlotTotalRidersByHour(2019)
     #BARTPlots.CompareRidersPerISODOW(2019)
+
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 except(Exception) as e:
     print(e)
