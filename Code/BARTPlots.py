@@ -158,19 +158,7 @@ def TestMultipleRoutes(riderContTable):
 
 
 def TestMultipleRoutesAnova(df):
-    df = PlotRouteDestinations(df, 10)
-
-    dlist = []
-    plotList = df.dest.unique().tolist()
-    for p in plotList:
-        dlist.append(df[df['dest'] == p].riders.tolist())
-
-    plt.boxplot(dlist)
-    plt.title("Rider by stat")
-    plt.xlabel('stati')
-    plt.ylabel('Riders')
-    plt.xticks(rotation=90)
-    plt.show()
+    PlotRouteDestinations(df, 10)
 
     # Ordinary Least Squares (OLS) model
     model = ols('riders ~ C(dest)', data=df).fit()
@@ -179,10 +167,27 @@ def TestMultipleRoutesAnova(df):
 
 
 def PlotRouteDestinations(df, minRiders):
-    df = df[df['riders'] > minRiders]
-    boxplot = df.boxplot(column=['riders'], by="dest", showfliers=False)
-    boxplot.plot()
-    return df
+
+    try:
+        if True:
+            dlist = []
+            plotList = df.dest.unique().tolist()
+            for p in plotList:
+                dlist.append(df[df['dest'] == p].riders.tolist())
+
+            plt.boxplot(dlist, showmeans=True)
+            plt.title("Rider by stat")
+            plt.xlabel('stati')
+            plt.ylabel('Riders')
+            plt.xticks(rotation=90)
+            plt.show()
+
+        if False:
+            df = df[df['riders'] > minRiders]
+            boxplot = df.boxplot(column=['riders'], by="dest", showfliers=False)
+            boxplot.show()
+    except:
+        pass
 
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
