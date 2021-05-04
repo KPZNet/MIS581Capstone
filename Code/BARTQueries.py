@@ -3,7 +3,6 @@ import psycopg2
 
 ALIENWARE = False
 
-
 def PGBart(query):
     try:
         query_results = []

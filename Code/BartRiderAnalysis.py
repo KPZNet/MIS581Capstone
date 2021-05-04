@@ -9,7 +9,6 @@ import BartLibs
 try:
     start_time = time.time()
 
-
     # BartLibs.ChiSqTestExp()
     # BARTPlots.PlotTotalRidersPerMonth()
     # BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
