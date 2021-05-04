@@ -58,6 +58,7 @@ def GetTotRiders(rts):
 
 
 def CalcProp(dataArray):
+    """Returns a 0-100 scaled data array"""
     tot: decimal.Decimal = 0.0
     for d in dataArray:
         tot = tot + float(d)
@@ -66,6 +67,10 @@ def CalcProp(dataArray):
 
 
 def ChiSqTestNxN(d1):
+    """
+    Performs an Chi-Square test on NxN contingency table
+       and prints results to console
+    """
     rejectHO = False
     data = d1
     stat, p, dof, expected = chi2_contingency(data)
@@ -84,30 +89,22 @@ def ChiSqTestNxN(d1):
     return rejectHO, p
 
 
-def ChiSqTestExp():
-    # defining the table
-    data = [[10, 5],
-            [8, 2]]
-
-    stat, p, dof, expected = chi2_contingency(data)
-
-    # interpret p-value
-    alpha = 0.05
-    print("p value is " + str(p))
-    if p <= alpha:
-        print('Dependent (reject H0)')
-    else:
-        print('Independent (H0 holds true)')
-    return p
-
-
 def IntersectStations(statA, statB):
+    """
+    Returns the intersection between two station lists
+    """
     subSetA = [ele1 for ele1 in statA
                for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2])]
     return subSetA
 
 
 def IntersectAllStations(stats):
+    """
+    Returns the inner join intersection between a list of
+    stations.
+    Return 1 = rider numbers only
+    Return 2 = complete station details
+    """
     newList = []
     riderList = []
     for i, s in enumerate(stats):
@@ -122,6 +119,9 @@ def IntersectAllStations(stats):
 
 
 def RemoveSmallRiderCountsForStation(counts, l1):
+    """
+    Trimms station list
+    """
     try:
         l1p = []
         for l in l1:
