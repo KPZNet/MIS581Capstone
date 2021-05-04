@@ -1,7 +1,8 @@
-import psycopg2
 import pandas as pd
+import psycopg2
 
 ALIENWARE = False
+
 
 def PGBart(query):
     try:
@@ -21,6 +22,7 @@ def PGBart(query):
         print("Error in running the query: {}".format(str(e)))
     finally:
         return query_results
+
 
 def PGBartLocal(query):
     if ALIENWARE:
@@ -42,7 +44,6 @@ def PGBartLocal(query):
         print("Error in running the query: {}".format(str(e)))
     finally:
         return query_results
-
 
 
 def GetYearlyAverageDailyRidersToDest(dest, hour, year):
@@ -91,7 +92,7 @@ def GetYearlyAverageDailyRidersFromSource(source, hour, year):
     return plotdata
 
 
-def GetDailyRidersTo( dest, hour, date):
+def GetDailyRidersTo(dest, hour, date):
     query = """
                                 
     select riders, source, dest, hour, date
@@ -109,10 +110,11 @@ def GetDailyRidersTo( dest, hour, date):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','source','dest','depart_hour','depart_date'])
+    df = pd.DataFrame(dat, columns=['riders', 'source', 'dest', 'depart_hour', 'depart_date'])
     return plotdata, df
 
-def GetDailyRidersFrom( origin, hour, date):
+
+def GetDailyRidersFrom(origin, hour, date):
     query = """
                                 
     select riders, source, dest, depart_hour, depart_date
@@ -131,7 +133,7 @@ def GetDailyRidersFrom( origin, hour, date):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','source','dest','depart_hour','depart_date'])
+    df = pd.DataFrame(dat, columns=['riders', 'source', 'dest', 'depart_hour', 'depart_date'])
     return plotdata, df
 
 
@@ -150,14 +152,14 @@ def GetSumYearRidersPerHour(origin, year):
     group by source, depart_hour
     order by depart_hour asc
                 
-    """.format(origin,year)
+    """.format(origin, year)
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
 
-def GetAveragedWeekdayRidersToDest(dest, hour, years) :
+def GetAveragedWeekdayRidersToDest(dest, hour, years):
     query = """
 
         select avg(cast(riders as double precision)), dest, 
@@ -176,12 +178,13 @@ def GetAveragedWeekdayRidersToDest(dest, hour, years) :
             extract(YEAR from depart_date) in {2}
         group by dest,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
-    """.format ( dest, hour, years )
-    dat = PGBartLocal ( query )
-    plotdata = list ( map ( lambda x : x[0], dat ) )
+    """.format(dest, hour, years)
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x[0], dat))
     return plotdata
 
-def GetAveragedWeekdayRidersFromSource(source, hour, years) :
+
+def GetAveragedWeekdayRidersFromSource(source, hour, years):
     query = """
 
         select sum(cast(riders as double precision)), source, 
@@ -200,13 +203,13 @@ def GetAveragedWeekdayRidersFromSource(source, hour, years) :
             extract(YEAR from depart_date) = {2}
         group by source,  extract(WEEK from depart_date), extract(DOW from depart_date)
 
-    """.format ( source, hour, years )
-    dat = PGBartLocal ( query )
-    plotdata = list ( map ( lambda x : x[0], dat ) )
+    """.format(source, hour, years)
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x[0], dat))
     return plotdata
 
 
-def GetWeekdayRidersFrom(origin, hour, years) :
+def GetWeekdayRidersFrom(origin, hour, years):
     query = """
 
         select sum(cast(riders as double precision))
@@ -223,9 +226,9 @@ def GetWeekdayRidersFrom(origin, hour, years) :
             extract(YEAR from depart_date) in {2}
         group by source, 
         
-    """.format ( origin, hour, years )
-    dat = PGBartLocal ( query )
-    plotdata = list ( map ( lambda x : x[0], dat ) )
+    """.format(origin, hour, years)
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x[0], dat))
     return plotdata
 
 
@@ -273,8 +276,9 @@ def GetTotalRidersInNetworkByHourFrom(hour, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
+
 
 def GetTotalRidersInNetworkByHourTo(hour, year):
     query = """
@@ -295,7 +299,7 @@ def GetTotalRidersInNetworkByHourTo(hour, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
 
 
@@ -318,7 +322,7 @@ def GetTotalRidersInNetwork(year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','source','lat','long'])
+    df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
 
 
@@ -339,8 +343,9 @@ def GetTotalRidersPerHour(year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','hour'])
+    df = pd.DataFrame(dat, columns=['riders', 'hour'])
     return plotdata, df
+
 
 def GetTotalRidersPerHourForStation(source, year):
     query = """
@@ -361,8 +366,9 @@ def GetTotalRidersPerHourForStation(source, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','hour'])
+    df = pd.DataFrame(dat, columns=['riders', 'hour'])
     return plotdata, df
+
 
 def GetTotalRidersPerHourPerDayForStation(source, year):
     query = """
@@ -382,8 +388,9 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','depart_hour', 'doy'])
+    df = pd.DataFrame(dat, columns=['riders', 'depart_hour', 'doy'])
     return plotdata, df
+
 
 def GetTotalRidersPerHourPerDOWForStation(source, year):
     query = """
@@ -405,8 +412,9 @@ def GetTotalRidersPerHourPerDOWForStation(source, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','hour', 'isodow', 'depart_date'])
+    df = pd.DataFrame(dat, columns=['riders', 'hour', 'isodow', 'depart_date'])
     return plotdata, df
+
 
 def GetTotalRidersPerHourPerDOWForStationTEXT(source, year):
     query = """
@@ -430,8 +438,9 @@ def GetTotalRidersPerHourPerDOWForStationTEXT(source, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','hour', 'isodow', 'date'])
+    df = pd.DataFrame(dat, columns=['riders', 'hour', 'isodow', 'date'])
     return plotdata, df
+
 
 def GetTotalRidersPerDOWForStation(source, year):
     query = """
@@ -451,8 +460,9 @@ def GetTotalRidersPerDOWForStation(source, year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','isodow', 'depart_date'])
+    df = pd.DataFrame(dat, columns=['riders', 'isodow', 'depart_date'])
     return plotdata, df
+
 
 def GetTotalRidersPerDOW(year):
     query = """
@@ -470,10 +480,11 @@ def GetTotalRidersPerDOW(year):
 
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
-    df = pd.DataFrame(dat, columns = ['riders','isodow'])
+    df = pd.DataFrame(dat, columns=['riders', 'isodow'])
     return plotdata, df
 
-def GetTotalRidersPerMonth() :
+
+def GetTotalRidersPerMonth():
     query = """
     select sum(cast(riders as double precision)),
            extract(MONTH from date) as month,
@@ -483,8 +494,8 @@ def GetTotalRidersPerMonth() :
     group by month,  year
     order by year asc , month asc
 
-    """.format ()
-    dat = PGBartLocal ( query )
-    plotdata = list ( map ( lambda x : x, dat ) )
-    df = pd.DataFrame(dat, columns = ['riders','month', 'year','rMonth'])
-    return plotdata,df
+    """.format()
+    dat = PGBartLocal(query)
+    plotdata = list(map(lambda x: x, dat))
+    df = pd.DataFrame(dat, columns=['riders', 'month', 'year', 'rMonth'])
+    return plotdata, df
