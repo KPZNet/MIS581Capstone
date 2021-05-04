@@ -97,9 +97,15 @@ def GetTotRiders(rts):
         tot = tot + n[0]
     return tot
 
-
 def CalcProp(dataArray):
-    """Returns a 0-100 scaled data array"""
+    """Returns 0-100% full scale data array
+
+    Args:
+        dataArray (list): data list
+
+    Returns:
+        propList: (list) proportional rider array
+    """
     tot: decimal.Decimal = 0.0
     for d in dataArray:
         tot = tot + float(d)
@@ -108,9 +114,15 @@ def CalcProp(dataArray):
 
 
 def ChiSqTestNxN(d1):
-    """
-    Performs an Chi-Square test on NxN contingency table
-       and prints results to console
+    """ Performs Chi-Square on NxN contigency matrix
+        prints out results
+
+    Args:
+        d1 (list of list): NxN contingency matrix
+
+    Returns:
+        rejectH0 - true or false if rejected H0
+        p - p-value of Chi-square test
     """
     rejectHO = False
     data = d1
@@ -131,8 +143,14 @@ def ChiSqTestNxN(d1):
 
 
 def IntersectStations(statA, statB):
-    """
-    Returns the intersection between two station lists
+    """Returns intersection of two lists
+
+    Args:
+        statA (list): list of stations
+        statB (list): list of stations
+
+    Returns:
+        List of intersected stations
     """
     subSetA = [ele1 for ele1 in statA
                for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2])]
@@ -140,11 +158,13 @@ def IntersectStations(statA, statB):
 
 
 def IntersectAllStations(stats):
-    """
-    Returns the inner join intersection between a list of
-    stations.
-    Return 1 = rider numbers only
-    Return 2 = complete station details
+    """Returns intersection of all stations in input list of stations
+
+    Args:
+        stats (list): list of list of stations
+
+    Returns:
+        List of intersected stations
     """
     newList = []
     riderList = []
@@ -160,8 +180,14 @@ def IntersectAllStations(stats):
 
 
 def RemoveSmallRiderCountsForStation(counts, l1):
-    """
-    Trimms station list
+    """Removes all stations with fewer than input rider count
+
+    Args:
+        counts (int): min riders
+        l1 (list): list of stations
+
+    Returns:
+        List of trimmed stations
     """
     try:
         l1p = []
@@ -174,6 +200,15 @@ def RemoveSmallRiderCountsForStation(counts, l1):
 
 
 def CalcTotlRidersRun(l1):
+    """Returns intersection of two lists
+
+    Args:
+        statA (list): list of stations
+        statB (list): list of stations
+
+    Returns:
+        List of intersected stations
+    """
     tot = 0
     for n in l1:
         for r in n:
@@ -182,6 +217,12 @@ def CalcTotlRidersRun(l1):
 
 
 def CalcDroppedRiders(beforeList, afterList):
+    """
+    Calculate dropped riders percentage
+    :param beforeList: stations before trim
+    :param afterList:  stations after trim
+    :return: total number of riders dropped as a percentage
+    """
     b = CalcTotlRidersRun(beforeList)
     a = CalcTotlRidersRun(afterList)
     perc = a / b
@@ -189,6 +230,11 @@ def CalcDroppedRiders(beforeList, afterList):
 
 
 def MakeProportionalAllStations(allStations):
+    """
+
+    :param allStations:
+    :return:
+    """
     newAllStations = []
     for index, p in enumerate(allStations):
         d = list(map(lambda x: x[0], p))
