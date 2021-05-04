@@ -1,20 +1,18 @@
 import decimal
-import random
-
-import numpy as np
 import statistics
-from scipy.stats import chi2_contingency, f_oneway
+
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import chi2_contingency
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
-import pandas as pd
-
 
 
 def Decomposition(data, per):
     decomposition = seasonal_decompose(data, model="additive", period=per)
     fig = decomposition.plot()
     plt.show()
+
 
 def ACF(data, lags):
     # Display the autocorrelation plot of your time series
@@ -24,9 +22,10 @@ def ACF(data, lags):
     fig = tsaplots.plot_pacf(data, lags=lags)
     plt.show()
 
+
 def SumSquares(ft):
     try:
-        r =  np.sqrt(  np.square(ft.real) + np.square(ft.imag)  )
+        r = np.sqrt(np.square(ft.real) + np.square(ft.imag))
     except(Exception) as e:
         print("Exception: ", e)
 
@@ -40,11 +39,11 @@ def Smooth_1StandardDeviation(dataSet):
     Maxthreshold = mn + (2.0 * sdv)
     Minthreshold = mn - (2.0 * sdv)
     for d in range(0, len(dataSet)):
-        if (dataSet[d] > Maxthreshold ):
-            print(d, ' : ' ,dataSet[d], mn+sdv)
+        if (dataSet[d] > Maxthreshold):
+            print(d, ' : ', dataSet[d], mn + sdv)
             returnData.append(mn + sdv)
-        elif (dataSet[d] < Minthreshold ):
-            print(d, ' : ' ,dataSet[d], mn-sdv)
+        elif (dataSet[d] < Minthreshold):
+            print(d, ' : ', dataSet[d], mn - sdv)
             returnData.append(mn - sdv)
         else:
             returnData.append(dataSet[d])
@@ -61,9 +60,10 @@ def GetTotRiders(rts):
 def CalcProp(dataArray):
     tot: decimal.Decimal = 0.0
     for d in dataArray:
-        tot = tot+float(d)
-    propList = list(map(lambda x: float( (float(x)/tot) )*100.0, dataArray))
+        tot = tot + float(d)
+    propList = list(map(lambda x: float((float(x) / tot)) * 100.0, dataArray))
     return propList
+
 
 def ChiSqTestNxN(d1):
     rejectHO = False
@@ -74,9 +74,8 @@ def ChiSqTestNxN(d1):
     print("Chi-square contingency results")
     print("Stats:", stat)
     print("p-val:", p)
-    print("Degrees of freedom:",dof)
+    print("Degrees of freedom:", dof)
     print("\n")
-
 
     # interpret p-value
     alpha = 0.05
@@ -84,10 +83,11 @@ def ChiSqTestNxN(d1):
         rejectHO = True
     return rejectHO, p
 
+
 def ChiSqTestExp():
     # defining the table
-    data = [ [10, 5],
-            [8,2] ]
+    data = [[10, 5],
+            [8, 2]]
 
     stat, p, dof, expected = chi2_contingency(data)
 
@@ -103,7 +103,7 @@ def ChiSqTestExp():
 
 def IntersectStations(statA, statB):
     subSetA = [ele1 for ele1 in statA
-           for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2]) ]
+               for ele2 in statB if (ele1[1] == ele2[1] and ele1[2] == ele2[2])]
     return subSetA
 
 
@@ -131,6 +131,7 @@ def RemoveSmallRiderCountsForStation(counts, l1):
         print(e)
     return l1p
 
+
 def CalcTotlRidersRun(l1):
     tot = 0
     for n in l1:
@@ -138,11 +139,13 @@ def CalcTotlRidersRun(l1):
             tot = tot + r[0]
     return tot
 
+
 def CalcDroppedRiders(beforeList, afterList):
     b = CalcTotlRidersRun(beforeList)
     a = CalcTotlRidersRun(afterList)
-    perc = a/b
+    perc = a / b
     return perc
+
 
 def MakeProportionalAllStations(allStations):
     newAllStations = []
