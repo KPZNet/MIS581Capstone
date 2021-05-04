@@ -9,21 +9,46 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 def Decomposition(data, per):
+    """Performs seasonal decomposition and plot output
+
+    Args:
+        data (list): list of data in order
+        per (int): period for decomposition
+
+    Returns:
+        none:
+    """
+
     decomposition = seasonal_decompose(data, model="additive", period=per)
     fig = decomposition.plot()
     plt.show()
 
 
 def ACF(data, lags):
-    # Display the autocorrelation plot of your time series
+    """Performs auto correlation on time series and plots output
+
+    Args:
+        data (list): list of data in order
+        lags (int): estimate period for auto correlation
+
+    Returns:
+        none
+    """
     fig = tsaplots.plot_acf(data, lags=lags)
     plt.show()
-    # Display the partial autocorrelation plot of your time series
     fig = tsaplots.plot_pacf(data, lags=lags)
     plt.show()
 
 
 def SumSquares(ft):
+    """Performs inphase/quad sum of square root
+
+    Args:
+        ft (complex): complex number
+
+    Returns:
+        r: real number amplitude
+    """
     try:
         r = np.sqrt(np.square(ft.real) + np.square(ft.imag))
     except(Exception) as e:
@@ -33,6 +58,14 @@ def SumSquares(ft):
 
 
 def Smooth_1StandardDeviation(dataSet):
+    """Smooths time series data and clips at 2 standard deviations
+
+    Args:
+        dataSet (list): time series data
+
+    Returns:
+        smoothed data
+    """
     returnData = []
     sdv = statistics.stdev(dataSet)
     mn = statistics.mean(dataSet)
@@ -51,6 +84,14 @@ def Smooth_1StandardDeviation(dataSet):
 
 
 def GetTotRiders(rts):
+    """Returns total riders in list of stations
+
+    Args:
+        rts (list of stations): list of stations
+
+    Returns:
+        Total riders for all stations
+    """
     tot = 0
     for n in rts:
         tot = tot + n[0]
