@@ -1,3 +1,12 @@
+__author__ = "Kenneth Ceglia"
+__copyright__ = "Copyright 2021, MIS581 Capstone"
+__credits__ = ["Kenneth Ceglia"]
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Kenneth Ceglia"
+__email__ = "kenneth.ceglia@csuglobal.edu"
+__status__ = "Course Level"
+
 import statistics
 from datetime import timedelta
 from statistics import NormalDist
@@ -34,7 +43,7 @@ def RunBARTTimeSeries2(source, hour, year):
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
 
-    # ADF statistic to check stationarity
+    # ADF statistic to check stationary
     timeseries = adfuller(smoothData, autolag='AIC')
     pVal = timeseries[1]
     print("\n\n\nAugmented Dickey-Fuller Test: pval = {0}\n\n\n".format(pVal))
@@ -152,15 +161,24 @@ def TestMultipleRoutes(riderContTable):
 
 
 def TestMultipleRoutesAnova(df):
+    """
+    Run ANOVA on multiple routes to compare means of station riders
+    produces boxplot, outputs ANOVA test results
+    :param df: dataframe of routes
+    """
     PlotRouteDestinations(df, 10)
 
-    # Ordinary Least Squares (OLS) model
     model = ols('riders ~ C(dest)', data=df).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
     print(anova_table)
 
 
 def PlotRouteDestinations(df, minRiders):
+    """
+    Plot a boxplot of multiple routes for means comparison
+    :param df: dataframe of multiple routes
+    :param minRiders: min number of riders per route to consider
+    """
     try:
         if True:
             dlist = []
@@ -184,6 +202,19 @@ def PlotRouteDestinations(df, minRiders):
 
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
+    """
+    Compares multiple routes over time frame
+    Cleans stations, intersects and create route contingency table
+    Produces plots, goodness of fit tests
+    :param startDate: Start date for route query
+    :param endDate:  End date for route query
+    :param dest: The destination station
+    :param hour: The hour to query
+    :param minStations: Min number of stations to intersect to be considered in test table
+    :param minRiders: Min riders to consider for each route station (min must be > 5)
+    :param minNumber: Min number of total riders for train to be considered
+    :param dayInterval: Skip day interval
+    """
     propList = []
     start_date = startDate
     end_date = endDate
@@ -218,6 +249,11 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
 
 
 def AllStationsToDF(allStationsComplete):
+    """
+    Convert list of stations to Pandas dataframe for convenience
+    :param allStationsComplete: List of stations for route in list of lists
+    :return: Dataframe of route stations
+    """
     cols = ['riders', 'source', 'dest', 'depart_hour', 'depart_date']
     ls = []
     for day in allStationsComplete:
@@ -230,6 +266,12 @@ def AllStationsToDF(allStationsComplete):
 
 
 def confidence_interval(data, confidence=0.95):
+    """
+    Return confidence limits for input data array
+    :param data: array of rider data
+    :param confidence: percentage of bands
+    :return: confidence bands upper and lower
+    """
     dist = NormalDist.from_samples(data)
     z = NormalDist().inv_cdf((1 + confidence) / 2.)
     h = dist.stdev * z / ((len(data) - 1) ** .5)
@@ -237,6 +279,11 @@ def confidence_interval(data, confidence=0.95):
 
 
 def PlotMeanRidersPerStation(df, allStationsComplete):
+    """
+
+    :param df:
+    :param allStationsComplete:
+    """
     stationList = df.dest.unique()
     x = []
     y = []
