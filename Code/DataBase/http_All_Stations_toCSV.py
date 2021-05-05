@@ -1,13 +1,8 @@
-import requests
-import numpy as np
-import statistics
 import csv
-import os
-from datetime import timedelta, date
-import datetime as dt
-import calendar
 import bart
+import csv
 
+import bart
 
 all_stations_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_stations.csv"
 

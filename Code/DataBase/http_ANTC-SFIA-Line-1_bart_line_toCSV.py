@@ -1,13 +1,7 @@
-import requests
-import numpy as np
-import statistics
 import csv
 import os
-from datetime import timedelta, date
-import datetime as dt
-import calendar
-import bart
 
+import bart
 
 lines_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\bart_line_1.csv"
 line_number = '1'

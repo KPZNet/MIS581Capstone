@@ -1,16 +1,13 @@
-from typing import List, Any
-
-import requests
-import numpy as np
-import statistics
+import calendar
 import csv
+import datetime as dt
 import os
 from datetime import datetime
 from datetime import timedelta, date
-import datetime as dt
-import calendar
-import bart
 
+import requests
+
+import bart
 
 route_file_name = "route_trip_times.csv"
 k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
