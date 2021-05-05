@@ -231,9 +231,9 @@ def CalcDroppedRiders(beforeList, afterList):
 
 def MakeProportionalAllStations(allStations):
     """
-
+    Takes all input stations and proportions them to 0-100% scale
     :param allStations:
-    :return:
+    :return: all stations in proportional scaling
     """
     newAllStations = []
     for index, p in enumerate(allStations):

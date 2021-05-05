@@ -16,6 +16,12 @@ import BartLibs
 
 
 def RunBARTTimeSeries2(source, hour, year):
+    """
+    Runs complete time series tests, outputs plot set and test results
+    :param source: Station to test
+    :param hour: Hour of day
+    :param year: year
+    """
     plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource(source, hour, year)
     title = "Daily Riders for {0} at {1}:00AM in {2}".format(source, hour, year)
     PlotTimeSeriesWithLimitBars(plotdata, title)
@@ -52,6 +58,11 @@ def RunBARTTimeSeries2(source, hour, year):
 
 
 def PlotTimeSeriesFFT(smoothData, title):
+    """
+    Plots an FFT from time series data
+    :param smoothData: time series data
+    :param title: title to place on plot
+    """
     smoothMean = statistics.mean(smoothData)
     smoothDataZeroed = list(map(lambda x: x - smoothMean, smoothData))
     ft = np.fft.fft(smoothDataZeroed)
@@ -65,6 +76,12 @@ def PlotTimeSeriesFFT(smoothData, title):
 
 
 def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
+    """
+    Plot a time series line chart with standard error bars
+    :param plotdata: input time series list of data
+    :param title: title to put on plot
+    :param showBars: show or hide error bars
+    """
     rawLen = len(plotdata)
     x = list(range(rawLen))
     plt.plot(x, plotdata,
@@ -82,36 +99,11 @@ def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
     plt.show()
 
 
-def CosFFT():
-    N = 512
-    T = 1 / N
-    F = int(20)
-    P = int(np.round(N / F))
-    print("Frequency: ", F)
-    print("Period: ", P)
-    x = np.linspace(0.0, N, N, endpoint=False)
-    y = 10 * np.sin(F * 2.0 * np.pi * (x / N))  # + 5*np.sin(10 * 2.0*np.pi*x)
-    y = list(map(lambda x: x - statistics.mean(y), y))
-    plt.plot(x, y,
-             color='blue',
-             linewidth=1
-             )
-    plt.show()
-
-    ft = np.fft.fft(y)
-    rt = []
-    rt = list(map(lambda x: BartLibs.SumSquares(x), ft))
-    le = len(rt)
-    scal = 2 / le
-    rt = list(map(lambda x: scal * x, rt))
-    plt.plot(rt[:int(N / 2)])
-    plt.show()
-
-    BartLibs.Decomposition(y, P)
-    BartLibs.ACF(y, P * 2)
-
-
 def PrintRoutes(propList):
+    """
+    Prints out a route with details for all stations in route
+    :param propList: list of input stations
+    """
     for n in propList:
         stns = len(n)
         rdr = BartLibs.GetTotRiders(n)
@@ -120,19 +112,15 @@ def PrintRoutes(propList):
         print(str)
 
 
-def PlotRoutes(plotdata):
-    for d in plotdata:
-        data = list(map(lambda x: x[0], d))
-        x = list(range(len(d)))
-        plt.plot(x, data,
-                 linewidth=1
-                 )
-
-    plt.suptitle("test")
-    plt.show()
-
-
 def ScrubRiders(propList, minRiders, minStations, minNumber):
+    """
+    Cleans list of stations
+    :param propList: Station list
+    :param minRiders: minimum number of riders per station
+    :param minStations: min number of intersected stations for route
+    :param minNumber: min number of total riders for route
+    :return: list of cleaned stations per route
+    """
     riderCleaned = []
     for n in propList:
         rdrBRem = BartLibs.GetTotRiders(n)
@@ -154,6 +142,11 @@ def ScrubRiders(propList, minRiders, minStations, minNumber):
 
 
 def TestMultipleRoutes(riderContTable):
+    """
+    Tests multiple route variables over time for goodness of fit
+    :param riderContTable: route contengency table
+    :return: returns chi-square H0 result, and p-value
+    """
     rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
     return rejectHO, pVal
 
