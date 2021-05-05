@@ -565,6 +565,12 @@ def PlotTotalRidersByHourBySource(source, year):
 
 
 def GetTotalRidersPerHourPerDayForStation(source, year):
+    """
+    Returns the total number of riders per hour day for a year
+    Produces bar plot
+    :param source: Departure Station
+    :param year: Year to compare
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourForStation(source, year)
 
     plt.bar(df['hour'], df['riders'])
@@ -576,6 +582,11 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
 
 
 def CompareRidersPerHourPerDayForStation(source, year):
+    """
+    Compares riders per hour per day for a given station
+    :param source: Source or departure station
+    :param year: year to compare
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourPerDOWForStation(source, year)
     labels = []
     data = []
@@ -596,8 +607,9 @@ def CompareRidersPerHourPerDayForStation(source, year):
 
 def CompareRidersPerISODOW(year):
     """
-    Compares
-    :param year:
+    Compares riders for a specific day of the week over a year
+    produces bar plot
+    :param year: Year to compare
     """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOW(year)
 
