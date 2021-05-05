@@ -1,5 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Converts weekly total BART Exits into Postgres relational database
+"""
+
 import csv
 import os
+
 from csv import reader
 
 

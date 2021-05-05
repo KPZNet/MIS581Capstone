@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Adds Antioch SFIA line to Postgres tables
+"""
 import csv
 import os
 

@@ -1,7 +1,9 @@
-import csv
-import bart
-import csv
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+""" Places all BART line into Postgres relational table
+"""
+import csv
 import bart
 
 all_lines_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_bart_lines.csv"

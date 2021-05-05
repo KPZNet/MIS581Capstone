@@ -1,7 +1,9 @@
-import csv
-import bart
-import csv
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+""" Adds all stations to Postgres tables
+"""
+import csv
 import bart
 
 all_stations_file_name = "K:\\OneDrive\\CSUGlobal\\MIS581\\PortfolioProject\\Data\\all_stations.csv"

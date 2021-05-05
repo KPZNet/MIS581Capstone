@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Helper function to execute Python code needed for quering BART API
+    and Postgres input-outputs
+"""
 import os
 
 import psycopg2

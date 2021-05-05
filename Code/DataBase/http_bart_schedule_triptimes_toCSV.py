@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Adds BART schedule and trip data to Postgres tables
+"""
 import calendar
 import csv
 import datetime as dt
@@ -31,11 +36,20 @@ class routeTime:
 routeTimeList = []
 
 def PrintTime():
+    """
+    Prints time to console
+    """
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("Current Time =", current_time)
 
 def DateRangeList(date1, date2):
+    """
+    Creates a date range object from two dates
+    :param date1: Start date
+    :param date2: End date
+    :return: Date range object list
+    """
     r = []
     for n in range(int ((date2 - date1).days)+1):
         r.append( date1 + timedelta(n) )
@@ -48,6 +62,12 @@ weekDayList = DateRangeList(start_dt, end_dt)
 hours = {i : dt.time(i).strftime('%I:00 %p') for i in range(24)}
 
 def FillRouteTime(t, hour):
+    """
+    Helper function to fill out route times
+    :param t:
+    :param hour:
+    :return:
+    """
     ro = routeTime()
     ro.origin = t['@origin']
     ro.destination = t['@destination']
@@ -62,6 +82,10 @@ def FillRouteTime(t, hour):
     return ro
 
 def GetMeanTime(timeList):
+    """
+    Helper function to calculate mean time from multiple trip times
+    :rtype: averaged trip time
+    """
     tot = 0
     sz = len(timeList)
     if sz > 0:
@@ -73,6 +97,11 @@ def GetMeanTime(timeList):
     return tot/sz
 
 def GetTime(t):
+    """
+    Get trip time from input structure
+    :param t: input time dictionary
+    :return: trip time
+    """
     time = int(t['@tripTime'])
     return time
       
