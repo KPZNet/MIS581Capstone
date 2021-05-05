@@ -595,6 +595,10 @@ def CompareRidersPerHourPerDayForStation(source, year):
 
 
 def CompareRidersPerISODOW(year):
+    """
+    Compares
+    :param year:
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOW(year)
 
     labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
@@ -608,6 +612,11 @@ def CompareRidersPerISODOW(year):
 
 
 def TwoWayAnova(source, year):
+    """
+    Two way ANOVA for route, time, day analysis of variance test
+    :param source: Source Station
+    :param year: Year
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourPerDOWForStationTEXT(source, year)
     # perform two-way ANOVA
     model = ols('riders ~ C(hour) + C(isodow) + C(hour):C(isodow)', data=df).fit()
@@ -616,6 +625,10 @@ def TwoWayAnova(source, year):
 
 
 def PlotRidersOnMap(year):
+    """
+    Plot overlaid bubble chart on street map for Source routes
+    :param year: year to plot
+    """
     px.set_mapbox_access_token(open(".mapbox_token").read())
 
     dat, df = BARTQueries.GetTotalRidersInNetworkByHourFrom(7, year)
@@ -638,6 +651,10 @@ def PlotRidersOnMap(year):
 
 
 def PlotRidersOnMapTo(year):
+    """
+    Plot overlaid bubble chart on street map for Destination routes
+    :param year: year to plot
+    """
     px.set_mapbox_access_token(open(".mapbox_token").read())
 
     dat, df = BARTQueries.GetTotalRidersInNetworkByHourTo(8, year)
@@ -658,6 +675,12 @@ def PlotRidersOnMapTo(year):
 
 
 def Plot3DRoutesTo(allStations, statIndex, title):
+    """
+    Plots 3D bargraph of routes over time
+    :param allStations: Routes over time in order
+    :param statIndex: helper to select Source or Destination Station
+    :param title: plot title
+    """
     fig = plt.figure()
     ax1 = fig.add_subplot(111, projection='3d')
 
@@ -692,6 +715,12 @@ def Plot3DRoutesTo(allStations, statIndex, title):
 
 
 def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
+    """
+    Plots a time series of destination routes as a time series
+    :param allStations: All routes over time
+    :param statIndex: helper index to target Departure or Destination index
+    :param title: title for plot
+    """
     allStations = NormalizeAllStationsData(allStations)
 
     listOrigins = list(zip(*allStations))
@@ -715,6 +744,11 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
 
 
 def NormalizeAllStationsData(allStations):
+    """
+    Converts all stations to 100 percent full scale
+    :param allStations: list of list of stations per route
+    :return: normalized 100 percent riders
+    """
     for index, p in enumerate(allStations):
         d = list(map(lambda x: x[0], p))
         d = list(map(lambda x: x * 100.0 / max(d), d))
@@ -727,6 +761,9 @@ def NormalizeAllStationsData(allStations):
 
 
 def PlotTotalRidersPerMonth():
+    """
+    Plots a scatter of monthly riders to give a time series
+    """
     plotdata, df = BARTQueries.GetTotalRidersPerMonth()
     df = df[df['year'] < 2020]
     df = df[df['year'] > 2015]
