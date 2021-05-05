@@ -9,6 +9,4 @@
 .pydevproject
 workspace.code-workspace
 
-
-
-
+.settings/org.eclipse.core.resources.prefs
