@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" BARTQueries is a helper file to execute Postgres queries
+    format results and return data as lists or Panda dataframes
+    Queries are either local or remote pending global flag
+    ALIENWARE
+"""
+
 import pandas as pd
 import psycopg2
 

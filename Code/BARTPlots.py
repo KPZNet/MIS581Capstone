@@ -1,11 +1,12 @@
-__author__ = "Kenneth Ceglia"
-__copyright__ = "Copyright 2021, MIS581 Capstone"
-__credits__ = ["Kenneth Ceglia"]
-__license__ = "GPL"
-__version__ = "1.0.0"
-__maintainer__ = "Kenneth Ceglia"
-__email__ = "kenneth.ceglia@csuglobal.edu"
-__status__ = "Course Level"
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" BARTPlots is mainline Python code to produce all plots and statistical
+    tests for Capstone BART Ridership project
+    BARTPlots is a function file, consisting of multiple function definitions
+    to execute queries, produce plot sets, run statistical tests
+    Each function is an atomic, complete operation
+"""
 
 import statistics
 from datetime import timedelta

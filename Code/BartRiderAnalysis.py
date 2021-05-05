@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" BartRiderAnalysis is the main entry point and executes different
+    functions to plot, test, clean or wrangle data
+    This file contains all calling functions and serves as main line application
+    for Capstone project
+"""
 from datetime import date
 import time
 
