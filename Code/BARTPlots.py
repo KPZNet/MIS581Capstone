@@ -444,6 +444,10 @@ def PlotStationUsage(stats, title):
 
 
 def PlotRouteSet(stats):
+    """
+    Plot single route as bar plot scaled 100%
+    :param stats: stations to plot
+    """
     sDate = stats[0][4]
     sDate = sDate.strftime("%m-%d-%Y")
     cats = list(map(lambda x: x[2], stats))
@@ -462,6 +466,14 @@ def PlotRouteSet(stats):
 
 
 def PlotTwoSets(stats, lab1, lab2, statIndex, title):
+    """
+    Plot two routes side by side on bar graph
+    :param stats: stations list by two
+    :param lab1: station 1 label
+    :param lab2: station 2 label
+    :param statIndex: index to select source or destination
+    :param title: title of plot
+    """
     cats = list(map(lambda x: x[statIndex], stats[0]))
     d1 = list(map(lambda x: x[0], stats[0]))
     d2 = list(map(lambda x: x[0], stats[1]))
@@ -477,6 +489,14 @@ def PlotTwoSets(stats, lab1, lab2, statIndex, title):
 
 
 def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
+    """
+    Plot two routes side by side on bar graph as 100% full scale
+    :param stats: stations list by two
+    :param lab1: station 1 label
+    :param lab2: station 2 label
+    :param statIndex: index to select source or destination
+    :param title: title of plot
+    """
     cats = list(map(lambda x: x[statIndex], stats[0]))
     d1 = list(map(lambda x: x[0], stats[0]))
     d2 = list(map(lambda x: x[0], stats[1]))
@@ -499,6 +519,12 @@ def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
 
 
 def PlotMultiSetsTo(stats, statIndex, title):
+    """
+    Plot multiple routes in comparative bar plot
+    :param stats: list of routes
+    :param statIndex: source or destination station
+    :param title: title of plot
+    """
     cats = list(map(lambda x: x[statIndex], stats[0]))
     N = len(cats)
     ns = len(stats)
@@ -520,6 +546,11 @@ def PlotMultiSetsTo(stats, statIndex, title):
 
 
 def PlotYearlySumRidersPerOrigin(origin, year):
+    """
+    Plot total riders over a year for destination station
+    :param origin: destination station
+    :param year: year to summarize
+    """
     hourlyRiders = BARTQueries.GetSumYearRidersPerHour(origin, year)
     cat_names = list(map(lambda x: x[1], hourlyRiders))
     barValues = list(map(lambda x: x[0], hourlyRiders))
@@ -532,6 +563,10 @@ def PlotYearlySumRidersPerOrigin(origin, year):
 
 
 def PlotTotalRidersByHour(year):
+    """
+    Plot total riders by hour for given year
+    :param year: Year to plot
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
 
     plt.bar(df['hour'], df['riders'])
@@ -543,6 +578,10 @@ def PlotTotalRidersByHour(year):
 
 
 def PlotAverageRidersByHour(year):
+    """
+    Plot average riders by hour for a given year
+    :param year: Year to plot
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
 
     plt.bar(df['hour'], df['riders'])
@@ -554,6 +593,11 @@ def PlotAverageRidersByHour(year):
 
 
 def PlotTotalRidersByHourBySource(source, year):
+    """
+    Plot riders by hour and year by destination statino
+    :param source: destination statino
+    :param year: year to plot
+    """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHourForStation(source, year)
 
     plt.bar(df['hour'], df['riders'])
