@@ -1,11 +1,7 @@
-import requests
-import numpy as np
-import statistics
-import csv
 import os
-from datetime import timedelta, date
-import calendar
+
 import psycopg2
+import requests
 
 k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
 gen_lic = 'MW9S-E7SL-26DU-VV8V'
@@ -14,6 +10,12 @@ url = 'http://api.bart.gov/api/route.aspx?'
 
 
 def checkkey(dic, key):
+    """
+    Check if key exist in dictionary
+    :param dic: dictionary to check
+    :param key: key to check in dictionary
+    :return: True or False if key exists in dict
+    """
     r = False
     try:
         if type(key is list):
@@ -31,6 +33,11 @@ def checkkey(dic, key):
 
 
 def GetBARTLine(bartLine):
+    """
+    Query BART API for stations in line
+    :param bartLine: BART line to get station list for
+    :return: list of BART stations
+    """
     try:
         lineReturn = []
         urlRoute = 'https://api.bart.gov/api/route.aspx?'
@@ -44,13 +51,13 @@ def GetBARTLine(bartLine):
         statusCode = route.status_code
         if statusCode == 200:
             rj = route.json()
-            if checkkey(rj, ['root','routes','route','config','station']) == True:
+            if checkkey(rj, ['root', 'routes', 'route', 'config', 'station']) == True:
                 routeSummary = route.json()['root']['routes']['route']
                 routeDetails = route.json()['root']['routes']['route']['config']['station']
                 for r in routeDetails:
-                    rline = { 'abbr': routeSummary['abbr'], 'routeID':routeSummary['routeID'],
-                              'origin':routeSummary['origin'], 'dest':routeSummary['destination'],
-                              'number':routeSummary['number'], 'station': r }
+                    rline = {'abbr': routeSummary['abbr'], 'routeID': routeSummary['routeID'],
+                             'origin': routeSummary['origin'], 'dest': routeSummary['destination'],
+                             'number': routeSummary['number'], 'station': r}
                     lineReturn.append(rline)
     except (Exception) as e:
         print("Error getting line: {}".format(str(e)))
@@ -59,6 +66,10 @@ def GetBARTLine(bartLine):
 
 
 def GetBARTLines():
+    """
+    Query BART API For all stations in all lines
+    :return: List of lines and station in lines
+    """
     try:
         routeLinesReturn = []
         routeFailures = []
@@ -86,11 +97,19 @@ def GetBARTLines():
 
 
 def DeleteFile(f):
+    """
+    Delete a local file
+    :param f: file name fully qualified
+    """
     if os.path.exists(f):
         os.remove(f)
 
 
 def GetStationList():
+    """
+    Query BART API for list of all stations and details
+    :return: List of all BART stations
+    """
     stationsURL = "https://api.bart.gov/api/stn.aspx"
     paramsStation = dict(
         cmd='stns',
@@ -102,6 +121,11 @@ def GetStationList():
 
 
 def PGBart(query):
+    """
+    Postgres query helper function for remote PG server
+    :param query: query string
+    :return: Postgres query results in list
+    """
     try:
         query_results = []
         conn = psycopg2.connect(host="10.0.0.206", port=5432, database="bartridership", user="postgres",
@@ -118,7 +142,13 @@ def PGBart(query):
     finally:
         return query_results
 
+
 def PGBartLocal(query):
+    """
+    Postgres query helper function for local PG installation
+    :param query: query string
+    :return: Postgres query results in list
+    """
     try:
         query_results = []
         conn = psycopg2.connect(host="localhost", port=5432, database="bartridership", user="postgres",
@@ -134,4 +164,3 @@ def PGBartLocal(query):
         print("Error in running the query: {}".format(str(e)))
     finally:
         return query_results
-
