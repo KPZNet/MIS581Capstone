@@ -226,6 +226,7 @@ def CalcTotlRidersRun(l1):
 def CalcDroppedRiders(beforeList, afterList):
     """
     Calculate dropped riders percentage
+
     :param beforeList: stations before trim
     :param afterList:  stations after trim
     :return: total number of riders dropped as a percentage
@@ -239,6 +240,7 @@ def CalcDroppedRiders(beforeList, afterList):
 def MakeProportionalAllStations(allStations):
     """
     Takes all input stations and proportions them to 0-100% scale
+
     :param allStations:
     :return: all stations in proportional scaling
     """

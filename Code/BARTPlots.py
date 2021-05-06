@@ -28,6 +28,7 @@ import BartLibs
 def RunBARTTimeSeries2(source, hour, year):
     """
     Runs complete time series tests, outputs plot set and test results
+
     :param source: Station to test
     :param hour: Hour of day
     :param year: year
@@ -70,6 +71,7 @@ def RunBARTTimeSeries2(source, hour, year):
 def PlotTimeSeriesFFT(smoothData, title):
     """
     Plots an FFT from time series data
+
     :param smoothData: time series data
     :param title: title to place on plot
     """
@@ -88,6 +90,7 @@ def PlotTimeSeriesFFT(smoothData, title):
 def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
     """
     Plot a time series line chart with standard error bars
+
     :param plotdata: input time series list of data
     :param title: title to put on plot
     :param showBars: show or hide error bars
@@ -112,6 +115,7 @@ def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
 def PrintRoutes(propList):
     """
     Prints out a route with details for all stations in route
+
     :param propList: list of input stations
     """
     for n in propList:
@@ -125,6 +129,7 @@ def PrintRoutes(propList):
 def ScrubRiders(propList, minRiders, minStations, minNumber):
     """
     Cleans list of stations
+
     :param propList: Station list
     :param minRiders: minimum number of riders per station
     :param minStations: min number of intersected stations for route
@@ -154,6 +159,7 @@ def ScrubRiders(propList, minRiders, minStations, minNumber):
 def TestMultipleRoutes(riderContTable):
     """
     Tests multiple route variables over time for goodness of fit
+
     :param riderContTable: route contengency table
     :return: returns chi-square H0 result, and p-value
     """
@@ -177,6 +183,7 @@ def TestMultipleRoutesAnova(df):
 def PlotRouteDestinations(df, minRiders):
     """
     Plot a boxplot of multiple routes for means comparison
+
     :param df: dataframe of multiple routes
     :param minRiders: min number of riders per route to consider
     """
@@ -207,6 +214,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
     Compares multiple routes over time frame
     Cleans stations, intersects and create route contingency table
     Produces plots, goodness of fit tests
+
     :param startDate: Start date for route query
     :param endDate:  End date for route query
     :param dest: The destination station
@@ -252,6 +260,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
 def AllStationsToDF(allStationsComplete):
     """
     Convert list of stations to Pandas dataframe for convenience
+
     :param allStationsComplete: List of stations for route in list of lists
     :return: Dataframe of route stations
     """
@@ -269,6 +278,7 @@ def AllStationsToDF(allStationsComplete):
 def confidence_interval(data, confidence=0.95):
     """
     Return confidence limits for input data array
+
     :param data: array of rider data
     :param confidence: percentage of bands
     :return: confidence bands upper and lower
@@ -360,6 +370,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1, minStations, minRiders, interval):
     """
     Compare Source station end to end run for all stations in a year to yearly average
+
     :param startDate: start date for query
     :param endDate: end date for query
     :param dest1: destination station
@@ -397,6 +408,7 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
 def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders, interval):
     """
     Compare Destination station end to end run for all stations in a year to yearly average
+
     :param startDate: start date for query
     :param endDate: end date for query
     :param dest1: destination station
@@ -433,6 +445,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
 def PlotRouteSet(stats):
     """
     Plot single route as bar plot scaled 100%
+
     :param stats: stations to plot
     """
     sDate = stats[0][4]
@@ -455,6 +468,7 @@ def PlotRouteSet(stats):
 def PlotTwoSets(stats, lab1, lab2, statIndex, title):
     """
     Plot two routes side by side on bar graph
+
     :param stats: stations list by two
     :param lab1: station 1 label
     :param lab2: station 2 label
@@ -478,6 +492,7 @@ def PlotTwoSets(stats, lab1, lab2, statIndex, title):
 def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
     """
     Plot two routes side by side on bar graph as 100% full scale
+
     :param stats: stations list by two
     :param lab1: station 1 label
     :param lab2: station 2 label
@@ -508,6 +523,7 @@ def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
 def PlotMultiSetsTo(stats, statIndex, title):
     """
     Plot multiple routes in comparative bar plot
+
     :param stats: list of routes
     :param statIndex: source or destination station
     :param title: title of plot
@@ -535,6 +551,7 @@ def PlotMultiSetsTo(stats, statIndex, title):
 def PlotYearlySumRidersPerOrigin(origin, year):
     """
     Plot total riders over a year for destination station
+
     :param origin: destination station
     :param year: year to summarize
     """
@@ -552,6 +569,7 @@ def PlotYearlySumRidersPerOrigin(origin, year):
 def PlotTotalRidersByHour(year):
     """
     Plot total riders by hour for given year
+
     :param year: Year to plot
     """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
@@ -567,6 +585,7 @@ def PlotTotalRidersByHour(year):
 def PlotAverageRidersByHour(year):
     """
     Plot average riders by hour for a given year
+
     :param year: Year to plot
     """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerHour(year)
@@ -582,6 +601,7 @@ def PlotAverageRidersByHour(year):
 def PlotTotalRidersByHourBySource(source, year):
     """
     Plot riders by hour and year by destination statino
+
     :param source: destination statino
     :param year: year to plot
     """
@@ -599,6 +619,7 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
     """
     Returns the total number of riders per hour day for a year
     Produces bar plot
+
     :param source: Departure Station
     :param year: Year to compare
     """
@@ -615,6 +636,7 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
 def CompareRidersPerHourPerDayForStation(source, year):
     """
     Compares riders per hour per day for a given station
+
     :param source: Source or departure station
     :param year: year to compare
     """
@@ -640,6 +662,7 @@ def CompareRidersPerISODOW(year):
     """
     Compares riders for a specific day of the week over a year
     produces bar plot
+
     :param year: Year to compare
     """
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOW(year)
@@ -657,6 +680,7 @@ def CompareRidersPerISODOW(year):
 def TwoWayAnova(source, year):
     """
     Two way ANOVA for route, time, day analysis of variance test
+
     :param source: Source Station
     :param year: Year
     """
@@ -670,6 +694,7 @@ def TwoWayAnova(source, year):
 def PlotRidersOnMap(year):
     """
     Plot overlaid bubble chart on street map for Source routes
+
     :param year: year to plot
     """
     px.set_mapbox_access_token(open(".mapbox_token").read())
@@ -696,6 +721,7 @@ def PlotRidersOnMap(year):
 def PlotRidersOnMapTo(year):
     """
     Plot overlaid bubble chart on street map for Destination routes
+
     :param year: year to plot
     """
     px.set_mapbox_access_token(open(".mapbox_token").read())
@@ -720,6 +746,7 @@ def PlotRidersOnMapTo(year):
 def Plot3DRoutesTo(allStations, statIndex, title):
     """
     Plots 3D bargraph of routes over time
+
     :param allStations: Routes over time in order
     :param statIndex: helper to select Source or Destination Station
     :param title: plot title
@@ -760,6 +787,7 @@ def Plot3DRoutesTo(allStations, statIndex, title):
 def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
     """
     Plots a time series of destination routes as a time series
+
     :param allStations: All routes over time
     :param statIndex: helper index to target Departure or Destination index
     :param title: title for plot
@@ -789,6 +817,7 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
 def NormalizeAllStationsData(allStations):
     """
     Converts all stations to 100 percent full scale
+
     :param allStations: list of list of stations per route
     :return: normalized 100 percent riders
     """
@@ -806,6 +835,7 @@ def NormalizeAllStationsData(allStations):
 def PlotTotalRidersPerMonth():
     """
     Plots a scatter of monthly riders to give a time series
+
     """
     plotdata, df = BARTQueries.GetTotalRidersPerMonth()
     df = df[df['year'] < 2020]
