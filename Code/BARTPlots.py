@@ -194,11 +194,11 @@ def PlotRouteDestinations(df, minRiders):
             for p in plotList:
                 dlist.append(df[df['dest'] == p].riders.tolist())
 
-            plt.boxplot(dlist, labels=plotList, vert=False, showmeans=True)
+            plt.boxplot(dlist, labels=plotList, showfliers = False, vert=False, showmeans=True)
             plt.title("Rider by Stations")
             plt.xlabel('Riders')
             plt.ylabel('Station')
-            plt.xticks(rotation=90)
+            plt.xticks(rotation=45)
             plt.show()
 
         if False:
