@@ -39,13 +39,13 @@ try:
     BARTPlots.PlotRidersOnMapTo(2019)
 
     #RQ2 RQ3
-    #Compare riders per day with yearly averages
-    BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019,4, 1),date(2019, 5, 1),'CONC', 7, 2019, 1, 5, 1)
-    BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 12, 1),date(2019, 12, 30),'19TH', 8, 2019, 1, 5, 1)
-
     #Rider contigency tables comparing riders for the year
     BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 1, 1 ), date ( 2019, 12, 30 ), 'CONC', 7, 15, 5, 0, 1 )
     BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 30), '19TH', 8, 20, 5, 0,1)
+
+    #Compare riders per day with yearly averages
+    BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019,4, 1),date(2019, 5, 1),'CONC', 7, 2019, 1, 5, 1)
+    BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 12, 1),date(2019, 12, 30),'19TH', 8, 2019, 1, 5, 1)
 
     #RQ4
     #Regression Fit
@@ -55,6 +55,7 @@ try:
     print("\n\n\nEXECUTION Time : %s seconds " % (time.time() - start_time))
 
 except(Exception) as e:
+    print("<<< EXCEPTION >>>")
     print(e)
 finally:
     print("Completed")

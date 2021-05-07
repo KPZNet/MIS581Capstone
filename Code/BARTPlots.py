@@ -26,6 +26,7 @@ import BartLibs
 
 DEBUGON = False
 
+
 def RunBARTTimeSeries2(source, hour, year):
     """
     Runs complete time series tests, outputs plot set and test results
@@ -47,8 +48,6 @@ def RunBARTTimeSeries2(source, hour, year):
     BartLibs.ACF(smoothData, 10)
 
     print("\n\nRQ1 - TIME SERIES AutoCorrelation -----------------------------")
-
-
 
     # ADF statistic to check stationary
     timeseries = adfuller(smoothData, autolag='AIC')
@@ -181,7 +180,7 @@ def TestMultipleRoutesAnova(df):
     produces boxplot, outputs ANOVA test results
     :param df: dataframe of routes
     """
-    PlotRouteDestinations(df, 10)
+    PlotRouteDestinations(df)
 
     print("\n\nRQ3-4 MULTIPLE Route ANOVA ------------------")
     model = ols('riders ~ C(dest)', data=df).fit()
@@ -190,7 +189,7 @@ def TestMultipleRoutesAnova(df):
     print("\n\nRQ3-4 ---------------------------------------")
 
 
-def PlotRouteDestinations(df, minRiders):
+def PlotRouteDestinations(df):
     """
     Plot a boxplot of multiple routes for means comparison
 
@@ -199,13 +198,20 @@ def PlotRouteDestinations(df, minRiders):
     """
     try:
         if True:
+
+            embr = df[df['dest'] == 'EMBR']
+            mn = min(embr['riders'].tolist())
+            mx = max(embr['riders'].tolist())
+
             dlist = []
             plotList = df.dest.unique().tolist()
             for p in plotList:
                 dlist.append(df[df['dest'] == p].riders.tolist())
 
-            plt.boxplot(dlist, labels=plotList, showfliers = False, vert=False, showmeans=True)
-            plt.title("Rider by Stations")
+            plt.boxplot(dlist, labels=plotList,
+                        showfliers=False,
+                        vert=False, showmeans=True)
+            plt.title("Rider by Station")
             plt.xlabel('Riders')
             plt.ylabel('Station')
             plt.xticks(rotation=45)
@@ -251,7 +257,7 @@ def confidence_interval(data, confidence=0.95):
     return dist.mean - h, dist.mean + h
 
 
-def PlotMeanRidersPerStation(df, allStationsComplete):
+def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
     """
     Plot average mean riders per station
 
@@ -276,7 +282,11 @@ def PlotMeanRidersPerStation(df, allStationsComplete):
 
     plt.errorbar(x, yRange, xerr=errs, fmt='o', color='k')
     plt.yticks(yRange, stationList)
+    plt.title("Mean Riders from {0} to Destinations".format(sourceStation))
+    plt.xlabel("Mean Riders")
+    plt.ylabel("Destinations with Confidence Limits 95%")
     plt.show()
+
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     """
@@ -315,7 +325,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
                                                                                                    len(allStations),
                                                                                                    pVal, rejectHO,
                                                                                                    stations)
-        #print(title)
+        # print(title)
         PlotMultiSetsTo(allStationsComplete, 1, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes(allStationsComplete)
@@ -324,6 +334,7 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         PlotTimeSeriesRoutesTo(allStationsComplete, 1, title)
     else:
         print("No Stations Found")
+
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     """
@@ -356,7 +367,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         stations = len(allStationsComplete[0])
 
         df = AllStationsToDF(allStationsComplete)
-        PlotMeanRidersPerStation(df, allStationsComplete)
+        PlotMeanRidersPerStation(df, allStationsComplete, origin)
 
         rejectHO, pVal = TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(df)
@@ -364,7 +375,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
                                                                                                    len(allStations),
                                                                                                    pVal, rejectHO,
                                                                                                    stations)
-        #print(title)
+        # print(title)
         PlotMultiSetsTo(allStationsComplete, 2, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes(allStationsComplete)
@@ -405,7 +416,7 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
                                                                                       len(da), pVal,
                                                                                       sDate,
                                                                                       rejectHO)
-                #print(title)
+                # print(title)
                 yr = "{0} Expected".format(year1)
                 # PlotTwoSets(allStationsComplete, sDate, year1, 1,title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, yr, 1, title)
@@ -443,7 +454,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                                                                                       len(da), pVal,
                                                                                       sDate,
                                                                                       rejectHO)
-                #print(title)
+                # print(title)
                 # PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2, title)
 
@@ -668,7 +679,7 @@ def CompareRidersPerHourPerDayForStation(source, year):
 
 def CompareRidersPerISODOWForStation2(source, year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOWForStation(source, year)
-    labels =[]
+    labels = []
     data = []
 
     for i in range(1, 6):
@@ -679,7 +690,7 @@ def CompareRidersPerISODOWForStation2(source, year):
     labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
     # Creating plot
     bp = plt.boxplot(data, labels=labels)
-    plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source,year))
+    plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source, year))
     plt.xlabel('DOW')
     plt.ylabel('Riders')
     # show plot
