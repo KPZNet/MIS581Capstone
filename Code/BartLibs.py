@@ -14,10 +14,11 @@ from scipy.stats import chi2_contingency
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statistics import NormalDist
+import scipy.stats as st
 
 from Code.BARTPlots import DEBUGON
 
-def confidence_interval(data, confidence=0.95):
+def ConfidenceInterval(data, confidence=0.95):
     """
     Return confidence limits for input data array
 
@@ -25,10 +26,15 @@ def confidence_interval(data, confidence=0.95):
     :param confidence: percentage of bands
     :return: confidence bands upper and lower
     """
-    dist = NormalDist.from_samples(data)
-    z = NormalDist().inv_cdf((1 + confidence) / 2.)
-    h = dist.stdev * z / ((len(data) - 1) ** .5)
-    return dist.mean - h, dist.mean + h
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), st.sem(a)
+    h = se * st.t.ppf((1 + confidence) / 2., n-1)
+    return m-h, m+h
+
+def ConfidenceIntervalT(data, confidence=0.95):
+    c1, c2 = st.t.interval(alpha=confidence, df=len(data)-1, loc=np.mean(data), scale=st.sem(data))
+    return c1, c2
 
 def TestMultipleRoutes(riderContTable):
     """

@@ -113,10 +113,9 @@ def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
 def TestMultipleRoutesAnova(df):
     """
     Run ANOVA on multiple routes to compare means of station riders
-    produces boxplot, outputs ANOVA test results
+    outputs ANOVA test results
     :param df: dataframe of routes
     """
-    PlotRouteDestinations(df)
 
     print("\n\nRQ3-4 MULTIPLE Route ANOVA ------------------")
     model = ols('riders ~ C(dest)', data=df).fit()
@@ -124,7 +123,7 @@ def TestMultipleRoutesAnova(df):
     print(anova_table)
     print("\n\nRQ3-4 ---------------------------------------")
 
-def PlotRouteDestinations(df):
+def PlotRouteDestinations(df, sourceStation, startDate, endDate):
     """
     Plot a boxplot of multiple routes for means comparison
 
@@ -132,27 +131,29 @@ def PlotRouteDestinations(df):
     :param minRiders: min number of riders per route to consider
     """
     try:
-        if True:
-            dlist = []
-            plotList = df.dest.unique().tolist()
-            for p in plotList:
-                dlist.append(df[df['dest'] == p].riders.tolist())
+        dlist = []
+        plotList = df.dest.unique().tolist()
+        for p in plotList:
+            dlist.append(df[df['dest'] == p].riders.tolist())
 
-            plt.boxplot(dlist, labels=plotList,
-                        showfliers=False,
-                        vert=False, showmeans=True)
-            plt.title("Rider by Station")
-            plt.xlabel('Riders')
-            plt.ylabel('Station')
-            plt.xticks(rotation=45)
-            plt.show()
-
-        if False:
-            df = df[df['riders'] > minRiders]
-            boxplot = df.boxplot(column=['riders'], by="dest", showfliers=False)
-            boxplot.show()
+        plt.boxplot(dlist, labels=plotList,
+                    #showfliers=False,
+                    vert=False, showmeans=True)
+        plt.title("Riders from {0} for {1} to {2}".format(sourceStation, startDate, endDate))
+        plt.xlabel('Riders')
+        plt.ylabel('Station')
+        plt.xticks(rotation=0)
+        plt.show()
     except:
         pass
+
+def PlotStationHistrogram(df, station, title):
+    num_bins = 100
+    data = df[df['dest'] == station].riders.tolist()
+    n, bins, patches = plt.hist(data, num_bins)
+    plt.title(title)
+    plt.show()
+
 
 def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
     """
@@ -171,7 +172,7 @@ def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
         sr = st.t.interval(0.95, len(data) - 1, loc=xmean, scale=st.sem(data))
         # mul = st.DescrStatsW(data).tconfint_mean()
         x.append(xmean)
-        c1, c2 = BartLibs.confidence_interval(data)
+        c1, c2 = BartLibs.ConfidenceInterval(data)
         errs.append(abs(xmean - c1))
 
     yRange = list(range(len(stationList)))
@@ -265,6 +266,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         PlotMeanRidersPerStation(df, allStationsComplete, origin)
 
         rejectHO, pVal = BartLibs.TestMultipleRoutes(allStations)
+        PlotRouteDestinations(df, origin, startDate, endDate)
         TestMultipleRoutesAnova(df)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                    len(allStations),
@@ -277,6 +279,8 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
 
         Plot3DRoutesTo(allStationsComplete, 2, title)
         PlotTimeSeriesRoutesTo(allStationsComplete, 2, title)
+
+        PlotStationHistrogram(df, 'EMBR', "EMBR Station Riders 2019")
     else:
         print("No Stations Found")
 

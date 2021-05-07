@@ -20,36 +20,36 @@ try:
 
     #RQ1
     #Boxplot Riders by Hour for Year, ANOVA for hours and days
-    BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
-    BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)
-    BARTPlots.TwoWayAnova('CONC', 2019)
+    # BARTPlots.CompareRidersPerHourPerDayForStation("CONC", 2019)
+    # BARTPlots.CompareRidersPerISODOWForStation2("CONC", 2019)
+    # BARTPlots.TwoWayAnova('CONC', 2019)
 
     #General plots for various descriptive stats
-    BARTPlots.PlotTotalRidersByHour(2019)
-    BARTPlots.CompareRidersPerISODOW(2019)
-    BARTPlots.PlotTotalRidersByHourBySource('CONC',2019)
-    BARTPlots.GetTotalRidersPerHourPerDayForStation('CONC', 2019)
-    BARTPlots.PlotYearlySumRidersPerOrigin("CONC", 2019)
+    # BARTPlots.PlotTotalRidersByHour(2019)
+    # BARTPlots.CompareRidersPerISODOW(2019)
+    # BARTPlots.PlotTotalRidersByHourBySource('CONC',2019)
+    # BARTPlots.GetTotalRidersPerHourPerDayForStation('CONC', 2019)
+    # BARTPlots.PlotYearlySumRidersPerOrigin("CONC", 2019)
 
     #Timeseries and autocorrelation views and tests
-    BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
+    # BARTPlots.RunBARTTimeSeries2("CONC", 7, 2019)
 
     #Map overlays for stations and rider levels
-    BARTPlots.PlotRidersOnMap(2019)
-    BARTPlots.PlotRidersOnMapTo(2019)
+    # BARTPlots.PlotRidersOnMap(2019)
+    # BARTPlots.PlotRidersOnMapTo(2019)
 
     #RQ2 RQ3
     #Rider contigency tables comparing riders for the year
     BARTPlots.CompareMultipleDayRidersFrom ( date ( 2019, 1, 1 ), date ( 2019, 12, 30 ), 'CONC', 7, 15, 5, 0, 1 )
-    BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 30), '19TH', 8, 20, 5, 0,1)
+    #BARTPlots.CompareMultipleDayRidersTo(date(2019, 1, 1),date(2019, 12, 30), '19TH', 8, 20, 5, 0,1)
 
     #Compare riders per day with yearly averages
-    BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019,4, 1),date(2019, 5, 1),'CONC', 7, 2019, 1, 5, 1)
-    BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 12, 1),date(2019, 12, 30),'19TH', 8, 2019, 1, 5, 1)
+    # BARTPlots.CompareMultiDayRidersToYearlyAveFrom(date(2019,4, 1),date(2019, 5, 1),'CONC', 7, 2019, 1, 5, 1)
+    # BARTPlots.CompareMultiDayRidersToYearlyAveDest(date(2019, 12, 1),date(2019, 12, 30),'19TH', 8, 2019, 1, 5, 1)
 
     #RQ4
     #Regression Fit
-    BARTPlots.PlotTotalRidersPerMonth()
+    # BARTPlots.PlotTotalRidersPerMonth()
 
     #Print out execution time
     print("\n\n\nEXECUTION Time : %s seconds " % (time.time() - start_time))
