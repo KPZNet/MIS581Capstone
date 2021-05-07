@@ -658,6 +658,26 @@ def CompareRidersPerHourPerDayForStation(source, year):
     plt.show()
 
 
+def CompareRidersPerISODOWForStation2(source, year):
+    hourlyRiders, df = BARTQueries.GetTotalRidersPerDOWForStation(source, year)
+    labels =[]
+    data = []
+
+    for i in range(1, 6):
+        dv = df[df['isodow'] == i].riders.tolist()
+        labels.append(str(i))
+        data.append(dv)
+
+    labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
+    # Creating plot
+    bp = plt.boxplot(data, labels=labels)
+    plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source,year))
+    plt.xlabel('DOW')
+    plt.ylabel('Riders')
+    # show plot
+    plt.show()
+
+
 def CompareRidersPerISODOW(year):
     """
     Compares riders for a specific day of the week over a year
