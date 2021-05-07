@@ -24,6 +24,7 @@ from statsmodels.tsa.stattools import adfuller
 import BARTQueries
 import BartLibs
 
+DEBUGON = False
 
 def RunBARTTimeSeries2(source, hour, year):
     """
@@ -45,6 +46,10 @@ def RunBARTTimeSeries2(source, hour, year):
     BartLibs.Decomposition(smoothData, 5)
     BartLibs.ACF(smoothData, 10)
 
+    print("\n\nRQ1 - TIME SERIES AutoCorrelation -----------------------------")
+
+
+
     # ADF statistic to check stationary
     timeseries = adfuller(smoothData, autolag='AIC')
     pVal = timeseries[1]
@@ -63,6 +68,7 @@ def RunBARTTimeSeries2(source, hour, year):
     print(res_f.summary())
     # The first state variable holds our estimate of the intercept
     print("fixed intercept estimated as {0:.3f}".format(res_f.smoother_results.smoothed_state[0, -1:][0]))
+    print("\n\nRQ1 --------------------------------------")
 
     res_f.plot_components()
     plt.show()
@@ -118,12 +124,13 @@ def PrintRoutes(propList):
 
     :param propList: list of input stations
     """
-    for n in propList:
-        stns = len(n)
-        rdr = BartLibs.GetTotRiders(n)
-        dtd = n[0][4]
-        str = "Date:{0}, Stations:{1}, Riders:{2}".format(dtd, stns, rdr)
-        print(str)
+    if DEBUGON:
+        for n in propList:
+            stns = len(n)
+            rdr = BartLibs.GetTotRiders(n)
+            dtd = n[0][4]
+            str = "Date:{0}, Stations:{1}, Riders:{2}".format(dtd, stns, rdr)
+            print(str)
 
 
 def ScrubRiders(propList, minRiders, minStations, minNumber):
@@ -150,7 +157,8 @@ def ScrubRiders(propList, minRiders, minStations, minNumber):
             str = "SCRUBBED: Date:{0}, Stations:{1}, Riders:{2} - CStations:{3}, CRiders:{4}".format(dtd, numStns, rdr,
                                                                                                      numStnsBRem,
                                                                                                      rdrBRem)
-            print(str)
+            if DEBUGON:
+                print(str)
 
     allStatsInter, origList = BartLibs.IntersectAllStations(riderCleaned)
     return allStatsInter, origList
@@ -175,9 +183,11 @@ def TestMultipleRoutesAnova(df):
     """
     PlotRouteDestinations(df, 10)
 
+    print("\n\nRQ3-4 MULTIPLE Route ANOVA ------------------")
     model = ols('riders ~ C(dest)', data=df).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
     print(anova_table)
+    print("\n\nRQ3-4 ---------------------------------------")
 
 
 def PlotRouteDestinations(df, minRiders):
@@ -207,54 +217,6 @@ def PlotRouteDestinations(df, minRiders):
             boxplot.show()
     except:
         pass
-
-
-def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
-    """
-    Compares multiple routes over time frame
-    Cleans stations, intersects and create route contingency table
-    Produces plots, goodness of fit tests
-
-    :param startDate: Start date for route query
-    :param endDate:  End date for route query
-    :param dest: The destination station
-    :param hour: The hour to query
-    :param minStations: Min number of stations to intersect to be considered in test table
-    :param minRiders: Min riders to consider for each route station (min must be > 5)
-    :param minNumber: Min number of total riders for train to be considered
-    :param dayInterval: Skip day interval
-    """
-    propList = []
-    start_date = startDate
-    end_date = endDate
-    delta = timedelta(days=dayInterval)
-    while start_date <= end_date:
-        if start_date.weekday() < 5:
-            sDate = start_date.strftime("%m-%d-%Y")
-            da, df = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
-            if len(da) > 0:
-                propList.append(da)
-        start_date += delta
-
-    if (len(propList) > 1):
-        PrintRoutes(propList)
-        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
-
-        stations = len(allStationsComplete[0])
-        rejectHO, pVal = TestMultipleRoutes(allStations)
-        title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
-                                                                                                   len(allStations),
-                                                                                                   pVal, rejectHO,
-                                                                                                   stations)
-        print(title)
-        PlotMultiSetsTo(allStationsComplete, 1, title)
-        dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
-        PrintRoutes(allStationsComplete)
-
-        Plot3DRoutesTo(allStationsComplete, 1, title)
-        PlotTimeSeriesRoutesTo(allStationsComplete, 1, title)
-    else:
-        print("No Stations Found")
 
 
 def AllStationsToDF(allStationsComplete):
@@ -316,6 +278,52 @@ def PlotMeanRidersPerStation(df, allStationsComplete):
     plt.yticks(yRange, stationList)
     plt.show()
 
+def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
+    """
+    Compares multiple routes over time frame
+    Cleans stations, intersects and create route contingency table
+    Produces plots, goodness of fit tests
+
+    :param startDate: Start date for route query
+    :param endDate:  End date for route query
+    :param dest: The destination station
+    :param hour: The hour to query
+    :param minStations: Min number of stations to intersect to be considered in test table
+    :param minRiders: Min riders to consider for each route station (min must be > 5)
+    :param minNumber: Min number of total riders for train to be considered
+    :param dayInterval: Skip day interval
+    """
+    propList = []
+    start_date = startDate
+    end_date = endDate
+    delta = timedelta(days=dayInterval)
+    while start_date <= end_date:
+        if start_date.weekday() < 5:
+            sDate = start_date.strftime("%m-%d-%Y")
+            da, df = BARTQueries.GetDailyRidersTo(dest, hour, sDate)
+            if len(da) > 0:
+                propList.append(da)
+        start_date += delta
+
+    if (len(propList) > 1):
+        PrintRoutes(propList)
+        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
+
+        stations = len(allStationsComplete[0])
+        rejectHO, pVal = TestMultipleRoutes(allStations)
+        title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
+                                                                                                   len(allStations),
+                                                                                                   pVal, rejectHO,
+                                                                                                   stations)
+        #print(title)
+        PlotMultiSetsTo(allStationsComplete, 1, title)
+        dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
+        PrintRoutes(allStationsComplete)
+
+        Plot3DRoutesTo(allStationsComplete, 1, title)
+        PlotTimeSeriesRoutesTo(allStationsComplete, 1, title)
+    else:
+        print("No Stations Found")
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     """
@@ -356,7 +364,7 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
                                                                                                    len(allStations),
                                                                                                    pVal, rejectHO,
                                                                                                    stations)
-        print(title)
+        #print(title)
         PlotMultiSetsTo(allStationsComplete, 2, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
         PrintRoutes(allStationsComplete)
@@ -397,7 +405,7 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
                                                                                       len(da), pVal,
                                                                                       sDate,
                                                                                       rejectHO)
-                print(title)
+                #print(title)
                 yr = "{0} Expected".format(year1)
                 # PlotTwoSets(allStationsComplete, sDate, year1, 1,title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, yr, 1, title)
@@ -435,7 +443,7 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                                                                                       len(da), pVal,
                                                                                       sDate,
                                                                                       rejectHO)
-                print(title)
+                #print(title)
                 # PlotTwoSets(allStationsComplete, sDate, year1, 2,title)
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2, title)
 
@@ -708,7 +716,9 @@ def TwoWayAnova(source, year):
     # perform two-way ANOVA
     model = ols('riders ~ C(hour) + C(isodow) + C(hour):C(isodow)', data=df).fit()
     g = sm.stats.anova_lm(model, typ=2)
+    print("\n\nRQ1 - TWO WAY ANOVA --------------------------------------")
     print(g)
+    print("\n\nRQ1 ------------------------------------------------------")
 
 
 def PlotRidersOnMap(year):
@@ -863,6 +873,8 @@ def PlotTotalRidersPerMonth():
     title = "Riders per Month 2016 to 2019"
     PlotTimeSeriesWithLimitBars(df['riders'], title, False)
 
+    print("\n\nRQ4 - TOTAL RIDERS REGRESSION -----------------------------")
+
     # Initialise and fit linear regression model using `statsmodels`
     model = ols('riders ~ rMonth', data=df)
     model = model.fit()
@@ -870,6 +882,8 @@ def PlotTotalRidersPerMonth():
     print(a)
     print(model.summary())
     month_predict = model.predict()
+
+    print("\n\nRQ4 - ----------------------------------------------------")
 
     plt.plot(df['rMonth'], df['riders'])  # scatter plot showing actual data
     plt.plot(df['rMonth'], month_predict, 'r', linewidth=2)  # regression line

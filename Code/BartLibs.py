@@ -14,6 +14,8 @@ from scipy.stats import chi2_contingency
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
 
+from Code.BARTPlots import DEBUGON
+
 
 def Decomposition(data, per):
     """Performs seasonal decomposition and plot output
@@ -80,10 +82,12 @@ def Smooth_1StandardDeviation(dataSet):
     Minthreshold = mn - (2.0 * sdv)
     for d in range(0, len(dataSet)):
         if (dataSet[d] > Maxthreshold):
-            print(d, ' : ', dataSet[d], mn + sdv)
+            if DEBUGON:
+                print(d, ' : ', dataSet[d], mn + sdv)
             returnData.append(mn + sdv)
         elif (dataSet[d] < Minthreshold):
-            print(d, ' : ', dataSet[d], mn - sdv)
+            if DEBUGON:
+                print(d, ' : ', dataSet[d], mn - sdv)
             returnData.append(mn - sdv)
         else:
             returnData.append(dataSet[d])
@@ -135,12 +139,13 @@ def ChiSqTestNxN(d1):
     data = d1
     stat, p, dof, expected = chi2_contingency(data)
 
-    print("\n")
-    print("Chi-square contingency results")
-    print("Stats:", stat)
-    print("p-val:", p)
-    print("Degrees of freedom:", dof)
-    print("\n")
+    if DEBUGON:
+        print("\n")
+        print("Chi-square contingency results")
+        print("Stats:", stat)
+        print("p-val:", p)
+        print("Degrees of freedom:", dof)
+        print("\n")
 
     # interpret p-value
     alpha = 0.05
