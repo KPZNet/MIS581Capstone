@@ -52,7 +52,7 @@ try:
     BARTPlots.PlotTotalRidersPerMonth()
 
     #Print out execution time
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("\n\n\nEXECUTION Time : %s seconds " % (time.time() - start_time))
 
 except(Exception) as e:
     print(e)
