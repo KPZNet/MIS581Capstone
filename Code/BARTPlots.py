@@ -10,11 +10,8 @@
 
 import statistics
 from datetime import timedelta
-from statistics import NormalDist
-
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import plotly.express as px
 import scipy.stats as st
 import statsmodels.api as sm
@@ -25,7 +22,6 @@ import BARTQueries
 import BartLibs
 
 DEBUGON = False
-
 
 def RunBARTTimeSeries2(source, hour, year):
     """
@@ -72,7 +68,6 @@ def RunBARTTimeSeries2(source, hour, year):
     res_f.plot_components()
     plt.show()
 
-
 def PlotTimeSeriesFFT(smoothData, title):
     """
     Plots an FFT from time series data
@@ -90,7 +85,6 @@ def PlotTimeSeriesFFT(smoothData, title):
     plt.plot(realAmplitudesScaled[:int(realAmpsLen / 3.0)])
     plt.suptitle(title)
     plt.show()
-
 
 def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
     """
@@ -116,64 +110,6 @@ def PlotTimeSeriesWithLimitBars(plotdata, title, showBars=True):
     plt.suptitle(title)
     plt.show()
 
-
-def PrintRoutes(propList):
-    """
-    Prints out a route with details for all stations in route
-
-    :param propList: list of input stations
-    """
-    if DEBUGON:
-        for n in propList:
-            stns = len(n)
-            rdr = BartLibs.GetTotRiders(n)
-            dtd = n[0][4]
-            str = "Date:{0}, Stations:{1}, Riders:{2}".format(dtd, stns, rdr)
-            print(str)
-
-
-def ScrubRiders(propList, minRiders, minStations, minNumber):
-    """
-    Cleans list of stations
-
-    :param propList: Station list
-    :param minRiders: minimum number of riders per station
-    :param minStations: min number of intersected stations for route
-    :param minNumber: min number of total riders for route
-    :return: list of cleaned stations per route
-    """
-    riderCleaned = []
-    for n in propList:
-        rdrBRem = BartLibs.GetTotRiders(n)
-        numStnsBRem = len(n)
-        g = BartLibs.RemoveSmallRiderCountsForStation(minRiders, n)
-        rdr = BartLibs.GetTotRiders(g)
-        numStns = len(g)
-        if numStns >= minStations and rdr > minNumber:
-            riderCleaned.append(g)
-        else:
-            dtd = n[0][4]
-            str = "SCRUBBED: Date:{0}, Stations:{1}, Riders:{2} - CStations:{3}, CRiders:{4}".format(dtd, numStns, rdr,
-                                                                                                     numStnsBRem,
-                                                                                                     rdrBRem)
-            if DEBUGON:
-                print(str)
-
-    allStatsInter, origList = BartLibs.IntersectAllStations(riderCleaned)
-    return allStatsInter, origList
-
-
-def TestMultipleRoutes(riderContTable):
-    """
-    Tests multiple route variables over time for goodness of fit
-
-    :param riderContTable: route contengency table
-    :return: returns chi-square H0 result, and p-value
-    """
-    rejectHO, pVal = BartLibs.ChiSqTestNxN(riderContTable)
-    return rejectHO, pVal
-
-
 def TestMultipleRoutesAnova(df):
     """
     Run ANOVA on multiple routes to compare means of station riders
@@ -188,7 +124,6 @@ def TestMultipleRoutesAnova(df):
     print(anova_table)
     print("\n\nRQ3-4 ---------------------------------------")
 
-
 def PlotRouteDestinations(df):
     """
     Plot a boxplot of multiple routes for means comparison
@@ -198,11 +133,6 @@ def PlotRouteDestinations(df):
     """
     try:
         if True:
-
-            embr = df[df['dest'] == 'EMBR']
-            mn = min(embr['riders'].tolist())
-            mx = max(embr['riders'].tolist())
-
             dlist = []
             plotList = df.dest.unique().tolist()
             for p in plotList:
@@ -224,39 +154,6 @@ def PlotRouteDestinations(df):
     except:
         pass
 
-
-def AllStationsToDF(allStationsComplete):
-    """
-    Convert list of stations to Pandas dataframe for convenience
-
-    :param allStationsComplete: List of stations for route in list of lists
-    :return: Dataframe of route stations
-    """
-    cols = ['riders', 'source', 'dest', 'depart_hour', 'depart_date']
-    ls = []
-    for day in allStationsComplete:
-        for s in day:
-            ls.append(s)
-    dfrs = pd.DataFrame(ls, columns=cols)
-    dfrs = dfrs.astype({"dest": 'category'})
-    dfrs = dfrs.astype({"riders": 'int64'})
-    return dfrs
-
-
-def confidence_interval(data, confidence=0.95):
-    """
-    Return confidence limits for input data array
-
-    :param data: array of rider data
-    :param confidence: percentage of bands
-    :return: confidence bands upper and lower
-    """
-    dist = NormalDist.from_samples(data)
-    z = NormalDist().inv_cdf((1 + confidence) / 2.)
-    h = dist.stdev * z / ((len(data) - 1) ** .5)
-    return dist.mean - h, dist.mean + h
-
-
 def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
     """
     Plot average mean riders per station
@@ -274,7 +171,7 @@ def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
         sr = st.t.interval(0.95, len(data) - 1, loc=xmean, scale=st.sem(data))
         # mul = st.DescrStatsW(data).tconfint_mean()
         x.append(xmean)
-        c1, c2 = confidence_interval(data)
+        c1, c2 = BartLibs.confidence_interval(data)
         errs.append(abs(xmean - c1))
 
     yRange = list(range(len(stationList)))
@@ -286,7 +183,6 @@ def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
     plt.xlabel("Mean Riders")
     plt.ylabel("Destinations with Confidence Limits 95%")
     plt.show()
-
 
 def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minRiders, minNumber, dayInterval):
     """
@@ -316,11 +212,11 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         start_date += delta
 
     if (len(propList) > 1):
-        PrintRoutes(propList)
-        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
+        BartLibs.PrintRoutes(propList)
+        allStations, allStationsComplete = BartLibs.ScrubRiders(propList, minRiders, minStations, minNumber)
 
         stations = len(allStationsComplete[0])
-        rejectHO, pVal = TestMultipleRoutes(allStations)
+        rejectHO, pVal = BartLibs.TestMultipleRoutes(allStations)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(dest,
                                                                                                    len(allStations),
                                                                                                    pVal, rejectHO,
@@ -328,13 +224,12 @@ def CompareMultipleDayRidersTo(startDate, endDate, dest, hour, minStations, minR
         # print(title)
         PlotMultiSetsTo(allStationsComplete, 1, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
-        PrintRoutes(allStationsComplete)
+        BartLibs.PrintRoutes(allStationsComplete)
 
         Plot3DRoutesTo(allStationsComplete, 1, title)
         PlotTimeSeriesRoutesTo(allStationsComplete, 1, title)
     else:
         print("No Stations Found")
-
 
 def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, minRiders, minNumber, dayInterval):
     """
@@ -362,14 +257,14 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         start_date += delta
 
     if (len(propList) > 1):
-        PrintRoutes(propList)
-        allStations, allStationsComplete = ScrubRiders(propList, minRiders, minStations, minNumber)
+        BartLibs.PrintRoutes(propList)
+        allStations, allStationsComplete = BartLibs.ScrubRiders(propList, minRiders, minStations, minNumber)
         stations = len(allStationsComplete[0])
 
-        df = AllStationsToDF(allStationsComplete)
+        df = BartLibs.AllStationsToDF(allStationsComplete)
         PlotMeanRidersPerStation(df, allStationsComplete, origin)
 
-        rejectHO, pVal = TestMultipleRoutes(allStations)
+        rejectHO, pVal = BartLibs.TestMultipleRoutes(allStations)
         TestMultipleRoutesAnova(df)
         title = "Tuesday From {0}, RejectHO: {3}\n PVal: {2:.5f}, Days: {1}, Stations:{4} ".format(origin,
                                                                                                    len(allStations),
@@ -378,13 +273,12 @@ def CompareMultipleDayRidersFrom(startDate, endDate, origin, hour, minStations, 
         # print(title)
         PlotMultiSetsTo(allStationsComplete, 2, title)
         dropRidersPerc = BartLibs.CalcDroppedRiders(propList, allStationsComplete)
-        PrintRoutes(allStationsComplete)
+        BartLibs.PrintRoutes(allStationsComplete)
 
         Plot3DRoutesTo(allStationsComplete, 2, title)
         PlotTimeSeriesRoutesTo(allStationsComplete, 2, title)
     else:
         print("No Stations Found")
-
 
 def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1, minStations, minRiders, interval):
     """
@@ -410,8 +304,8 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
             da, df = BARTQueries.GetDailyRidersTo(dest1, hour1, sDate)
             if len(da) > 0:
                 dayYearPair = [da, yearlyAvg]
-                allStations, allStationsComplete = ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
-                rejectHO, pVal = TestMultipleRoutes(allStations)
+                allStations, allStationsComplete = BartLibs.ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
+                rejectHO, pVal = BartLibs.TestMultipleRoutes(allStations)
                 title = "{0}, Stats: {1}RejectHO: {4}\nPVal: {2:.5f} Date {3}".format(dest1,
                                                                                       len(da), pVal,
                                                                                       sDate,
@@ -422,7 +316,6 @@ def CompareMultiDayRidersToYearlyAveDest(startDate, endDate, dest1, hour1, year1
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, yr, 1, title)
 
         start_date += delta
-
 
 def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, year1, minStations, minRiders, interval):
     """
@@ -448,8 +341,8 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
             da, df = BARTQueries.GetDailyRidersFrom(source1, hour1, sDate)
             if len(da) > 0:
                 dayYearPair = [da, yearlyAvg]
-                allStations, allStationsComplete = ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
-                rejectHO, pVal = TestMultipleRoutes(allStations)
+                allStations, allStationsComplete = BartLibs.ScrubRiders(dayYearPair, minRiders, minStations, minRiders)
+                rejectHO, pVal = BartLibs.TestMultipleRoutes(allStations)
                 title = "{0}, Stats: {1}RejectHO: {4}\nPVal: {2:.5f} Date {3}".format(source1,
                                                                                       len(da), pVal,
                                                                                       sDate,
@@ -459,7 +352,6 @@ def CompareMultiDayRidersToYearlyAveFrom(startDate, endDate, source1, hour1, yea
                 PlotTwoSetsTrueProp(allStationsComplete, sDate, year1, 2, title)
 
         start_date += delta
-
 
 def PlotRouteSet(stats):
     """
@@ -482,31 +374,6 @@ def PlotRouteSet(stats):
 
     plt.title(sDate)
     plt.show()
-
-
-def PlotTwoSets(stats, lab1, lab2, statIndex, title):
-    """
-    Plot two routes side by side on bar graph
-
-    :param stats: stations list by two
-    :param lab1: station 1 label
-    :param lab2: station 2 label
-    :param statIndex: index to select source or destination
-    :param title: title of plot
-    """
-    cats = list(map(lambda x: x[statIndex], stats[0]))
-    d1 = list(map(lambda x: x[0], stats[0]))
-    d2 = list(map(lambda x: x[0], stats[1]))
-    X = np.arange(len(d1))
-    plt.bar(X + 0.00, d1, color='b', width=0.25)
-    plt.bar(X + 0.3, d2, color='r', width=0.25)
-    plt.xticks(X, cats)
-    plt.legend(labels=[lab1, lab2])
-    plt.tick_params(labelrotation=45)
-
-    plt.title(title)
-    plt.show()
-
 
 def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
     """
@@ -538,7 +405,6 @@ def PlotTwoSetsTrueProp(stats, lab1, lab2, statIndex, title):
     plt.title(title)
     plt.show()
 
-
 def PlotMultiSetsTo(stats, statIndex, title):
     """
     Plot multiple routes in comparative bar plot
@@ -566,7 +432,6 @@ def PlotMultiSetsTo(stats, statIndex, title):
     plt.title(title)
     plt.show()
 
-
 def PlotYearlySumRidersPerOrigin(origin, year):
     """
     Plot total riders over a year for destination station
@@ -584,7 +449,6 @@ def PlotYearlySumRidersPerOrigin(origin, year):
     plt.xticks(rotation=90)
     plt.show()
 
-
 def PlotTotalRidersByHour(year):
     """
     Plot total riders by hour for given year
@@ -600,7 +464,6 @@ def PlotTotalRidersByHour(year):
     plt.xticks(rotation=0)
     plt.show()
 
-
 def PlotAverageRidersByHour(year):
     """
     Plot average riders by hour for a given year
@@ -615,7 +478,6 @@ def PlotAverageRidersByHour(year):
     plt.ylabel('Riders')
     plt.xticks(rotation=0)
     plt.show()
-
 
 def PlotTotalRidersByHourBySource(source, year):
     """
@@ -633,7 +495,6 @@ def PlotTotalRidersByHourBySource(source, year):
     plt.xticks(rotation=0)
     plt.show()
 
-
 def GetTotalRidersPerHourPerDayForStation(source, year):
     """
     Returns the total number of riders per hour day for a year
@@ -650,7 +511,6 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
     plt.ylabel('Riders')
     plt.xticks(rotation=0)
     plt.show()
-
 
 def CompareRidersPerHourPerDayForStation(source, year):
     """
@@ -676,7 +536,6 @@ def CompareRidersPerHourPerDayForStation(source, year):
     # show plot
     plt.show()
 
-
 def CompareRidersPerISODOWForStation2(source, year):
     hourlyRiders, df = BARTQueries.GetTotalRidersPerDOWForStation(source, year)
     labels = []
@@ -696,7 +555,6 @@ def CompareRidersPerISODOWForStation2(source, year):
     # show plot
     plt.show()
 
-
 def CompareRidersPerISODOW(year):
     """
     Compares riders for a specific day of the week over a year
@@ -715,7 +573,6 @@ def CompareRidersPerISODOW(year):
     plt.xticks(rotation=0)
     plt.show()
 
-
 def TwoWayAnova(source, year):
     """
     Two way ANOVA for route, time, day analysis of variance test
@@ -730,7 +587,6 @@ def TwoWayAnova(source, year):
     print("\n\nRQ1 - TWO WAY ANOVA --------------------------------------")
     print(g)
     print("\n\nRQ1 ------------------------------------------------------")
-
 
 def PlotRidersOnMap(year):
     """
@@ -758,7 +614,6 @@ def PlotRidersOnMap(year):
     plt.xticks(rotation=45)
     plt.show()
 
-
 def PlotRidersOnMapTo(year):
     """
     Plot overlaid bubble chart on street map for Destination routes
@@ -782,7 +637,6 @@ def PlotRidersOnMapTo(year):
     plt.ylabel('Riders')
     plt.xticks(rotation=45)
     plt.show()
-
 
 def Plot3DRoutesTo(allStations, statIndex, title):
     """
@@ -824,7 +678,6 @@ def Plot3DRoutesTo(allStations, statIndex, title):
     plt.title(title)
     plt.show()
 
-
 def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
     """
     Plots a time series of destination routes as a time series
@@ -854,7 +707,6 @@ def PlotTimeSeriesRoutesTo(allStations, statIndex, title):
     plt.title(title)
     plt.show()
 
-
 def NormalizeAllStationsData(allStations):
     """
     Converts all stations to 100 percent full scale
@@ -871,7 +723,6 @@ def NormalizeAllStationsData(allStations):
             tupleL = tuple(listT)
             p[j] = tupleL
     return allStations
-
 
 def PlotTotalRidersPerMonth():
     """

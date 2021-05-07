@@ -7,14 +7,100 @@
 
 import decimal
 import statistics
-
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import chi2_contingency
 from statsmodels.graphics import tsaplots
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statistics import NormalDist
 
 from Code.BARTPlots import DEBUGON
+
+def confidence_interval(data, confidence=0.95):
+    """
+    Return confidence limits for input data array
+
+    :param data: array of rider data
+    :param confidence: percentage of bands
+    :return: confidence bands upper and lower
+    """
+    dist = NormalDist.from_samples(data)
+    z = NormalDist().inv_cdf((1 + confidence) / 2.)
+    h = dist.stdev * z / ((len(data) - 1) ** .5)
+    return dist.mean - h, dist.mean + h
+
+def TestMultipleRoutes(riderContTable):
+    """
+    Tests multiple route variables over time for goodness of fit
+
+    :param riderContTable: route contengency table
+    :return: returns chi-square H0 result, and p-value
+    """
+    rejectHO, pVal = ChiSqTestNxN(riderContTable)
+    return rejectHO, pVal
+
+def PrintRoutes(propList):
+    """
+    Prints out a route with details for all stations in route
+
+    :param propList: list of input stations
+    """
+    if DEBUGON:
+        for n in propList:
+            stns = len(n)
+            rdr = GetTotRiders(n)
+            dtd = n[0][4]
+            str = "Date:{0}, Stations:{1}, Riders:{2}".format(dtd, stns, rdr)
+            print(str)
+
+
+def ScrubRiders(propList, minRiders, minStations, minNumber):
+    """
+    Cleans list of stations
+
+    :param propList: Station list
+    :param minRiders: minimum number of riders per station
+    :param minStations: min number of intersected stations for route
+    :param minNumber: min number of total riders for route
+    :return: list of cleaned stations per route
+    """
+    riderCleaned = []
+    for n in propList:
+        rdrBRem = GetTotRiders(n)
+        numStnsBRem = len(n)
+        g = RemoveSmallRiderCountsForStation(minRiders, n)
+        rdr = GetTotRiders(g)
+        numStns = len(g)
+        if numStns >= minStations and rdr > minNumber:
+            riderCleaned.append(g)
+        else:
+            dtd = n[0][4]
+            str = "SCRUBBED: Date:{0}, Stations:{1}, Riders:{2} - CStations:{3}, CRiders:{4}".format(dtd, numStns, rdr,
+                                                                                                     numStnsBRem,
+                                                                                                     rdrBRem)
+            if DEBUGON:
+                print(str)
+
+    allStatsInter, origList = IntersectAllStations(riderCleaned)
+    return allStatsInter, origList
+
+def AllStationsToDF(allStationsComplete):
+    """
+    Convert list of stations to Pandas dataframe for convenience
+
+    :param allStationsComplete: List of stations for route in list of lists
+    :return: Dataframe of route stations
+    """
+    cols = ['riders', 'source', 'dest', 'depart_hour', 'depart_date']
+    ls = []
+    for day in allStationsComplete:
+        for s in day:
+            ls.append(s)
+    dfrs = pd.DataFrame(ls, columns=cols)
+    dfrs = dfrs.astype({"dest": 'category'})
+    dfrs = dfrs.astype({"riders": 'int64'})
+    return dfrs
 
 
 def Decomposition(data, per):

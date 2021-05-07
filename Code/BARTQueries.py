@@ -31,7 +31,6 @@ def PGBart(query):
     finally:
         return query_results
 
-
 def PGBartLocal(query):
     if ALIENWARE:
         return PGBart(query)
@@ -52,7 +51,6 @@ def PGBartLocal(query):
         print("Error in running the query: {}".format(str(e)))
     finally:
         return query_results
-
 
 def GetYearlyAverageDailyRidersToDest(dest, hour, year):
     query = """
@@ -76,7 +74,6 @@ def GetYearlyAverageDailyRidersToDest(dest, hour, year):
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
-
 def GetYearlyAverageDailyRidersFromSource(source, hour, year):
     query = """
                                 
@@ -99,7 +96,6 @@ def GetYearlyAverageDailyRidersFromSource(source, hour, year):
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
-
 def GetDailyRidersTo(dest, hour, date):
     query = """
                                 
@@ -120,7 +116,6 @@ def GetDailyRidersTo(dest, hour, date):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'source', 'dest', 'depart_hour', 'depart_date'])
     return plotdata, df
-
 
 def GetDailyRidersFrom(origin, hour, date):
     query = """
@@ -144,7 +139,6 @@ def GetDailyRidersFrom(origin, hour, date):
     df = pd.DataFrame(dat, columns=['riders', 'source', 'dest', 'depart_hour', 'depart_date'])
     return plotdata, df
 
-
 def GetSumYearRidersPerHour(origin, year):
     query = """
                                 
@@ -165,7 +159,6 @@ def GetSumYearRidersPerHour(origin, year):
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x, dat))
     return plotdata
-
 
 def GetAveragedWeekdayRidersToDest(dest, hour, years):
     query = """
@@ -191,7 +184,6 @@ def GetAveragedWeekdayRidersToDest(dest, hour, years):
     plotdata = list(map(lambda x: x[0], dat))
     return plotdata
 
-
 def GetAveragedWeekdayRidersFromSource(source, hour, years):
     query = """
 
@@ -216,7 +208,6 @@ def GetAveragedWeekdayRidersFromSource(source, hour, years):
     plotdata = list(map(lambda x: x[0], dat))
     return plotdata
 
-
 def GetWeekdayRidersFrom(origin, hour, years):
     query = """
 
@@ -238,7 +229,6 @@ def GetWeekdayRidersFrom(origin, hour, years):
     dat = PGBartLocal(query)
     plotdata = list(map(lambda x: x[0], dat))
     return plotdata
-
 
 def GetAverageWeeklyRiderForHour2(dest, hour, year):
     query = """
@@ -264,7 +254,6 @@ def GetAverageWeeklyRiderForHour2(dest, hour, year):
     plotdata = list(map(lambda x: x, dat))
     return plotdata
 
-
 def GetTotalRidersInNetworkByHourFrom(hour, year):
     query = """
 
@@ -286,7 +275,6 @@ def GetTotalRidersInNetworkByHourFrom(hour, year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
-
 
 def GetTotalRidersInNetworkByHourTo(hour, year):
     query = """
@@ -310,7 +298,6 @@ def GetTotalRidersInNetworkByHourTo(hour, year):
     df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
 
-
 def GetTotalRidersInNetwork(year):
     query = """
 
@@ -333,7 +320,6 @@ def GetTotalRidersInNetwork(year):
     df = pd.DataFrame(dat, columns=['riders', 'source', 'lat', 'long'])
     return plotdata, df
 
-
 def GetTotalRidersPerHour(year):
     query = """
                                 
@@ -353,7 +339,6 @@ def GetTotalRidersPerHour(year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'hour'])
     return plotdata, df
-
 
 def GetTotalRidersPerHourForStation(source, year):
     query = """
@@ -377,7 +362,6 @@ def GetTotalRidersPerHourForStation(source, year):
     df = pd.DataFrame(dat, columns=['riders', 'hour'])
     return plotdata, df
 
-
 def GetTotalRidersPerHourPerDayForStation(source, year):
     query = """
                                 
@@ -398,7 +382,6 @@ def GetTotalRidersPerHourPerDayForStation(source, year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'depart_hour', 'doy'])
     return plotdata, df
-
 
 def GetTotalRidersPerHourPerDOWForStation(source, year):
     query = """
@@ -422,7 +405,6 @@ def GetTotalRidersPerHourPerDOWForStation(source, year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'hour', 'isodow', 'depart_date'])
     return plotdata, df
-
 
 def GetTotalRidersPerHourPerDOWForStationTEXT(source, year):
     query = """
@@ -449,7 +431,6 @@ def GetTotalRidersPerHourPerDOWForStationTEXT(source, year):
     df = pd.DataFrame(dat, columns=['riders', 'hour', 'isodow', 'date'])
     return plotdata, df
 
-
 def GetTotalRidersPerDOWForStation(source, year):
     query = """
                                 
@@ -471,7 +452,6 @@ def GetTotalRidersPerDOWForStation(source, year):
     df = pd.DataFrame(dat, columns=['riders', 'isodow', 'depart_date'])
     return plotdata, df
 
-
 def GetTotalRidersPerDOW(year):
     query = """
                                 
@@ -490,7 +470,6 @@ def GetTotalRidersPerDOW(year):
     plotdata = list(map(lambda x: x, dat))
     df = pd.DataFrame(dat, columns=['riders', 'isodow'])
     return plotdata, df
-
 
 def GetTotalRidersPerMonth():
     query = """
