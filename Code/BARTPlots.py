@@ -28,6 +28,47 @@ import BartLibs
 
 DEBUGON = False
 
+
+def RunBARTTimeSeriesZoomed(source, hour, year):
+    """
+    Runs complete time series tests, outputs plot set and test results
+
+    :param source: Station to test
+    :param hour: Hour of day
+    :param year: year
+    """
+    plotdata = BARTQueries.GetAveragedWeekdayRidersFromSource(source, hour, year)
+    title = "Daily Riders for {0} at {1}:00AM in {2}".format(source, hour, year)
+    PlotTimeSeriesWithLimitBars(plotdata, title)
+
+    smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
+    PlotTimeSeriesWithLimitBarsZoomed(smoothData, title)  
+
+def PlotTimeSeriesWithLimitBarsZoomed(plotdata, title, showBars=True):
+    """
+    Plot a time series line chart with standard error bars
+
+    :param plotdata: input time series list of data
+    :param title: title to put on plot
+    :param showBars: show or hide error bars
+    """
+    rawLen = len(plotdata)
+    x = list(range(100,150))
+    plt.plot(x, plotdata[50:150],
+             color='blue',
+             linewidth=1
+             )
+    if showBars:
+        sdv = statistics.stdev(plotdata)
+        mn = statistics.mean(plotdata)
+        Maxthreshold = mn + (2.0 * sdv)
+        Minthreshold = mn - (2.0 * sdv)
+        plt.hlines(Maxthreshold, 0, rawLen, colors="red")
+        plt.hlines(Minthreshold, 0, rawLen, colors="red")
+    plt.suptitle(title)
+    plt.show()
+    
+    
 def RunBARTTimeSeries2(source, hour, year):
     """
     Runs complete time series tests, outputs plot set and test results
@@ -555,7 +596,7 @@ def CompareRidersPerISODOWForStation2(source, year):
 
     labels = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri']
     # Creating plot
-    bp = plt.boxplot(data, labels=labels)
+    bp = plt.boxplot(data, labels=labels, showfliers=False)
     plt.title("Riders by DOW, Station: {0}, Year:{1}".format(source, year))
     plt.xlabel('DOW')
     plt.ylabel('Riders')
