@@ -9,15 +9,18 @@ from datetime import date
 
 import numpy.random
 import time
-
-
-import BARTPlots
 import BartLibs
+import BARTPlots
+
+
+import os
 
 
 try:
     #Start for marking execution time
     start_time = time.time()
+
+    p = os.getcwd()  
 
     #RQ1
     #Boxplot Riders by Hour for Year, ANOVA for hours and days

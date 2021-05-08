@@ -15,7 +15,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statistics import NormalDist
 import scipy.stats as st
 
-from Code.BARTPlots import DEBUGON
+DEBUGON = False
 
 def ConfidenceInterval(data, confidence=0.95):
     """
