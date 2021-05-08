@@ -1,4 +1,10 @@
-
+__author__ = "Kenneth Ceglia"
+__copyright__ = "Open Source"
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Kenneth Ceglia"
+__email__ = "kenceglia@gmail.com"
+__status__ = "Course Work"
 
 """ BartLibs.py is a helper library, a collection of functions
     to perform tests, aggregations and other various functions

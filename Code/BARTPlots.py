@@ -1,3 +1,10 @@
+__author__ = "Kenneth Ceglia"
+__copyright__ = "Open Source"
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Kenneth Ceglia"
+__email__ = "kenceglia@gmail.com"
+__status__ = "Course Work"
 
 """ BARTPlots is mainline Python code to produce all plots and statistical
     tests for Capstone BART Ridership project

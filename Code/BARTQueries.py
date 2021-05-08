@@ -1,4 +1,10 @@
-
+__author__ = "Kenneth Ceglia"
+__copyright__ = "Open Source"
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Kenneth Ceglia"
+__email__ = "kenceglia@gmail.com"
+__status__ = "Course Work"
 
 """ BARTQueries is a helper file to execute Postgres queries
     format results and return data as lists or Panda dataframes

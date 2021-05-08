@@ -1,4 +1,10 @@
-
+__author__ = "Kenneth Ceglia"
+__copyright__ = "Open Source"
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Kenneth Ceglia"
+__email__ = "kenceglia@gmail.com"
+__status__ = "Course Work"
 
 """ BartRiderAnalysis is the main entry point and executes different
     functions to plot, test, clean or wrangle data
