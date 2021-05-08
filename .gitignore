@@ -10,3 +10,6 @@
 workspace.code-workspace
 
 .settings/org.eclipse.core.resources.prefs
+
+.env
+
