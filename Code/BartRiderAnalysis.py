@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 
 """ BartRiderAnalysis is the main entry point and executes different
     functions to plot, test, clean or wrangle data
@@ -7,6 +6,8 @@
     for Capstone project
 """
 from datetime import date
+
+import numpy.random
 import time
 
 
@@ -50,6 +51,9 @@ try:
     #RQ4
     #Regression Fit
     # BARTPlots.PlotTotalRidersPerMonth()
+
+    l = numpy.random.uniform(0,100, 50)
+    c1, c2 = BartLibs.ConfidenceIntervalT(l, 0.95)
 
     #Print out execution time
     print("\n\n\nEXECUTION Time : %s seconds " % (time.time() - start_time))

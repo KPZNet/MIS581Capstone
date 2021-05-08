@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 
 """ BartLibs.py is a helper library, a collection of functions
     to perform tests, aggregations and other various functions

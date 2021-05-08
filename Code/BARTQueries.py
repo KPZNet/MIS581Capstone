@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 
 """ BARTQueries is a helper file to execute Postgres queries
     format results and return data as lists or Panda dataframes

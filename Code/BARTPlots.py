@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """ BARTPlots is mainline Python code to produce all plots and statistical
     tests for Capstone BART Ridership project
@@ -148,9 +146,9 @@ def PlotRouteDestinations(df, sourceStation, startDate, endDate):
         pass
 
 def PlotStationHistrogram(df, station, title):
-    num_bins = 100
+    #num_bins = 100
     data = df[df['dest'] == station].riders.tolist()
-    n, bins, patches = plt.hist(data, num_bins)
+    n, bins, patches = plt.hist(data)
     plt.title(title)
     plt.show()
 
@@ -169,10 +167,8 @@ def PlotMeanRidersPerStation(df, allStationsComplete, sourceStation):
     for s in stationList:
         data = df[df['dest'] == s].riders.tolist()
         xmean = np.mean(data)
-        sr = st.t.interval(0.95, len(data) - 1, loc=xmean, scale=st.sem(data))
-        # mul = st.DescrStatsW(data).tconfint_mean()
         x.append(xmean)
-        c1, c2 = BartLibs.ConfidenceInterval(data)
+        c1, c2 = BartLibs.ConfidenceIntervalT(data)
         errs.append(abs(xmean - c1))
 
     yRange = list(range(len(stationList)))
