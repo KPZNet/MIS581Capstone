@@ -56,8 +56,11 @@ try:
     #Regression Fit
     # BARTPlots.PlotTotalRidersPerMonth()
 
-    l = numpy.random.uniform(0,100, 50)
+    l = numpy.random.standard_normal(500)
+    l = numpy.random.uniform(0, 200, 50)
+    mn = numpy.mean(l)
     c1, c2 = BartLibs.ConfidenceIntervalT(l, 0.95)
+    b = c2 - (0.5*abs(c2-c1))
 
     #Print out execution time
     print("\n\n\nEXECUTION Time : %s seconds " % (time.time() - start_time))
