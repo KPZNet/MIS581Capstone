@@ -42,7 +42,7 @@ def RunBARTTimeSeriesZoomed(source, hour, year):
     PlotTimeSeriesWithLimitBars(plotdata, title)
 
     smoothData = BartLibs.Smooth_1StandardDeviation(plotdata)
-    PlotTimeSeriesWithLimitBarsZoomed(smoothData, title)  
+    PlotTimeSeriesWithLimitBarsZoomed(smoothData, title, False)
 
 def PlotTimeSeriesWithLimitBarsZoomed(plotdata, title, showBars=True):
     """
@@ -53,8 +53,8 @@ def PlotTimeSeriesWithLimitBarsZoomed(plotdata, title, showBars=True):
     :param showBars: show or hide error bars
     """
     rawLen = len(plotdata)
-    x = list(range(100,150))
-    plt.plot(x, plotdata[50:150],
+    x = list(range(60,120))
+    plt.plot(x, plotdata[60:120],
              color='blue',
              linewidth=1
              )
