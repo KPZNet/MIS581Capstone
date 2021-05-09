@@ -13,3 +13,6 @@ workspace.code-workspace
 
 .env
 
+.dbeaver/data-sources.json
+.dbeaver/credentials-config.json
+
