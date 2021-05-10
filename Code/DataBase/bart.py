@@ -9,9 +9,8 @@ import os
 import psycopg2
 import requests
 
-k_lic = "ZUKP-YX9M-Q5DQ-8UTV"
 gen_lic = 'MW9S-E7SL-26DU-VV8V'
-bart_lic = k_lic
+bart_lic = gen_lic
 url = 'http://api.bart.gov/api/route.aspx?'
 
 
